@@ -1,5 +1,5 @@
-# fda-client-portal
-Application Portal for FDA Clients
+# fda-admin-portal
+Application Portal for FDA Admins
 
 ## Project setup
 ```

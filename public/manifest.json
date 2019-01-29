@@ -1,6 +1,6 @@
 {
-  "name": "fda-client-portal",
-  "short_name": "fda-client-portal",
+  "name": "fda-admin-portal",
+  "short_name": "fda-admin-portal",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",

@@ -1,15 +1,10 @@
 import LicenseAPI from '../../api/LicenseAPI';
 
 const state = {
-    LicenseAPI: null,
     unassigned: []
 }
 
 const mutations = {
-    API_INSTANCE(state, token) {
-        console.log('unass: ' + token);
-        state.LicenseAPI = new LicenseAPI(token);
-    },
     SET_UNASSIGNED(state, unassigned) {
         state.unassigned = unassigned;
     }
@@ -17,9 +12,9 @@ const mutations = {
 
 var actions = {
     GET_UNASSIGNED(context) {
-        if (!LicenseAPI) {
+        if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {
-                context.state.LicenseAPI.getUnassigned((unassigned, err) => {
+                new LicenseAPI(context.rootState.user_session.token).getUnassigned((unassigned, err) => {
                     if (!err) {
                         context.commit('SET_UNASSIGNED', unassigned)
                         resolve()

@@ -4,7 +4,6 @@ axios.defaults.baseURL = 'https://fda-services.herokuapp.com/v1.0';
 
 export default class LicenseAPI {
     constructor(token) {
-        this.token = token;
         axios.defaults.headers.common['Content-Type'] = 'application/json'
         axios.defaults.headers.common['access_token'] = token;
     }
@@ -23,7 +22,9 @@ export default class LicenseAPI {
     }
 
     getInbox(cb) {
+        console.log('enter lto-api/claim')
         axios.get('lto-api/claim').then((result) => {
+            console.log('lto-api/claim: ' + JSON.stringify(result.data))
             if (result.data.success) {
                 cb(result.data.model)
             } else {

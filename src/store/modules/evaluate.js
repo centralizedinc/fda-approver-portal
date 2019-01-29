@@ -2,16 +2,10 @@ import LicenseAPI from '../../api/LicenseAPI';
 import ChecklistAPI from '../../api/ChecklistAPI';
 
 const state = {
-    ChecklistAPI: null,
     checklist: []
 }
 
 const mutations = {
-    API_INSTANCE(state, token) {
-        console.log('eval: ' + token);
-        state.LicenseAPI = new LicenseAPI(token);
-        state.ChecklistAPI = new ChecklistAPI(token);
-    },
     SET_CHECKLIST(state, checklist) {
         state.checklist = checklist;
     }
@@ -19,8 +13,8 @@ const mutations = {
 
 var actions = {
     GET_CHECKLIST(context) {
-        if (!ChecklistAPI) {
-            context.state.ChecklistAPI.getChecklist((checklist, err) => {
+        if (context.rootState.user_session.token) {
+            new ChecklistAPI(context.rootState.user_session.token).getChecklist((checklist, err) => {
                 if (!err) {
                     context.commit('SET_CHECKLIST', checklist)
                 } else {
@@ -30,9 +24,9 @@ var actions = {
         }
     },
     EVALUATE(context, evaluate) {
-        if (!ChecklistAPI) {
+        if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {
-                context.state.LicenseAPI.evaluate((license, err) => {
+                new LicenseAPI(context.rootState.user_session.token).evaluate((license, err) => {
                     if (!err) {
                         resolve();
                         console.log('evaluation success')

@@ -1,15 +1,10 @@
 import LicenseAPI from '../../api/LicenseAPI';
 
 const state = {
-    LicenseAPI: null,
     inboxes: []
 }
 
 const mutations = {
-    API_INSTANCE(state, token) {
-        console.log('inbox: ' + token);
-        state.LicenseAPI = new LicenseAPI(token);
-    },
     SET_INBOX(state, inboxes) {
         state.inboxes = inboxes;
     }
@@ -17,11 +12,11 @@ const mutations = {
 
 var actions = {
     GET_INBOX(context) {
-        if (!LicenseAPI) {
+        if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {
-                context.state.LicenseAPI.getInbox((licenses, err) => {
+                new LicenseAPI(context.rootState.user_session.token).getInbox((inbox, err) => {
                     if (!err) {
-                        context.commit('SET_INBOX', licenses)
+                        context.commit('SET_INBOX', inbox)
                         resolve()
                     } else {
                         console.log(JSON.stringify(err))

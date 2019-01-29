@@ -7,6 +7,7 @@ import "./registerServiceWorker";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 import "@fortawesome/fontawesome-free/css/all.css";
+import Notifications from './components/NotificationPlugin';
 
 import NProgress from "nprogress";
 import "../node_modules/nprogress/nprogress.css";
@@ -27,6 +28,8 @@ router.beforeResolve((to, from, next) => {
 router.afterEach((to, from) => {
   NProgress.done();
 });
+
+Vue.use(Notifications)
 
 new Vue({
   router,

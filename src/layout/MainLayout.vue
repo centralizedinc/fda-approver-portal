@@ -2,6 +2,7 @@
     <v-app>
         <v-toolbar dark style='background: linear-gradient(45deg, #43A047 0%, #1de9b6 100%)'>
         </v-toolbar>
+        <notifications></notifications>
         <v-container fluid>
             <router-view></router-view>
         </v-container>
@@ -12,11 +13,8 @@
 </template>
 
 <script>
-export default {
-
-}
+export default {};
 </script>
 
 <style>
-
 </style>

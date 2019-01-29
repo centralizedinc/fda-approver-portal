@@ -25,28 +25,28 @@
             <v-list-tile-title class="body-1 font-weight-light">Dashboard</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile  @click="goTo('/app/licenses')" class="ma-1" :style="activeRoute('Licenses')">
+        <v-list-tile  @click="goTo('/app/inbox')" class="ma-1" :style="activeRoute('Inbox')">
           <v-list-tile-action>
-            <v-icon color="success">card_membership</v-icon>
+            <v-icon color="success">mail</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title class="body-1 font-weight-light">Licenses</v-list-tile-title>
+            <v-list-tile-title class="body-1 font-weight-light">Inbox</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile  @click="goTo('/app/certificates')" class="ma-1" :style="activeRoute('Certificates')">
+        <v-list-tile  @click="goTo('/app/participated')" class="ma-1" :style="activeRoute('Participated')">
           <v-list-tile-action>
             <v-icon color="success">book</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title class="body-1 font-weight-light">Certificates</v-list-tile-title>
+            <v-list-tile-title class="body-1 font-weight-light">Participated</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile  @click="goTo('/app/payments')" class="ma-1" :style="activeRoute('Payments')">
+        <v-list-tile  @click="goTo('/app/unassigned')" class="ma-1" :style="activeRoute('Unassigned')">
           <v-list-tile-action>
-            <v-icon color="success">far fa-credit-card</v-icon>
+            <v-icon color="success">drafts</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title class="body-1 font-weight-light">Payments</v-list-tile-title>
+            <v-list-tile-title class="body-1 font-weight-light">Unassigned</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
         <v-list-tile  @click="goTo('/app/payments')" class="ma-1" :style="activeRoute('Notifications')">
@@ -77,7 +77,7 @@
           </v-list-tile-content>
         </v-list-tile>
 
-         <v-list-tile  @click="goTo('/app/payments')" class="ma-1" :style="activeRoute('Notifications')">
+         <v-list-tile  @click="logout" class="ma-1" :style="activeRoute('Notifications')">
           <v-list-tile-action>
             <v-icon color="success">fas fa-sign-out-alt</v-icon>            
           </v-list-tile-action>
@@ -109,9 +109,10 @@
     </v-btn>
     
   </v-toolbar>
+  <notifications></notifications>
   <!-- <v-content> -->
     <v-container fluid>
-      <span class="headline font-weight-thin">{{page_name}}</span>
+      <!-- <span class="headline font-weight-thin">{{page_name}}</span>
       <v-breadcrumbs divider="/">
        <v-breadcrumbs-item>
          <v-icon color="primary">home</v-icon><span class="caption font-weight-light">Home</span>
@@ -123,6 +124,31 @@
          <v-icon>edit</v-icon><span class="caption font-weight-light">New Application</span>
        </v-breadcrumbs-item>  
       </v-breadcrumbs>
+      <v-divider></v-divider> -->
+      <v-card class="mt-3 mx-auto">
+        <v-layout row wrap ml-3>
+          <v-sheet
+            class="v-sheet--offset pa-3"
+            color="fdaSilver"
+            elevation="4"
+            width="calc(100% - 15px)"
+          >
+            <span class="title font-weight-light">{{page_name}}</span>
+            <v-breadcrumbs divider="/">
+              <v-breadcrumbs-item
+                v-for="(item, index) in breadcrumbs"
+                :key="index"
+                @click="goTo('/app')"
+              >
+                <v-icon color="primary">{{item.icon}}</v-icon>
+                <span class="body-1 font-weight-light">{{item.name}}</span>
+              </v-breadcrumbs-item>
+            </v-breadcrumbs>
+          </v-sheet>
+
+          <v-spacer></v-spacer>
+        </v-layout>
+      </v-card>
       <v-divider></v-divider>
       <!-- <transition name="fade"> -->
       <router-view></router-view>
@@ -142,57 +168,90 @@ export default {
   //#########################
   // variables
   //#########################
-  data(){
-    return{
-      mini:false,
-      route_name:''
-    }
+  data() {
+    return {
+      mini: false,
+      route_name: ""
+    };
   },
   //#########################
   // init
   //#########################
-  created(){    
-
-  },
+  created() {},
   //#########################
   // methods
   //#########################
-  methods:{
-    goTo(router){
-      this.$router.push(router)
+  methods: {
+    goTo(router) {
+      this.$router.push(router);
     },
-    activeRoute(route){
-      console.log("ROUTER_NAME: " + this.$route.name)
-      if(this.$route.name ===route){
-        return "background-color: rgb(2, 128, 0); color:white"
-      }else{
-        return
+    activeRoute(route) {
+      console.log("ROUTER_NAME: " + this.$route.name);
+      if (this.$route.name === route) {
+        return "background-color: rgb(2, 128, 0); color:white";
+      } else {
+        return;
       }
-      
+    },
+    logout() {
+      this.$store.commit("LOGOUT");
+      this.$router.push("/");
     }
-
   },
   //#########################
   // computed
   //#########################
-  computed:{
-    page_name(){
-      return this.$route.name
+  computed: {
+    page_name() {
+      return this.$route.name;
+    },
+    breadcrumbs() {
+      return [
+        {
+          icon: "home",
+          name: "Dashboard",
+          disabled: false,
+          href: "breadcrumbs_dashboard"
+        },
+        // {
+        //   icon: "card_membership",
+        //   name: "License",
+        //   disabled: false,
+        //   href: "breadcrumbs_dashboard"
+        // },
+        {
+          icon: "book",
+          name: "Certificates",
+          disabled: false,
+          href: "breadcrumbs_dashboard"
+        }
+        // {
+        //   icon: "far fa-creadit-card",
+        //   name: "Payments",
+        //   disabled: false,
+        //   href: "breadcrumbs_dashboard"
+        // },
+      ];
     }
   }
-
-}
+};
 </script>
 
 <style>
+.v-sheet--offset {
+  top: -24px;
+  position: relative;
+  border-radius: 2px 20px;
+  /* transform: skew(-10deg) !important; */
+}
 #nprogress .bar {
-  height:2px;
+  height: 2px;
 }
 
 #container {
-  padding:40px;
-  background-color:grey;
-  color:white;
+  padding: 40px;
+  background-color: grey;
+  color: white;
 }
 #nprogress .bar {
   background: purple;

@@ -1,19 +1,39 @@
 <template>
     <div>
-        <application-table :models="inboxes" :loading="loading" @view="viewApp"></application-table>
+      <application-table :models="inboxes" :loading="loading" @view="viewApp"></application-table>
+      <application-summary :show="showAppView" @close="showAppView=false" :tabs="3">
+        <template slot="header-1">Header 1</template>
+        <template slot="content-1">
+          <v-card>
+            <v-card-title primary-title>
+              title 1
+            </v-card-title>
+            <v-card-text>
+              Content 1
+            </v-card-text>
+          </v-card>
+        </template>
+        <template slot="header-2">Header 2</template>
+        <template slot="content-2">Content 2</template>
+        <template slot="header-3">Header 3</template>
+        <template slot="content-3">Content 3</template>
+      </application-summary>
     </div>
 </template>
 
 <script>
 export default {
   components: {
-    ApplicationTable: () => import("@/components/ApplicationTable")
+    ApplicationTable: () => import("@/components/ApplicationTable"),
+    ApplicationSummary: () => import("@/components/ApplicationSummary")
   },
   data() {
     return {
       inboxes: [],
       headers: [],
-      loading: false
+      items: [],
+      loading: false,
+      showAppView: false
     };
   },
   created() {
@@ -34,6 +54,7 @@ export default {
         });
     },
     viewApp(app) {
+      this.showAppView = true;
       console.log(JSON.stringify(app));
     }
   }

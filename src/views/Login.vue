@@ -46,9 +46,6 @@ export default {
     login() {
       // :rules="[() => ('The email and password you entered don\'t match')]"
       this.$store.dispatch("LOGIN", this.user).then(account => {
-        console.log(
-          "isAuth: " + this.$store.state.user_session.isAuthenticated
-        );
         if (this.$store.state.user_session.isAuthenticated) {
           this.$notify({
             message:
@@ -57,10 +54,6 @@ export default {
             icon: "check_circle_outline",
             initialMargin: 100
           });
-          this.$store.commit(
-            "API_INSTANCE",
-            this.$store.state.user_session.token
-          );
           this.$router.push("/app");
         } else {
           console.log(

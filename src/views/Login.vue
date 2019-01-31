@@ -62,8 +62,8 @@ export default {
   methods: {
     login() {
       if (this.validate()) {
-        this.$store.dispatch("LOGIN", this.user).then(() => {
-          if (this.$store.state.user_session.isAuthenticated) {
+        this.$store.dispatch("LOGIN", this.user).then(isMatch => {
+          if (isMatch) {
             this.$notify({
               message:
                 "Welcome to FDA Portal. You are logged in as " +

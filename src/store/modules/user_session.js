@@ -7,7 +7,6 @@ const state = {
 
 const mutations = {
     LOGIN(state, token) {
-        state.isAuthenticated = true;
         state.token = token;
     },
     LOGOUT(state) {
@@ -24,7 +23,7 @@ var actions = {
                     if (account.isMatch) {
                         context.commit('LOGIN', account.token)
                     }
-                    resolve()
+                    resolve(account.isMatch)
                 } else {
                     console.log(JSON.stringify(err))
                     reject(err)

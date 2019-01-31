@@ -1,17 +1,21 @@
-# fda-admin-portal
-Application Portal for FDA Admins
+# fda-approver-portal
+
+FDA portal for employees
 
 ## Project setup
+
 ```
 npm install
 ```
 
 ### Compiles and hot-reloads for development
+
 ```
 npm run serve
 ```
 
 ### Compiles and minifies for production
+
 ```
 npm run build
 ```

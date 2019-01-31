@@ -1,6 +1,6 @@
 <template>
     <div>
-      <application-table :models="inboxes" :loading="loading" @view="viewApp"></application-table>
+      <application-table :models="inboxes" :headers="headers" :loading="loading" @view="viewApp"></application-table>
       <application-summary :show="showAppView" @close="showAppView=false" :tabs="3">
         <template slot="header-1">Header 1</template>
         <template slot="content-1">
@@ -30,7 +30,32 @@ export default {
   data() {
     return {
       inboxes: [],
-      headers: [],
+      headers: [
+        {
+          text: "Case No",
+          value: "case_no"
+        },
+        {
+          text: "Type",
+          value: "application_type"
+        },
+        {
+          text: "Product Type",
+          value: "general_info.product_type"
+        },
+        {
+          text: "Current Task",
+          value: "current_task"
+        },
+        {
+          text: "Current User",
+          value: "current_user"
+        },
+        {
+          text: "Remarks",
+          value: "remarks"
+        }
+      ],
       items: [],
       loading: false,
       showAppView: false

@@ -6,12 +6,11 @@ const state = {
 }
 
 const mutations = {
-    LOGIN(state, account) {
+    LOGIN(state, token) {
         state.isAuthenticated = true;
-        state.token = account.token;
+        state.token = token;
     },
     LOGOUT(state) {
-        state.isAuthenticated = false
         state.token = null;
     }
 }
@@ -20,10 +19,10 @@ var actions = {
     LOGIN(context, user) {
         return new Promise((resolve, reject) => {
             new AccountAPI().login(user, (account, err) => {
-                console.log('login result: ' + JSON.stringify(account))
-                if (!err) {
+                if (!err && account) {
+                    console.log('login: ' + JSON.stringify(account.isMatch))
                     if (account.isMatch) {
-                        context.commit('LOGIN', account)
+                        context.commit('LOGIN', account.token)
                     }
                     resolve()
                 } else {

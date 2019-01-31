@@ -19,8 +19,8 @@ export default new Router({
         component: () => import('@/views/Login.vue')
       }],
       beforeEnter: (to, from, next) => {
-        new AccountAPI().checkAuth(isAuth => {
-          if (store.state.user_session.isAuthenticated && isAuth && store.state.user_session.token) {
+        new AccountAPI().checkAuth(store.state.user_session.token, (isAuth) => {
+          if (isAuth) {
             next('/app')
           } else {
             next()
@@ -32,8 +32,8 @@ export default new Router({
       path: '/app',
       component: UserLayout,
       beforeEnter: (to, from, next) => {
-        new AccountAPI().checkAuth(isAuth => {
-          if (store.state.user_session.isAuthenticated && isAuth && store.state.user_session.token) {
+        new AccountAPI().checkAuth(store.state.user_session.token, (isAuth) => {
+          if (isAuth) {
             next()
           } else {
             store.commit('LOGOUT')
@@ -42,44 +42,22 @@ export default new Router({
         })
       },
       children: [{
-          path: '',
-          name: 'Dashboard',
-          component: () => import('@/views/app/UserPortfolio.vue')
-        }, {
-          path: 'inbox',
-          name: 'Inbox',
-          component: () => import('@/views/app/Inbox/Inbox.vue')
-        }, {
-          path: 'participated',
-          name: 'Participated',
-          component: () => import('@/views/app/Participated/Participated.vue')
-        }, {
-          path: 'unassigned',
-          name: 'Unassigned',
-          component: () => import('@/views/app/Unassigned/Unassigned.vue')
-        },
-        {
-          path: 'licenses',
-          name: 'License To Operate',
-          component: () => import('@/views/app/licenses/Licenses.vue')
-        },
-        {
-          path: 'licenses/apply',
-          name: 'New License Application',
-          component: () => import('@/views/app/licenses/Apply.vue')
-        },
-        {
-          path: 'certificates',
-          name: 'Certificates',
-          component: () => import('@/views/app/UserPortfolio.vue')
-        },
-        {
-          path: 'payments',
-          name: 'Payments',
-          component: () => import('@/views/app/UserPortfolio.vue')
-        },
-      ]
-
+        path: '',
+        name: 'Dashboard',
+        component: () => import('@/views/app/UserPortfolio.vue')
+      }, {
+        path: 'inbox',
+        name: 'Inbox',
+        component: () => import('@/views/app/Inbox/Inbox.vue')
+      }, {
+        path: 'participated',
+        name: 'Participated',
+        component: () => import('@/views/app/Participated/Participated.vue')
+      }, {
+        path: 'unassigned',
+        name: 'Unassigned',
+        component: () => import('@/views/app/Unassigned/Unassigned.vue')
+      }]
     },
     {
       path: '/about',

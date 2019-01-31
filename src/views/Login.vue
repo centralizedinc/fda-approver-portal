@@ -10,20 +10,36 @@
         </v-toolbar>
         <v-divider></v-divider>
         <v-card-text transparent>
-          <v-text-field v-model="user.username" label="Email/Username" @keypress.enter="login" id="id"></v-text-field>
-          <v-text-field
-            v-model="user.password"
-            label="Enter your password"
-            min="8"
-            @keypress.enter="login"
-            :append-icon="value ? 'visibility' : 'visibility_off'"
-            :append-icon-cb="() => (value = !value)"
-            :type="value ? 'password' : 'text'"
-          ></v-text-field>
+            <v-form v-model="valid" ref="form">
+              <v-text-field 
+                v-model="user.username" 
+                label="Email/Username" 
+                :rules="[v => !!v || 'Username is required']"
+                required
+                @keypress.enter="login">
+              </v-text-field>
+              <v-text-field
+                v-model="user.password"
+                label="Enter your password"
+                :rules="[v => !!v || 'Password is required']"
+                min="8"
+                @keypress.enter="login"
+                required
+                :append-icon="value ? 'visibility' : 'visibility_off'"
+                :append-icon-cb="() => (value = !value)"
+                :type="value ? 'password' : 'text'"
+              ></v-text-field>
+            </v-form>
           <v-divider></v-divider>
           <v-card-actions transparent>
             <v-spacer></v-spacer>
-            <v-btn color="primary" @click="login" class="caption font-weight-light">Login</v-btn>
+            <v-btn 
+              color="primary" 
+              @click="login" 
+              :disabled="!valid"
+              class="caption font-weight-light">
+              Login
+            </v-btn>
           </v-card-actions>
         </v-card-text>
       </v-card>
@@ -35,6 +51,7 @@
 export default {
   data() {
     return {
+      valid: false,
       value: true,
       user: {
         username: "",
@@ -44,31 +61,42 @@ export default {
   },
   methods: {
     login() {
-      // :rules="[() => ('The email and password you entered don\'t match')]"
-      this.$store.dispatch("LOGIN", this.user).then(account => {
-        if (this.$store.state.user_session.isAuthenticated) {
-          this.$notify({
-            message:
-              "Welcome to FDA Portal. You are logged in as " +
-              this.user.username,
-            icon: "check_circle_outline",
-            initialMargin: 100
-          });
-          this.$router.push("/app");
-        } else {
-          console.log(
-            "Invalid Credentials. Please check your Username and Password."
-          );
-          this.$notify({
-            message:
-              "Invalid Credentials. Please check your Username and Password.",
-            icon: "add_alert",
-            type: "warning",
-            horizontalAlign: "center",
-            initialMargin: 100
-          });
-        }
-      });
+      if (this.validate()) {
+        this.$store.dispatch("LOGIN", this.user).then(() => {
+          if (this.$store.state.user_session.isAuthenticated) {
+            this.$notify({
+              message:
+                "Welcome to FDA Portal. You are logged in as " +
+                this.user.username,
+              icon: "check_circle_outline",
+              initialMargin: 100
+            });
+            this.$router.push("/app");
+          } else {
+            console.log(
+              "Invalid Credentials. Please check your Username and Password."
+            );
+            this.$notify({
+              message:
+                "Invalid Credentials. Please check your Username and Password.",
+              icon: "add_alert",
+              type: "warning",
+              horizontalAlign: "center",
+              initialMargin: 100
+            });
+          }
+        });
+      }
+    },
+    validate() {
+      if (!this.user.username) {
+        console.log("Username is required");
+        return false;
+      } else if (!this.user.password) {
+        console.log("Password is required");
+        return false;
+      }
+      return true;
     }
   }
 };

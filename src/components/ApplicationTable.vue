@@ -1,22 +1,22 @@
 <template>
-    <v-data-table
-      :headers="headers"
-      :items="models"
-      class="elevation-1"
-      :loading="loading">
-      <template slot="items" slot-scope="props">
-        <tr @click="$emit('view', props.item)" class="data-item">
-          <template v-for="(item, index) in headers">
-            <td :class="item.class" :key="index">{{
-              item.value === 'application_type' ? getAppType(props.item[item.value]) : 
-              item.value === 'current_task' ? getTaskName(props.item) :
-              item.value === 'current_user' ? getCurrentUser(props.item) : 
-              item.value.indexOf('.') > -1 ? getNestedField(props.item, item.value) : props.item[item.value]
-            }}</td>
-          </template>
-        </tr>
-      </template>
-    </v-data-table>
+  <v-data-table
+    :headers="headers"
+    :items="models"
+    class="elevation-1"
+    :loading="loading">
+    <template slot="items" slot-scope="props">
+      <tr @click="$emit('view', props.item)" class="data-item">
+        <template v-for="(item, index) in headers">
+          <td :class="item.class" :key="index">{{
+            item.value === 'application_type' ? getAppType(props.item, item.value) : 
+            item.value === 'current_task' ? getTaskName(props.item, item.value) :
+            item.value === 'current_user' ? getCurrentUser(props.item, item.value) : 
+            item.value.indexOf('.') > -1 ? getNestedField(props.item, item.value) : props.item[item.value]
+          }}</td>
+        </template>
+      </tr>
+    </template>
+  </v-data-table>
 </template>
 
 <script>
@@ -28,32 +28,7 @@ export default {
     },
     headers: {
       type: Array,
-      default: () => [
-        {
-          text: "Case No",
-          value: "case_no"
-        },
-        {
-          text: "Type",
-          value: "application_type"
-        },
-        {
-          text: "Product Type",
-          value: "general_info.product_type"
-        },
-        {
-          text: "Current Task",
-          value: "current_task"
-        },
-        {
-          text: "Current User",
-          value: "current_user"
-        },
-        {
-          text: "Remarks",
-          value: "remarks"
-        }
-      ]
+      default: () => []
     },
     loading: {
       type: Boolean,
@@ -61,49 +36,74 @@ export default {
     }
   },
   methods: {
-    getAppType(type) {
+    getAppType(item, value) {
+      var type = item[value];
       if (type.toUpperCase() === "V") {
         return "Variation";
       } else if (type.toUpperCase() === "R") {
         return "Renewal";
-      } else {
+      } else if (type.toUpperCase() === "I") {
         return "Initial";
+      } else {
+        if (value.indexOf(".") > -1) {
+          return this.getNestedField(item, value);
+        } else {
+          return item[value];
+        }
       }
     },
-    getTaskName(app) {
-      var task_name = "";
-      if (app) {
-        for (let i = 0; i < app.tasks.length; i++) {
-          if (app.current_task === app.tasks[i].task_id) {
-            task_name = app.tasks[i].task_name;
+    getTaskName(item, value) {
+      var task_name = null;
+      if (item && item.current_task && item.tasks) {
+        for (let i = 0; i < item.tasks.length; i++) {
+          if (item.current_task === item.tasks[i].task_id) {
+            task_name = item.tasks[i].task_name;
             break;
           }
         }
       }
-      return task_name;
+      if (!task_name) {
+        if (value.indexOf(".") > -1) {
+          return this.getNestedField(item, value);
+        } else {
+          return item[value];
+        }
+      } else {
+        return task_name;
+      }
     },
-    getCurrentUser(app) {
-      var user = "Unassign";
-      if (app) {
-        for (let i = 0; i < app.tasks.length; i++) {
-          if (app.current_task === app.tasks[i].task_id) {
+    getCurrentUser(item, value) {
+      var user = null;
+      if (item && item.current_task && item.tasks) {
+        for (let i = 0; i < item.tasks.length; i++) {
+          if (item.current_task === item.tasks[i].task_id) {
             if (
-              app.tasks[i].assigned_user &&
-              app.tasks[i].assigned_user.name &&
-              app.tasks[i].assigned_user.name !== ""
+              item.tasks[i].assigned_user &&
+              item.tasks[i].assigned_user.name &&
+              item.tasks[i].assigned_user.name !== ""
             ) {
-              user = app.tasks[i].assigned_user.name;
+              user = item.tasks[i].assigned_user.name;
+            } else {
+              user = "Unassign";
             }
             break;
           }
         }
       }
-      return user;
+
+      if (!user) {
+        if (value.indexOf(".") > -1) {
+          return this.getNestedField(item, value);
+        } else {
+          return item[value];
+        }
+      } else {
+        return user;
+      }
     },
     getNestedField(item, field) {
       var fields = field.split(".");
       var result = item[fields[0]];
-      console.log(JSON.stringify(result));
       for (let i = 1; i < fields.length; i++) {
         if (!result) {
           return "";

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <application-table :models="participated" :loading="loading"></application-table>
+        <application-table :models="participated" :headers="headers" :loading="loading"></application-table>
     </div>
 </template>
 
@@ -12,7 +12,32 @@ export default {
   data() {
     return {
       participated: [],
-      headers: [],
+      headers: [
+        {
+          text: "Case No",
+          value: "case_no"
+        },
+        {
+          text: "Type",
+          value: "application_type"
+        },
+        {
+          text: "Product Type",
+          value: "general_info.product_type"
+        },
+        {
+          text: "Current Task",
+          value: "current_task"
+        },
+        {
+          text: "Current User",
+          value: "current_user"
+        },
+        {
+          text: "Remarks",
+          value: "remarks"
+        }
+      ],
       loading: false
     };
   },

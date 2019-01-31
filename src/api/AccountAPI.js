@@ -14,7 +14,11 @@ export default class AccountAPI {
             });
     }
 
-    checkAuth(cb) {
-        cb(true)
+    checkAuth(token, cb) {
+        if (token) {
+            cb(true)
+        } else {
+            cb(false)
+        }
     }
 }

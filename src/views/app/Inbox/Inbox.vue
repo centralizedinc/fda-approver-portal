@@ -33,7 +33,11 @@ export default {
       headers: [
         {
           text: "Case No",
-          value: "case_no"
+          value: "case_no/account_id"
+        },
+        {
+          text: "Application",
+          value: "application"
         },
         {
           text: "Type",

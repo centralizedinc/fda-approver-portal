@@ -1,24 +1,74 @@
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://fda-services.herokuapp.com/v1.0';
+export default class AuthAPI {
+    constructor(token) {
+        axios.defaults.baseURL = 'https://fda-services.herokuapp.com/v1.0/public/accounts/register';
+        axios.defaults.headers.common['Content-Type'] = 'application/json'
+        axios.defaults.headers.common['access_token'] = token;
+    }
 
-export default class AccountAPI {
-    login(user, cb) {
-        axios.post("/public/accounts/auth/admin", user)
-            .then(result => {
+    getInbox(cb) {
+        console.log('enter claim')
+        axios.get('claim').then((result) => {
+            console.log('claim: ' + JSON.stringify(result.data))
+            if (result.data.success) {
                 cb(result.data.model)
-            })
-            .catch(err => {
-                console.log('err: ' + JSON.stringify(err))
-                cb(null, err)
-            });
+            } else {
+                cb(null, result.data.errors)
+            }
+        }).catch(err => {
+            cb(null, err)
+        })
     }
 
-    checkAuth(token, cb) {
-        if (token) {
-            cb(true)
-        } else {
-            cb(false)
-        }
+    getParticipated(cb) {
+        axios.get('participated').then((result) => {
+            if (result.data.success) {
+                cb(result.data.model)
+            } else {
+                cb(null, result.data.errors)
+            }
+        }).catch(err => {
+            cb(null, err)
+        })
     }
+
+    getUnassigned(cb) {
+        axios.get('unassigned').then((result) => {
+            if (result.data.success) {
+                cb(result.data.model)
+            } else {
+                cb(null, result.data.errors)
+            }
+        }).catch(err => {
+            cb(null, err)
+        })
+    }
+
+    claim(claimed_id, cb) {
+        axios.post('claim', {
+            id: claimed_id
+        }).then((result) => {
+            if (result.data.success) {
+                cb(result.data.model)
+            } else {
+                cb(null, result.data.errors)
+            }
+        }).catch(err => {
+            cb(null, err)
+        })
+    }
+
+    evaluate(params, cb) {
+        axios.post('evaluation', params).then((result) => {
+            if (result.data.success) {
+                cb(result.data.model)
+            } else {
+                cb(null, result.data.errors)
+            }
+        }).catch(err => {
+            cb(null, err)
+        })
+    }
+
 }

@@ -1,15 +1,14 @@
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://fda-services.herokuapp.com/v1.0';
-
 export default class LicenseAPI {
     constructor(token) {
+        axios.defaults.baseURL = 'https://fda-services.herokuapp.com/v1.0/lto-api';
         axios.defaults.headers.common['Content-Type'] = 'application/json'
         axios.defaults.headers.common['access_token'] = token;
     }
 
     getLicenses(cb) {
-        axios.get('lto-api').then((result) => {
+        axios.get('/').then((result) => {
             console.log('get licenses: ' + JSON.stringify(result.data.model));
             if (result.data.success) {
                 cb(result.data.model)
@@ -22,9 +21,9 @@ export default class LicenseAPI {
     }
 
     getInbox(cb) {
-        console.log('enter lto-api/claim')
-        axios.get('lto-api/claim').then((result) => {
-            console.log('lto-api/claim: ' + JSON.stringify(result.data))
+        console.log('enter claim')
+        axios.get('claim').then((result) => {
+            console.log('claim: ' + JSON.stringify(result.data))
             if (result.data.success) {
                 cb(result.data.model)
             } else {
@@ -36,7 +35,7 @@ export default class LicenseAPI {
     }
 
     getParticipated(cb) {
-        axios.get('lto-api/participated').then((result) => {
+        axios.get('participated').then((result) => {
             if (result.data.success) {
                 cb(result.data.model)
             } else {
@@ -48,7 +47,21 @@ export default class LicenseAPI {
     }
 
     getUnassigned(cb) {
-        axios.get('lto-api/unassigned').then((result) => {
+        axios.get('unassigned').then((result) => {
+            if (result.data.success) {
+                cb(result.data.model)
+            } else {
+                cb(null, result.data.errors)
+            }
+        }).catch(err => {
+            cb(null, err)
+        })
+    }
+
+    claim(claimed_id, cb) {
+        axios.post('claim', {
+            id: claimed_id
+        }).then((result) => {
             if (result.data.success) {
                 cb(result.data.model)
             } else {
@@ -60,7 +73,7 @@ export default class LicenseAPI {
     }
 
     evaluate(cb) {
-        axios.get('lto-api/evaluation').then((result) => {
+        axios.get('evaluation').then((result) => {
             if (result.data.success) {
                 cb(result.data.model)
             } else {

@@ -11,7 +11,8 @@
             item.value === 'application_type' ? getAppType(props.item, item.value) : 
             item.value === 'current_task' ? getTaskName(props.item, item.value) :
             item.value === 'current_user' ? getCurrentUser(props.item, item.value) : 
-            item.value.indexOf('.') > -1 ? getNestedField(props.item, item.value) : props.item[item.value]
+            item.value.indexOf('.') > -1 ? getNestedField(props.item, item.value) : 
+            item.value.indexOf('/') > -1 ? getFields(props.item, item.value) : checkValue(props.item[item.value])
           }}</td>
         </template>
       </tr>
@@ -38,7 +39,9 @@ export default {
   methods: {
     getAppType(item, value) {
       var type = item[value];
-      if (type.toUpperCase() === "V") {
+      if (!type) {
+        return "N/A";
+      } else if (type.toUpperCase() === "V") {
         return "Variation";
       } else if (type.toUpperCase() === "R") {
         return "Renewal";
@@ -106,11 +109,26 @@ export default {
       var result = item[fields[0]];
       for (let i = 1; i < fields.length; i++) {
         if (!result) {
-          return "";
+          return "N/A";
         }
         result = result[fields[i]];
       }
       return result;
+    },
+    getFields(item, field) {
+      var fields = field.split("/");
+      for (let i = 0; i < fields.length; i++) {
+        if (item[fields[i]]) {
+          return item[fields[i]];
+        }
+      }
+      return "N/A";
+    },
+    checkValue(field) {
+      if (!field) {
+        return "N/A";
+      }
+      return field;
     }
   }
 };

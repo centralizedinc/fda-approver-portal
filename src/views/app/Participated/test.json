@@ -1,0 +1,38 @@
+[{
+    "_id": "5c5ba5901ddcf921e8ca0ecd",
+    "auto_id": 89,
+    "confirmation_key": "bWFya2pob25wYXVsLnF1aWpvbUBnbWFpbC5jb206MTU0OTU5NjQzMjI3MA==",
+    "username": "markquijom",
+    "email": "markjhonpaul.quijom@gmail.com",
+    "password": "$2a$05$brWQ9r53jSBaHuG8US5N3uoL5Ib/vt4UpWptbM6dikiQT4LSHnGBG",
+    "current_task": "5c19e9efdf71202a98325157",
+    "__v": 0,
+    "account_id": "20190702000089",
+    "tasks": [{
+            "status": "A",
+            "task_id": "5c5a98659a79b1287c27b1b6",
+            "task_name": "Registration",
+            "_id": "5c5ba5901ddcf921e8ca0ece",
+            "assigned_user": {
+                "name": "admin_mark",
+                "id": "5c5bad8baabfbb0aa05f00e7"
+            },
+            "date_completed": "2019-02-07T03:21:07.331Z",
+            "date_started": "2019-02-07T03:21:07.331Z"
+        },
+        {
+            "task_id": "5c19e9efdf71202a98325157",
+            "task_name": "Central Director",
+            "_id": "5c5bba9b6bf47f321cbac498",
+            "date_completed": "2019-02-07T04:54:44.037Z",
+            "date_started": "2019-02-07T04:54:44.037Z"
+        }
+    ],
+    "status": 0,
+    "date_modified": "2019-02-07T04:56:59.551Z",
+    "date_created": "2019-02-07T03:27:12.266Z",
+    "name": {
+        "first": "Mark",
+        "last": "Quijom"
+    }
+}]

@@ -46,6 +46,15 @@ var actions = {
                 return _unassigns;
             })
         }
+    },
+    CLAIM(context, app) {
+        if (context.rootState.user_session.token) {
+            if (app.case_type === 0) { // LICENSE
+                return new Promise((resolve, reject) => {
+
+                })
+            }
+        }
     }
 }
 

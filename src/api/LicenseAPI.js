@@ -22,7 +22,7 @@ export default class LicenseAPI {
 
     getInbox(cb) {
         console.log('enter claim')
-        axios.get('claim').then((result) => {
+        axios.get('case/inbox').then((result) => {
             console.log('claim: ' + JSON.stringify(result.data))
             if (result.data.success) {
                 cb(result.data.model)
@@ -35,7 +35,9 @@ export default class LicenseAPI {
     }
 
     getParticipated(cb) {
-        axios.get('participated').then((result) => {
+        console.log('participated: ' + axios.defaults.headers.common['access_token']);
+
+        axios.get('case/participated').then((result) => {
             if (result.data.success) {
                 cb(result.data.model)
             } else {
@@ -47,7 +49,7 @@ export default class LicenseAPI {
     }
 
     getUnassigned(cb) {
-        axios.get('unassigned').then((result) => {
+        axios.get('case/unassigned').then((result) => {
             if (result.data.success) {
                 cb(result.data.model)
             } else {
@@ -59,7 +61,7 @@ export default class LicenseAPI {
     }
 
     claim(claimed_id, cb) {
-        axios.post('claim', {
+        axios.post('case/claim', {
             id: claimed_id
         }).then((result) => {
             if (result.data.success) {
@@ -73,7 +75,7 @@ export default class LicenseAPI {
     }
 
     evaluate(cb) {
-        axios.get('evaluation').then((result) => {
+        axios.get('case/evaluation').then((result) => {
             if (result.data.success) {
                 cb(result.data.model)
             } else {

@@ -7,10 +7,14 @@
     <template slot="items" slot-scope="props">
       <tr @click="$emit('view', props.item)" class="data-item">
         <template v-for="(item, index) in headers">
-          <td :class="item.class" :key="index">{{
+          <td v-if="item.value === 'action'" :class="item.class" :key="index">
+            <v-btn color="success" icon flat @click="$emit('view', props.item)">
+              <v-icon>search</v-icon>
+            </v-btn>
+          </td>
+          <td v-else :class="item.class" :key="index">{{
+            item.value === 'case_type' ? getCaseType(props.item, item.value) : 
             item.value === 'application_type' ? getAppType(props.item, item.value) : 
-            item.value === 'current_task' ? getTaskName(props.item, item.value) :
-            item.value === 'current_user' ? getCurrentUser(props.item, item.value) : 
             item.value.indexOf('.') > -1 ? getNestedField(props.item, item.value) : 
             item.value.indexOf('/') > -1 ? getFields(props.item, item.value) : checkValue(props.item[item.value])
           }}</td>
@@ -39,14 +43,13 @@ export default {
   methods: {
     getAppType(item, value) {
       var type = item[value];
-      if (!type) {
-        return "N/A";
-      } else if (type.toUpperCase() === "V") {
-        return "Variation";
-      } else if (type.toUpperCase() === "R") {
-        return "Renewal";
-      } else if (type.toUpperCase() === "I") {
+      console.log(type);
+      if (type === 0) {
         return "Initial";
+      } else if (type === 1) {
+        return "Variation";
+      } else if (type === 2) {
+        return "Renewal";
       } else {
         if (value.indexOf(".") > -1) {
           return this.getNestedField(item, value);
@@ -55,54 +58,16 @@ export default {
         }
       }
     },
-    getTaskName(item, value) {
-      var task_name = null;
-      if (item && item.current_task && item.tasks) {
-        for (let i = 0; i < item.tasks.length; i++) {
-          if (item.current_task === item.tasks[i].task_id) {
-            task_name = item.tasks[i].task_name;
-            break;
-          }
-        }
+    getCaseType(item, value) {
+      switch (item[value]) {
+        case 0:
+          return "License";
+        case 1:
+          return "Certificate";
+        case 2:
+          return "Registration";
       }
-      if (!task_name) {
-        if (value.indexOf(".") > -1) {
-          return this.getNestedField(item, value);
-        } else {
-          return item[value];
-        }
-      } else {
-        return task_name;
-      }
-    },
-    getCurrentUser(item, value) {
-      var user = null;
-      if (item && item.current_task && item.tasks) {
-        for (let i = 0; i < item.tasks.length; i++) {
-          if (item.current_task === item.tasks[i].task_id) {
-            if (
-              item.tasks[i].assigned_user &&
-              item.tasks[i].assigned_user.name &&
-              item.tasks[i].assigned_user.name !== ""
-            ) {
-              user = item.tasks[i].assigned_user.name;
-            } else {
-              user = "Unassign";
-            }
-            break;
-          }
-        }
-      }
-
-      if (!user) {
-        if (value.indexOf(".") > -1) {
-          return this.getNestedField(item, value);
-        } else {
-          return item[value];
-        }
-      } else {
-        return user;
-      }
+      return "N/A";
     },
     getNestedField(item, field) {
       var fields = field.split(".");

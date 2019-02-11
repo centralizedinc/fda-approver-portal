@@ -1,6 +1,6 @@
 <template>
     <div>
-        <application-table :models="unassigned" :headers="headers" :loading="loading"></application-table>
+        <application-table :models="unassigned" :headers="headers" :loading="loading" @view="claim"></application-table>
     </div>
 </template>
 
@@ -15,31 +15,31 @@ export default {
       headers: [
         {
           text: "Case No",
-          value: "case_no/account_id"
+          value: "case_no"
         },
         {
           text: "Application",
-          value: "application"
+          value: "case_type"
         },
         {
           text: "Type",
           value: "application_type"
         },
         {
-          text: "Product Type",
-          value: "general_info.product_type"
-        },
-        {
           text: "Current Task",
-          value: "current_task"
+          value: "current_task_name"
         },
         {
           text: "Current User",
-          value: "current_user"
+          value: "current_assigned_user_name"
         },
         {
           text: "Remarks",
           value: "remarks"
+        },
+        {
+          text: "Actions",
+          value: "actions"
         }
       ],
       loading: false
@@ -61,7 +61,8 @@ export default {
           console.log(JSON.stringify(err));
           this.loading = false;
         });
-    }
+    },
+    claim(app) {}
   }
 };
 </script>

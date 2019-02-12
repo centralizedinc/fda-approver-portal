@@ -1,5 +1,5 @@
-import LicenseAPI from '../../api/LicenseAPI';
-import AccountAPI from '../../api/AccountAPI';
+import LicenseAPI from '@/api/LicenseAPI';
+import AccountAPI from '@/api/AccountAPI';
 
 const state = {
     participated: []
@@ -16,7 +16,7 @@ var actions = {
         if (context.rootState.user_session.token) {
             const promises = [
                 new Promise((resolve, reject) => {
-                    new LicenseAPI(context.rootState.user_session.token).getParticipated((participated, err) => {
+                    new LicenseAPI(context.rootState.user_session.token).getParticipated((err, participated) => {
                         if (!err) {
                             participated.forEach(p => {
                                 p.application = "FOR LICENSE";
@@ -29,7 +29,7 @@ var actions = {
                     })
                 }),
                 new Promise((resolve, reject) => {
-                    new AccountAPI(context.rootState.user_session.token).getParticipated((participated, err) => {
+                    new AccountAPI(context.rootState.user_session.token).getParticipated((err, participated) => {
                         if (!err) {
                             participated.forEach(p => {
                                 p.application = "FOR REGISTRATION";

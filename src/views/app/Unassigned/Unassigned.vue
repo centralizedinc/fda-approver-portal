@@ -26,20 +26,20 @@ export default {
           value: "application_type"
         },
         {
+          text: "Created By",
+          value: "client_name.last"
+        },
+        {
           text: "Current Task",
           value: "current_task_name"
         },
         {
           text: "Current User",
-          value: "current_assigned_user_name"
+          value: "current_assigned_user_name.last_name"
         },
         {
           text: "Remarks",
           value: "remarks"
-        },
-        {
-          text: "Actions",
-          value: "actions"
         }
       ],
       loading: false
@@ -62,7 +62,18 @@ export default {
           this.loading = false;
         });
     },
-    claim(app) {}
+    claim(app) {
+      // console.log("test app: " + JSON.stringify(app));
+      this.$store
+        .dispatch("CLAIM", app)
+        .then(result => {
+          console.log(result);
+          this.init();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   }
 };
 </script>

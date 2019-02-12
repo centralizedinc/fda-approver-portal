@@ -1,4 +1,4 @@
-import AuthAPI from '../../api/AuthAPI';
+import AuthAPI from '@/api/AuthAPI';
 
 const state = {
     isAuthenticated: false,
@@ -17,7 +17,7 @@ const mutations = {
 var actions = {
     LOGIN(context, user) {
         return new Promise((resolve, reject) => {
-            new AuthAPI().login(user, (account, err) => {
+            new AuthAPI().login(user, (err, account) => {
                 if (!err && account) {
                     console.log('login: ' + JSON.stringify(account.isMatch))
                     if (account.isMatch) {

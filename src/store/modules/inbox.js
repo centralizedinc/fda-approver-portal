@@ -1,5 +1,5 @@
-import LicenseAPI from '../../api/LicenseAPI';
-import AccountAPI from '../../api/AccountAPI';
+import LicenseAPI from '@/api/LicenseAPI';
+import AccountAPI from '@/api/AccountAPI';
 
 const state = {
     inboxes: []
@@ -17,7 +17,7 @@ var actions = {
         if (context.rootState.user_session.token) {
             const promises = [
                 new Promise((resolve, reject) => {
-                    new LicenseAPI(context.rootState.user_session.token).getInbox((inbox, err) => {
+                    new LicenseAPI(context.rootState.user_session.token).getInbox((err, inbox) => {
                         if (!err) {
                             resolve(inbox)
                         } else {
@@ -27,7 +27,7 @@ var actions = {
                     })
                 }),
                 new Promise((resolve, reject) => {
-                    new AccountAPI(context.rootState.user_session.token).getInbox((inbox, err) => {
+                    new AccountAPI(context.rootState.user_session.token).getInbox((err, inbox) => {
                         if (!err) {
                             resolve(inbox)
                         } else {

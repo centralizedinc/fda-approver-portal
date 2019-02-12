@@ -1,5 +1,6 @@
-import LicenseAPI from '../../api/LicenseAPI';
-import ChecklistAPI from '../../api/ChecklistAPI';
+import LicenseAPI from '@/api/LicenseAPI';
+import AccountAPI from '@/api/AccountAPI';
+import ChecklistAPI from '@/api/ChecklistAPI';
 
 const state = {
     checklist: []
@@ -14,7 +15,7 @@ const mutations = {
 var actions = {
     GET_CHECKLIST(context) {
         if (context.rootState.user_session.token) {
-            new ChecklistAPI(context.rootState.user_session.token).getChecklist((checklist, err) => {
+            new ChecklistAPI(context.rootState.user_session.token).getChecklist((err, checklist) => {
                 if (!err) {
                     context.commit('SET_CHECKLIST', checklist)
                 } else {
@@ -23,18 +24,29 @@ var actions = {
             })
         }
     },
-    EVALUATE(context, evaluate) {
+    EVALUATE(context, app) {
         if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {
-                new LicenseAPI(context.rootState.user_session.token).evaluate((license, err) => {
-                    if (!err) {
-                        resolve();
-                        console.log('evaluation success')
-                    } else {
-                        console.log(JSON.stringify(err))
-                        reject(err);
+                var token = context.rootState.user_session.token;
+                var APIClass = app.case_type === 0 ? new LicenseAPI(token) :
+                    // app.case_type === 1 ? new CertificateAPI(token) :
+                    app.case_type === 2 ? new AccountAPI(token) : null
+                if (APIClass) {
+                    var byPassParams = {
+                        id: app._id,
+                        status: 'A',
+                        remarks: ''
                     }
-                })
+                    APIClass.evaluate(byPassParams, function (err, evaluated_app) {
+                        if (!err) {
+                            resolve(evaluated_app);
+                        } else {
+                            reject(err);
+                        }
+                    })
+                } else {
+                    reject()
+                }
             })
         }
     }

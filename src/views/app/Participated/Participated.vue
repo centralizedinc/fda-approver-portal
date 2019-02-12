@@ -26,20 +26,20 @@ export default {
           value: "application_type"
         },
         {
+          text: "Created By",
+          value: "client_name.last"
+        },
+        {
           text: "Current Task",
           value: "current_task_name"
         },
         {
           text: "Current User",
-          value: "current_assigned_user_name"
+          value: "current_assigned_user_name.last_name"
         },
         {
           text: "Remarks",
           value: "remarks"
-        },
-        {
-          text: "Actions",
-          value: "actions"
         }
       ],
       loading: false

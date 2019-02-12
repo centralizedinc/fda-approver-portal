@@ -1,7 +1,7 @@
 <template>
     <div>
-      <application-table :models="inboxes" :headers="headers" :loading="loading" @view="viewApp"></application-table>
-      <application-summary :show="showAppView" @close="showAppView=false" :tabs="3">
+      <application-table :models="inboxes" :headers="headers" :loading="loading" @view="evaluate"></application-table>
+      <!-- <application-summary :show="showAppView" @close="showAppView=false" :tabs="3">
         <template slot="header-1">Header 1</template>
         <template slot="content-1">
           <v-card>
@@ -17,7 +17,7 @@
         <template slot="content-2">Content 2</template>
         <template slot="header-3">Header 3</template>
         <template slot="content-3">Content 3</template>
-      </application-summary>
+      </application-summary> -->
     </div>
 </template>
 
@@ -44,21 +44,25 @@ export default {
           value: "application_type"
         },
         {
+          text: "Created By",
+          value: "client_name.last"
+        },
+        {
           text: "Current Task",
           value: "current_task_name"
         },
         {
           text: "Current User",
-          value: "current_assigned_user_name"
+          value: "current_assigned_user_name.last_name"
         },
         {
           text: "Remarks",
           value: "remarks"
-        },
-        {
-          text: "Actions",
-          value: "actions"
         }
+        // {
+        //   text: "Actions",
+        //   value: "actions"
+        // }
       ],
       items: [],
       loading: false,
@@ -85,6 +89,17 @@ export default {
     viewApp(app) {
       this.showAppView = true;
       console.log(JSON.stringify(app));
+    },
+    evaluate(app) {
+      this.$store
+        .dispatch("EVALUATE", app)
+        .then(result => {
+          console.log(result);
+          this.init();
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
 };

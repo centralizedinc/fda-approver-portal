@@ -1,18 +1,19 @@
 import axios from 'axios';
+import BaseURL from '../utils/BaseURL';
 
 export default class AuthAPI {
     constructor() {
-        axios.defaults.baseURL = 'https://fda-services.herokuapp.com/v1.0/public/accounts';
+        axios.defaults.baseURL = BaseURL.auth;
     }
 
     login(user, cb) {
         axios.post("/auth/admin", user)
             .then(result => {
-                cb(result.data.model)
+                cb(result.data.errors, result.data.model)
             })
             .catch(err => {
                 console.log('err: ' + JSON.stringify(err))
-                cb(null, err)
+                cb(err)
             });
     }
 

@@ -1,5 +1,5 @@
-import LicenseAPI from '../../api/LicenseAPI';
-import AccountAPI from '../../api/AccountAPI';
+import LicenseAPI from '@/api/LicenseAPI';
+import AccountAPI from '@/api/AccountAPI';
 
 const state = {
     unassigned: []
@@ -14,9 +14,27 @@ const mutations = {
 var actions = {
     GET_UNASSIGNED(context) {
         if (context.rootState.user_session.token) {
-            const promises = [
+            var token = context.rootState.user_session.token;
+            // var apis = [new LicenseAPI(token), new AccountAPI(token)]
+            var promises = []
+            // apis.forEach(api => {
+            //     promises.push(
+            //         new Promise((resolve, reject) => {
+            //             var api_class = api;
+            //             api_class.getUnassigned((err, unassigned) => {
+            //                 if (!err) {
+            //                     resolve(unassigned)
+            //                 } else {
+            //                     console.log(JSON.stringify(err))
+            //                     reject(err)
+            //                 }
+            //             })
+            //         })
+            //     )
+            // })
+            promises = [
                 new Promise((resolve, reject) => {
-                    new LicenseAPI(context.rootState.user_session.token).getUnassigned((unassigned, err) => {
+                    new LicenseAPI(token).getUnassigned((err, unassigned) => {
                         if (!err) {
                             resolve(unassigned)
                         } else {
@@ -26,7 +44,7 @@ var actions = {
                     })
                 }),
                 new Promise((resolve, reject) => {
-                    new AccountAPI(context.rootState.user_session.token).getUnassigned((unassigned, err) => {
+                    new AccountAPI(token).getUnassigned((err, unassigned) => {
                         if (!err) {
                             resolve(unassigned)
                         } else {
@@ -49,11 +67,24 @@ var actions = {
     },
     CLAIM(context, app) {
         if (context.rootState.user_session.token) {
-            if (app.case_type === 0) { // LICENSE
-                return new Promise((resolve, reject) => {
-
-                })
-            }
+            return new Promise((resolve, reject) => {
+                var token = context.rootState.user_session.token;
+                console.log("app: " + JSON.stringify(app));
+                var APIClass = app.case_type === 0 ? new LicenseAPI(token) :
+                    // app.case_type === 1 ? new CertificateAPI(token) :
+                    app.case_type === 2 ? new AccountAPI(token) : null
+                if (APIClass) {
+                    APIClass.claim(app._id, function (err, claimed_app) {
+                        if (!err) {
+                            resolve(claimed_app);
+                        } else {
+                            reject(err);
+                        }
+                    })
+                } else {
+                    reject()
+                }
+            })
         }
     }
 }

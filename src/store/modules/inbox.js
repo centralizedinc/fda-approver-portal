@@ -25,16 +25,6 @@ var actions = {
                             reject(err)
                         }
                     })
-                }),
-                new Promise((resolve, reject) => {
-                    new AccountAPI(context.rootState.user_session.token).getInbox((err, inbox) => {
-                        if (!err) {
-                            resolve(inbox)
-                        } else {
-                            console.log(JSON.stringify(err))
-                            reject(err)
-                        }
-                    })
                 })
             ]
             return Promise.all(promises).then(inboxes => {

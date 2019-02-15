@@ -27,19 +27,6 @@ var actions = {
                             reject(err)
                         }
                     })
-                }),
-                new Promise((resolve, reject) => {
-                    new AccountAPI(context.rootState.user_session.token).getParticipated((err, participated) => {
-                        if (!err) {
-                            participated.forEach(p => {
-                                p.application = "FOR REGISTRATION";
-                            })
-                            resolve(participated)
-                        } else {
-                            console.log(JSON.stringify(err))
-                            reject(err)
-                        }
-                    })
                 })
             ]
             return Promise.all(promises).then(participateds => {

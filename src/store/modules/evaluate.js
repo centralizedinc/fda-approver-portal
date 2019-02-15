@@ -28,9 +28,8 @@ var actions = {
         if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {
                 var token = context.rootState.user_session.token;
-                var APIClass = app.case_type === 0 ? new LicenseAPI(token) :
-                    // app.case_type === 1 ? new CertificateAPI(token) :
-                    app.case_type === 2 ? new AccountAPI(token) : null
+                var APIClass = app.case_type === 0 ? new LicenseAPI(token) : null
+                // app.case_type === 1 ? new CertificateAPI(token) : null
                 if (APIClass) {
                     var byPassParams = {
                         id: app._id,

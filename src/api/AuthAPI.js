@@ -9,6 +9,8 @@ export default class AuthAPI {
     login(user, cb) {
         axios.post("/auth/admin", user)
             .then(result => {
+                console.log('user: ' + JSON.stringify(result.data.model));
+
                 cb(result.data.errors, result.data.model)
             })
             .catch(err => {

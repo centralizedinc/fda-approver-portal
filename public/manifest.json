@@ -1,8 +1,7 @@
 {
-  "name": "fda-admin-portal",
-  "short_name": "fda-admin-portal",
-  "icons": [
-    {
+  "name": "fda-approver-portal",
+  "short_name": "fda-approver-portal",
+  "icons": [{
       "src": "./img/icons/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png"

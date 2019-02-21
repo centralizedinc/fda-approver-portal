@@ -1,31 +1,13 @@
 <template>
     <div>
       <application-table :models="inboxes" :headers="headers" :loading="loading" @view="evaluate"></application-table>
-      <!-- <application-summary :show="showAppView" @close="showAppView=false" :tabs="3">
-        <template slot="header-1">Header 1</template>
-        <template slot="content-1">
-          <v-card>
-            <v-card-title primary-title>
-              title 1
-            </v-card-title>
-            <v-card-text>
-              Content 1
-            </v-card-text>
-          </v-card>
-        </template>
-        <template slot="header-2">Header 2</template>
-        <template slot="content-2">Content 2</template>
-        <template slot="header-3">Header 3</template>
-        <template slot="content-3">Content 3</template>
-      </application-summary> -->
     </div>
 </template>
 
 <script>
 export default {
   components: {
-    ApplicationTable: () => import("@/components/ApplicationTable"),
-    ApplicationSummary: () => import("@/components/ApplicationSummary")
+    ApplicationTable: () => import("@/components/ApplicationTable")
   },
   data() {
     return {
@@ -64,9 +46,7 @@ export default {
         //   value: "actions"
         // }
       ],
-      items: [],
-      loading: false,
-      showAppView: false
+      loading: false
     };
   },
   created() {
@@ -86,20 +66,12 @@ export default {
           this.loading = false;
         });
     },
-    viewApp(app) {
-      this.showAppView = true;
-      console.log(JSON.stringify(app));
-    },
-    evaluate(app) {
-      this.$store
-        .dispatch("EVALUATE", app)
-        .then(result => {
-          console.log(result);
-          this.init();
-        })
-        .catch(err => {
-          console.log(err);
-        });
+    evaluate(_case){
+      this.$store.commit('SET_CASE', {
+        _case,
+        prev_module: '/app/inbox'
+      })
+      this.$router.push('/app/evaluation')
     }
   }
 };

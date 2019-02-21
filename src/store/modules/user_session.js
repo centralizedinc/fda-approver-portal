@@ -22,8 +22,9 @@ var actions = {
                     console.log('login: ' + JSON.stringify(account.isMatch))
                     if (account.isMatch) {
                         context.commit('LOGIN', account.token)
+                        context.dispatch('GET_TASKS', {}, { root: true })
                     }
-                    resolve(account.isMatch)
+                    resolve(account.isMatch); 
                 } else {
                     console.log(JSON.stringify(err))
                     reject(err)

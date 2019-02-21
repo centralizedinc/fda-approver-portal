@@ -57,6 +57,10 @@ export default new Router({
         path: 'unassigned',
         name: 'Unassigned',
         component: () => import('@/views/app/Unassigned/Unassigned.vue')
+      }, {
+        path: 'evaluation',
+        name: 'Evaluation',
+        component: () => import('@/views/app/Evaluation/EvaluationForm.vue')
       }]
     },
     {
@@ -69,7 +73,7 @@ export default new Router({
     }, {
       path: '/test',
       name: 'tset',
-      component: () => import('./views/app/test.vue')
+      component: () => import('@/components/ApplicationOverview/ApplicationOverview.vue')
     }
   ]
 })

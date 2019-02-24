@@ -25,6 +25,22 @@
             <v-list-tile-title class="body-1 font-weight-light">Dashboard</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
+        <v-list-tile  @click="goTo('/app/print')" class="ma-1" :style="activeRoute('Print')">
+          <v-list-tile-action>
+            <v-icon color="success">mail</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="body-1 font-weight-light">For Printing</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile  @click="goTo('/app/batch')" class="ma-1" :style="activeRoute('Batch')">
+          <v-list-tile-action>
+            <v-icon color="success">mail</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="body-1 font-weight-light">Batch</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
         <v-list-tile  @click="goTo('/app/inbox')" class="ma-1" :style="activeRoute('Inbox')">
           <v-list-tile-action>
             <v-icon color="success">mail</v-icon>

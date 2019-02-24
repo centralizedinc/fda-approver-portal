@@ -11,9 +11,11 @@ import Notifications from './components/NotificationPlugin';
 
 import NProgress from "nprogress";
 import "../node_modules/nprogress/nprogress.css";
-import mixins from "@/plugins/mixins"
+import mixins from "@/plugins/mixins";
+import print from 'fda-pdf-printer-plugin';
 
 Vue.use(mixins)
+Vue.use(print)
 
 Vue.config.productionTip = false;
 NProgress.configure({

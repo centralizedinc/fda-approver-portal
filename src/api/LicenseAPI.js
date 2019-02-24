@@ -62,7 +62,7 @@ export default class LicenseAPI {
 
     getUnassigned(cb) {
         axios.get('case/unassigned').then((result) => {
-            console.log('license case/unassigned: ' + JSON.stringify(result.data))
+            console.log('license case/unassigned: ' + JSON.stringify(result.data.model.length))
             cb(result.data.errors, result.data.model)
         }).catch(err => {
             cb(err)

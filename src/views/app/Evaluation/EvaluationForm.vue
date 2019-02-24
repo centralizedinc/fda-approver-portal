@@ -288,16 +288,16 @@ export default {
       this.form.qualified = result.qualified ? result.qualified : {};
     },
     getValue(key) {
-      if (key === "application_type") {
-        return this.getAppType(this.selected_case[key]);
-      } else if (key === "current_task") {
-        var task = this.getTask(
+      var keys = {
+        application_type: this.getAppType(this.selected_case[key]),
+        current_task: this.getTask(
           this.selected_case.case_type,
           this.selected_case[key]
-        );
-        return task ? task.name : "";
+        ).name,
+        primary_activity: this.getPrimaryActivity(this.selected_case[key]).name
       }
-      return this.selected_case[key];
+      var value = keys[key];
+      return value ? value : this.selected_case[key];
     },
     cancel() {
       this.evaluated_case.recommend_to = "";

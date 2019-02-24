@@ -1,5 +1,6 @@
 import LicenseAPI from '@/api/LicenseAPI';
 import AccountAPI from '@/api/AccountAPI';
+import TaskAPI from '../../api/TaskAPI';
 
 const state = {
     unassigned: []
@@ -33,7 +34,7 @@ var actions = {
                 unassigns.forEach(unassign => {
                     _unassigns = _unassigns.concat(unassign)
                 })
-                console.log('_unassigns: ' + JSON.stringify(_unassigns))
+                console.log('_unassigns: ' + JSON.stringify(_unassigns.length))
                 context.commit('SET_UNASSIGNED', _unassigns)
                 return _unassigns;
             })
@@ -57,6 +58,20 @@ var actions = {
                 } else {
                     reject()
                 }
+            })
+        }
+    },
+    IS_FOR_PRINTING(context) {
+        if (context.rootState.user_session.token) {
+            return new Promise((resolve, reject) => {
+                new TaskAPI(context.rootState.user_session.token)
+                    .isForPrintingLicense(function (err, license) {
+                        if(!err){
+                            resolve(license.for_printing)
+                        } else {
+                            reject(err);
+                        }
+                    })
             })
         }
     }

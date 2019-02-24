@@ -10,6 +10,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.2.0",
     "axios": "^0.18.0",
+    "fda-pdf-printer-plugin": "^1.0.11",
     "jspdf": "^1.5.3",
     "jspdf-autotable": "^3.0.10",
     "material-design-icons-iconfont": "^3.0.3",

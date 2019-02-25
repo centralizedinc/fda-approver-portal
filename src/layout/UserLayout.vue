@@ -25,46 +25,50 @@
             <v-list-tile-title class="body-1 font-weight-light">Dashboard</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile  @click="goTo('/app/print')" class="ma-1" :style="activeRoute('Print')">
-          <v-list-tile-action>
-            <v-icon color="success">mail</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title class="body-1 font-weight-light">For Printing</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-list-tile  @click="goTo('/app/batch')" class="ma-1" :style="activeRoute('Batch')">
-          <v-list-tile-action>
-            <v-icon color="success">mail</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title class="body-1 font-weight-light">Batch</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-list-tile  @click="goTo('/app/inbox')" class="ma-1" :style="activeRoute('Inbox')">
-          <v-list-tile-action>
-            <v-icon color="success">mail</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title class="body-1 font-weight-light">Inbox</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-list-tile  @click="goTo('/app/participated')" class="ma-1" :style="activeRoute('Participated')">
-          <v-list-tile-action>
-            <v-icon color="success">book</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title class="body-1 font-weight-light">Participated</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-list-tile  @click="goTo('/app/unassigned')" class="ma-1" :style="activeRoute('Unassigned')">
-          <v-list-tile-action>
-            <v-icon color="success">drafts</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title class="body-1 font-weight-light">Unassigned</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+        <template v-if="isForPrinting">
+          <v-list-tile  @click="goTo('/app/print')" class="ma-1" :style="activeRoute('Print')">
+            <v-list-tile-action>
+              <v-icon color="success">mail</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title class="body-1 font-weight-light">For Printing</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-list-tile  @click="goTo('/app/batch')" class="ma-1" :style="activeRoute('Batch')">
+            <v-list-tile-action>
+              <v-icon color="success">mail</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title class="body-1 font-weight-light">Batch</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </template>
+        <template v-else>
+          <v-list-tile  @click="goTo('/app/inbox')" class="ma-1" :style="activeRoute('Inbox')">
+            <v-list-tile-action>
+              <v-icon color="success">mail</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title class="body-1 font-weight-light">Inbox</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-list-tile  @click="goTo('/app/participated')" class="ma-1" :style="activeRoute('Participated')">
+            <v-list-tile-action>
+              <v-icon color="success">book</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title class="body-1 font-weight-light">Participated</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-list-tile  @click="goTo('/app/unassigned')" class="ma-1" :style="activeRoute('Unassigned')">
+            <v-list-tile-action>
+              <v-icon color="success">drafts</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title class="body-1 font-weight-light">Unassigned</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </template>
         <v-list-tile  @click="goTo('/app/payments')" class="ma-1" :style="activeRoute('Notifications')">
           <v-list-tile-action>
             <v-icon color="success">notifications</v-icon>
@@ -187,17 +191,27 @@ export default {
   data() {
     return {
       mini: false,
-      route_name: ""
+      route_name: "",
+      isForPrinting: false
     };
   },
   //#########################
   // init
   //#########################
-  created() {},
+  created() {
+    this.init();
+  },
   //#########################
   // methods
   //#########################
   methods: {
+    init(){
+      this.$store.dispatch('IS_FOR_PRINTING').then((result) => {
+        this.isForPrinting = result;
+      }).catch((err) => {
+        console.log('err :', err);
+      });
+    },
     goTo(router) {
       this.$router.push(router);
     },

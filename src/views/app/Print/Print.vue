@@ -117,42 +117,56 @@ export default {
     },
     print() {
       this.loading = true;
+      var selected_ids = [];
+      this.selected.forEach(element => {
+        selected_ids.push(element._id);
+      });
       this.$store
-        .dispatch("ADD_BATCH", {
-          copies: 1,
-          applications: this.selected
-        })
+        .dispatch("GET_MANY_LICENSE_BY_CASE", selected_ids)
         .then(result => {
-          this.loading = false;
-        })
-        .catch(err => {
-          console.log("adding batch err :", err);
-          this.loading = false;
-        });
-      // this.$store
-      //   .dispatch("GET_LICENSE_BY_CASE", this.selected[0]._id)
-      //   .then(result => {
-      //     return this.$print(result, "LIC");
-      //   })
-      //   .then(result => {
-      //     console.log("result :", JSON.stringify(result));
-      //   })
-      //   .catch(err => {
-      //     console.log("err :", err);
-      //   });
-    },
-    download() {
-      console.log("selected :", JSON.stringify(this.selected[0]));
-      this.$store
-        .dispatch("GET_LICENSE_BY_CASE", this.selected[0]._id)
-        .then(result => {
-          return this.$download(result, "LIC", "fda-file-mark");
+          return this.$print(result, "LIC");
         })
         .then(result => {
           console.log("result :", JSON.stringify(result));
+          // return this.$store.dispatch("ADD_BATCH", {
+          //   copies: 1,
+          //   applications: this.selected
+          // });
+        })
+        .then(result => {
+          console.log("result in adding batch :", JSON.stringify(result));
+          this.loading = false;
         })
         .catch(err => {
           console.log("err :", err);
+          this.loading = false;
+        });
+    },
+    download() {
+      this.loading = true;
+      var selected_ids = [];
+      this.selected.forEach(element => {
+        selected_ids.push(element._id);
+      });
+      this.$store
+        .dispatch("GET_MANY_LICENSE_BY_CASE", selected_ids)
+        .then(result => {
+          return this.$download(result, "LIC");
+        })
+        .then(result => {
+          console.log("result :", JSON.stringify(result));
+          // return this.$store.dispatch("ADD_BATCH", {
+          //   copies: 1,
+          //   applications: this.selected
+          // });
+        })
+        .then(result => {
+          console.log("result in adding batch :", JSON.stringify(result));
+          this.loading = false;
+        })
+        .catch(err => {
+          console.log("err :", err);
+          this.loading = false;
         });
     },
     toggleAll() {

@@ -1,7 +1,8 @@
 import TaskAPI from '@/api/TaskAPI';
 
 const state = {
-    license_tasks: []
+    license_tasks: [],
+    certificate_tasks: []
 }
 
 const mutations = {
@@ -9,7 +10,13 @@ const mutations = {
         state.license_tasks = tasks;
     },
     CLEAR_LICENSE_TASKS(state, tasks) {
-        state.license_tasks = {};
+        state.license_tasks = [];
+    },
+    SET_CERTIFICATE_TASKS(state, tasks) {
+        state.certificate_tasks = tasks;
+    },
+    CLEAR_CERTIFICATE_TASKS(state, tasks) {
+        state.certificate_tasks = [];
     }
 }
 

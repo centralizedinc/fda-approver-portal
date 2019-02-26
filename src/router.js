@@ -45,7 +45,18 @@ export default new Router({
         path: '',
         name: 'Dashboard',
         component: () => import('@/views/app/UserPortfolio.vue')
-      }, {
+      }, 
+      {
+        path: 'print',
+        name: 'Print',
+        component: () => import('@/views/app/Print/Print.vue')
+      },
+      {
+        path: 'batch',
+        name: 'Batch',
+        component: () => import('@/views/app/Batch/Batch.vue')
+      },
+      {
         path: 'inbox',
         name: 'Inbox',
         component: () => import('@/views/app/Inbox/Inbox.vue')

@@ -25,6 +25,7 @@ var actions = {
                     if (account.isMatch) {
                         context.commit('LOGIN', account)
                         context.dispatch('GET_TASKS', {}, { root: true })
+                        context.dispatch('GET_PRIMARY', {}, { root: true })
                     }
                     resolve(account.isMatch); 
                 } else {

@@ -7,11 +7,6 @@
     <template slot="items" slot-scope="props">
       <tr @click="$emit('view', props.item)" class="data-item">
         <template v-for="(item, index) in headers">
-          <!-- <td v-if="item.value === 'actions'" :class="item.class" :key="index">
-            <v-btn color="success" icon flat @click="$emit('view', props.item)">
-              <v-icon>search</v-icon>
-            </v-btn>
-          </td> -->
           <td :class="item.class" :key="index">{{
             item.value === 'case_type' ? getCaseType(props.item, item.value) : 
             item.value === 'application_type' ? getAppType(props.item, item.value) : 

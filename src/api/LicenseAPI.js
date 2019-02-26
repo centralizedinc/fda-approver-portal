@@ -25,6 +25,14 @@ export default class LicenseAPI {
         })
     }
 
+    getManyLicensesByCase(cases_id, cb) {
+        axios.post('/cases', cases_id).then((result) => {
+            cb(result.data.errors, result.data.model)
+        }).catch(err => {
+            cb(err)
+        })
+    }
+
     getChecklistByTask(task_id, cb) {
         axios.get('/checklist/task/' + task_id).then((result) => {
             cb(result.data.errors, result.data.model)
@@ -62,7 +70,7 @@ export default class LicenseAPI {
 
     getUnassigned(cb) {
         axios.get('case/unassigned').then((result) => {
-            console.log('license case/unassigned: ' + JSON.stringify(result.data))
+            console.log('license case/unassigned: ' + JSON.stringify(result.data.model.length))
             cb(result.data.errors, result.data.model)
         }).catch(err => {
             cb(err)

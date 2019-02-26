@@ -34,6 +34,20 @@ var actions = {
             })
         }
     },
+    GET_MANY_LICENSE_BY_CASE(context, cases_id) {
+        if (context.rootState.user_session.token) {
+            return new Promise((resolve, reject) => {
+                new LicenseAPI(context.rootState.user_session.token).getManyLicensesByCase(cases_id, (err, licenses) => {
+                    if (!err) {
+                        resolve(licenses)
+                    } else {
+                        console.log('err :', err);
+                        reject(err)
+                    }
+                })
+            })
+        }
+    },
     GET_CHECKLIST_BY_TASK(context, task_id) {
         if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {

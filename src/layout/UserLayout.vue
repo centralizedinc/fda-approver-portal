@@ -28,18 +28,18 @@
         <template v-if="isForPrinting">
           <v-list-tile  @click="goTo('/app/print')" class="ma-1" :style="activeRoute('Print')">
             <v-list-tile-action>
-              <v-icon color="success">mail</v-icon>
+              <v-icon color="success">print</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title class="body-1 font-weight-light">For Printing</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
-          <v-list-tile  @click="goTo('/app/batch')" class="ma-1" :style="activeRoute('Batch')">
+          <v-list-tile  @click="goTo('/app/print/history')" class="ma-1" :style="activeRoute('Batch')">
             <v-list-tile-action>
-              <v-icon color="success">mail</v-icon>
+              <v-icon color="success">history</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title class="body-1 font-weight-light">Batch</v-list-tile-title>
+              <v-list-tile-title class="body-1 font-weight-light">Print History</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </template>

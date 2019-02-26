@@ -25,6 +25,14 @@ export default class LicenseAPI {
         })
     }
 
+    getLicenseByCaseNo(case_no, cb) {
+        axios.get('/case_no/' + case_no).then((result) => {
+            cb(result.data.errors, result.data.model)
+        }).catch(err => {
+            cb(err)
+        })
+    }
+
     getManyLicensesByCase(cases_id, cb) {
         axios.post('/cases', cases_id).then((result) => {
             cb(result.data.errors, result.data.model)

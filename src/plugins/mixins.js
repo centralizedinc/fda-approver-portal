@@ -40,16 +40,12 @@ export default {
           if (!date) {
             return "";
           }
-          var format = {
+          var format = type ? type : {
             hour12: true,
             year: "numeric",
             month: "long",
             day: "2-digit"
           };
-          if (!type) {
-            format.hour = "2-digit";
-            format.minute = "2-digit";
-          }
           var dt = new Date(date).toLocaleString("en-US", format);
           return dt;
         },

@@ -54,8 +54,8 @@
                 </v-data-table>
                 <v-card-actions v-if="selected.length > 0">
                     <v-btn color="success" block @click="print">Print</v-btn>
-                    <v-divider></v-divider>
-                    <v-btn color="info" block @click="download">Download</v-btn>
+                    <!-- <v-divider></v-divider>
+                    <v-btn color="info" block @click="download">Download</v-btn> -->
                 </v-card-actions>
             </v-card>
         </v-flex>
@@ -117,25 +117,30 @@ export default {
     },
     print() {
       this.loading = true;
-      var selected_ids = [];
-      this.selected.forEach(element => {
-        selected_ids.push(element._id);
-      });
       this.$store
-        .dispatch("GET_MANY_LICENSE_BY_CASE", selected_ids)
-        .then(result => {
-          return this.$print(result, "LIC");
-        })
-        .then(result => {
-          console.log("result :", JSON.stringify(result));
-          // return this.$store.dispatch("ADD_BATCH", {
-          //   copies: 1,
-          //   applications: this.selected
-          // });
-        })
+        .dispatch("ADD_BATCH", this.selected)
         .then(result => {
           console.log("result in adding batch :", JSON.stringify(result));
-          this.loading = false;
+          var selected_ids = [];
+          this.selected.forEach(element => {
+            selected_ids.push(element._id);
+          });
+          return this.$store.dispatch("GET_MANY_LICENSE_BY_CASE", selected_ids);
+        })
+        // this.$store
+        //   .dispatch("GET_MANY_LICENSE_BY_CASE", selected_ids)
+        .then(result => {
+          var applications = [];
+          result.forEach(app => {
+            app.general_info.primary_activity = this.getPrimaryActivity(
+              app.general_info.primary_activity
+            ).name;
+            app.license_expiry = this.formatDate(app.license_expiry);
+            app.application_type = this.getAppType(app.application_type);
+            applications.push(app);
+          });
+          this.$print(applications, "LIC");
+          this.init();
         })
         .catch(err => {
           console.log("err :", err);
@@ -151,6 +156,15 @@ export default {
       this.$store
         .dispatch("GET_MANY_LICENSE_BY_CASE", selected_ids)
         .then(result => {
+          var applications = [];
+          result.forEach(app => {
+            app.general_info.primary_activity = this.getPrimaryActivity(
+              app.general_info.primary_activity
+            ).name;
+            app.license_expiry = this.formatDate(app.license_expiry);
+            app.application_type = this.getAppType(app.application_type);
+            applications.push(app);
+          });
           return this.$download(result, "LIC");
         })
         .then(result => {

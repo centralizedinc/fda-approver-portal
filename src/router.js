@@ -72,6 +72,10 @@ export default new Router({
         path: 'evaluation',
         name: 'Evaluation',
         component: () => import('@/views/app/Evaluation/EvaluationForm.vue')
+      },{
+        path: 'profile',
+        name: 'Profile Management',
+        component: () => import('@/views/app/profile.vue')
       }]
     },
     {

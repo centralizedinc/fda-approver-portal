@@ -79,7 +79,7 @@
         </v-list-tile>
         <v-divider></v-divider>
 
-        <v-list-tile  @click="goTo('/app/payments')" class="ma-1" :style="activeRoute('Notifications')">
+        <v-list-tile  @click="goTo('/app/profile')" class="ma-1" :style="activeRoute('Notifications')">
           <v-list-tile-action>
             <v-icon color="success">far fa-user-circle</v-icon>
           </v-list-tile-action>

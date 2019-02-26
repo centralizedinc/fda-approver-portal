@@ -2,12 +2,14 @@ import AuthAPI from '@/api/AuthAPI';
 
 const state = {
     isAuthenticated: false,
-    token: null
+    token: null,
+    account: {}
 }
 
 const mutations = {
-    LOGIN(state, token) {
-        state.token = token;
+    LOGIN(state, account) {
+        state.token = account.token;
+        state.account = account;
     },
     LOGOUT(state) {
         state.token = null;
@@ -21,7 +23,7 @@ var actions = {
                 if (!err && account) {
                     console.log('login: ' + JSON.stringify(account.isMatch))
                     if (account.isMatch) {
-                        context.commit('LOGIN', account.token)
+                        context.commit('LOGIN', account)
                         context.dispatch('GET_TASKS', {}, { root: true })
                     }
                     resolve(account.isMatch); 

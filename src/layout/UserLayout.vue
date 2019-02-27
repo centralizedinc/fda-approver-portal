@@ -1,5 +1,6 @@
 <template>
 <v-app>
+    <notification></notification>
     <v-navigation-drawer app :mini-variant="mini" width="250">
       <v-toolbar dark style='height: 100px; background: linear-gradient(45deg, #43A047 0%, #1de9b6 100%)'>
         <v-list class="pa-0">
@@ -184,7 +185,9 @@
 </template>
 
 <script>
+import notification from "@/components/Notification";
 export default {
+  components: { notification },
   //#########################
   // variables
   //#########################
@@ -205,12 +208,15 @@ export default {
   // methods
   //#########################
   methods: {
-    init(){
-      this.$store.dispatch('IS_FOR_PRINTING').then((result) => {
-        this.isForPrinting = result;
-      }).catch((err) => {
-        console.log('err :', err);
-      });
+    init() {
+      this.$store
+        .dispatch("IS_FOR_PRINTING")
+        .then(result => {
+          this.isForPrinting = result;
+        })
+        .catch(err => {
+          console.log("err :", err);
+        });
     },
     goTo(router) {
       this.$router.push(router);

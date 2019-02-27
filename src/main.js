@@ -7,15 +7,16 @@ import "./registerServiceWorker";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 import "@fortawesome/fontawesome-free/css/all.css";
-import Notifications from './components/NotificationPlugin';
 
 import NProgress from "nprogress";
 import "../node_modules/nprogress/nprogress.css";
 import mixins from "@/plugins/mixins";
+import notify from "@/plugins/notify";
 import print from 'fda-pdf-printer-plugin';
 
 Vue.use(mixins)
 Vue.use(print)
+Vue.use(notify, store)
 
 Vue.config.productionTip = false;
 NProgress.configure({
@@ -33,8 +34,6 @@ router.beforeResolve((to, from, next) => {
 router.afterEach((to, from) => {
   NProgress.done();
 });
-
-Vue.use(Notifications)
 
 new Vue({
   router,

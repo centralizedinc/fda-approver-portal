@@ -15,13 +15,13 @@
     </v-card-title>
     <v-card-text>
       <v-divider></v-divider>
-        <v-layout row wrap>
+        <v-layout row wrap v-for="(item, index) in details" :key="index">
           <v-flex xs6>
-            <h4 class="subheading">{{description}}</h4>
+            <h4 class="subheading">{{item.description}}</h4>
           </v-flex>
           <v-spacer></v-spacer>
           <v-flex xs6 style="text-align: right">
-            <span class="subheading">{{details}}</span>
+            <span class="subheading">{{item.count}}</span>
           </v-flex>
         </v-layout>
       
@@ -33,7 +33,7 @@
 
 <script>
 export default {
-    props:['icon', 'title', 'description','details', 'color'],
+    props:['icon', 'title', 'details', 'color'],
     computed:{
         style(){
             if(this.color==='error'){

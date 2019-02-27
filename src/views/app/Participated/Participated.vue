@@ -79,6 +79,7 @@ export default {
   methods: {
     init() {
       this.loading = true;
+      this.participated = this.$store.state.participated.participated;
       this.$store
         .dispatch("GET_PARTICIPATED")
         .then(result => {

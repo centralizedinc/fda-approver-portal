@@ -55,6 +55,7 @@ export default {
   methods: {
     init() {
       this.loading = true;
+      this.inboxes = this.$store.state.inbox.inboxes;
       this.$store
         .dispatch("GET_INBOX")
         .then(result => {

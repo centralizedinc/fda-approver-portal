@@ -83,13 +83,11 @@ export default {
         .dispatch("EDIT_PASSWORD", this.admin)
         .then(result => {
           console.log("edited:password: " + JSON.stringify(result));
-          {
             this.$notify({
               message: "Your Password is successfuly updated",
               color: "success",
               icon: "check_box"
             });
-          }
           this.$router.push("/app");
         })
         .catch(err => {

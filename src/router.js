@@ -67,47 +67,6 @@ export default new Router({
         })
       },
       children: [{
-<<<<<<< HEAD
-        path: '',
-        name: 'Dashboard',
-        component: () => import('@/views/app/UserPortfolio.vue')
-      }, 
-      {
-        path: 'print',
-        name: 'Print',
-        component: () => import('@/views/app/Print/Print.vue')
-      },
-      {
-        path: 'batch',
-        name: 'Batch',
-        component: () => import('@/views/app/Batch/Batch.vue')
-      },
-      {
-        path: 'inbox',
-        name: 'Inbox',
-        component: () => import('@/views/app/Inbox/Inbox.vue')
-      }, {
-        path: 'participated',
-        name: 'Participated',
-        component: () => import('@/views/app/Participated/Participated.vue')
-      }, {
-        path: 'unassigned',
-        name: 'Unassigned',
-        component: () => import('@/views/app/Unassigned/Unassigned.vue')
-      }, {
-        path: 'evaluation',
-        name: 'Evaluation',
-        component: () => import('@/views/app/Evaluation/EvaluationForm.vue')
-      },{
-        path: 'profile',
-        name: 'Profile Management',
-        component: () => import('@/views/app/profile.vue')
-      },{
-        path: 'password',
-        name: 'Change Password',
-        component: () => import('@/views/app/changePassword.vue')
-      }]
-=======
           path: '',
           name: 'Dashboard',
           component: () =>
@@ -156,9 +115,14 @@ export default new Router({
           name: 'Profile Management',
           component: () =>
             import ('@/views/app/profile.vue')
-        }
+        },{
+        path: 'password',
+        name: 'Password Management',
+        component: () =>
+          import ('@/views/app/changePassword.vue')
+      }
+        
       ]
->>>>>>> 051a9296344f9ebafecb6512f17784037540be60
     },
     {
       path: '/about',

@@ -1,5 +1,6 @@
 <template>
 <v-app>
+    <notification></notification>
     <v-navigation-drawer app :mini-variant="mini" width="250">
       <v-toolbar dark style='height: 100px; background: linear-gradient(45deg, #43A047 0%, #1de9b6 100%)'>
         <v-list class="pa-0">
@@ -28,18 +29,18 @@
         <template v-if="isForPrinting">
           <v-list-tile  @click="goTo('/app/print')" class="ma-1" :style="activeRoute('Print')">
             <v-list-tile-action>
-              <v-icon color="success">mail</v-icon>
+              <v-icon color="success">print</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title class="body-1 font-weight-light">For Printing</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
-          <v-list-tile  @click="goTo('/app/batch')" class="ma-1" :style="activeRoute('Batch')">
+          <v-list-tile  @click="goTo('/app/print/history')" class="ma-1" :style="activeRoute('Batch')">
             <v-list-tile-action>
-              <v-icon color="success">mail</v-icon>
+              <v-icon color="success">history</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title class="body-1 font-weight-light">Batch</v-list-tile-title>
+              <v-list-tile-title class="body-1 font-weight-light">Print History</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </template>
@@ -184,7 +185,9 @@
 </template>
 
 <script>
+import notification from "@/components/Notification";
 export default {
+  components: { notification },
   //#########################
   // variables
   //#########################
@@ -205,12 +208,15 @@ export default {
   // methods
   //#########################
   methods: {
-    init(){
-      this.$store.dispatch('IS_FOR_PRINTING').then((result) => {
-        this.isForPrinting = result;
-      }).catch((err) => {
-        console.log('err :', err);
-      });
+    init() {
+      this.$store
+        .dispatch("IS_FOR_PRINTING")
+        .then(result => {
+          this.isForPrinting = result;
+        })
+        .catch(err => {
+          console.log("err :", err);
+        });
     },
     goTo(router) {
       this.$router.push(router);

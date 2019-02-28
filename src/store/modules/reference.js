@@ -4,7 +4,8 @@ import CoreAPI from '../../api/CoreAPI';
 
 const state = {
     primary: null,
-    batch: null
+    batch: null,
+    prints: null
 }
 
 const mutations = {
@@ -13,6 +14,9 @@ const mutations = {
     },
     SET_BATCH(state, batch) {
         state.batch = batch;
+    },
+    SET_PRINTS(state, prints) {
+        state.prints = prints;
     }
 }
 
@@ -54,9 +58,40 @@ var actions = {
             return new Promise((resolve, reject) => {
                 new CoreAPI(context.rootState.user_session.token).addBatch(batch, (err, batch) => {
                     if (!err) {
+                        console.log('batch :', JSON.stringify(batch));
                         resolve(batch)
                     } else {
                         console.log('GET BATCH ERR :', err)
+                        reject(err)
+                    }
+                })
+            })
+        }
+    },
+    GET_PRINTS(context) {
+        if (context.rootState.user_session.token) {
+            return new Promise((resolve, reject) => {
+                new CoreAPI(context.rootState.user_session.token).getPrints((err, prints) => {
+                    if (!err) {
+                        console.log('prints :', prints.length);
+                        context.commit('SET_PRINTS', prints);
+                        resolve(prints)
+                    } else {
+                        console.log('GET PRINTS ERR :', err)
+                        reject(err)
+                    }
+                })
+            })
+        }
+    },
+    RE_PRINT(context, params) {
+        if (context.rootState.user_session.token) {
+            return new Promise((resolve, reject) => {
+                new CoreAPI(context.rootState.user_session.token).rePrint(params, (err, prints) => {
+                    if (!err) {
+                        resolve(prints)
+                    } else {
+                        console.log('RE PRINT ERR :', err)
                         reject(err)
                     }
                 })

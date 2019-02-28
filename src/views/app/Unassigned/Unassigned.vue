@@ -79,6 +79,7 @@ export default {
   methods: {
     init() {
       this.loading = true;
+      this.unassigned = this.$store.state.unassigned.unassigned;
       this.$store
         .dispatch("GET_UNASSIGNED")
         .then(result => {

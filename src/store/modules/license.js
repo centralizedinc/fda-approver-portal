@@ -34,6 +34,20 @@ var actions = {
             })
         }
     },
+    GET_LICENSE_BY_CASE_NO(context, case_no) {
+        if (context.rootState.user_session.token) {
+            return new Promise((resolve, reject) => {
+                new LicenseAPI(context.rootState.user_session.token).getLicenseByCaseNo(case_no, (err, license) => {
+                    if (!err) {
+                        resolve(license)
+                    } else {
+                        console.log(JSON.stringify(err))
+                        reject(err)
+                    }
+                })
+            })
+        }
+    },
     GET_MANY_LICENSE_BY_CASE(context, cases_id) {
         if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {

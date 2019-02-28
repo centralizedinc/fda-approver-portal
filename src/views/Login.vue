@@ -62,14 +62,16 @@ export default {
   methods: {
     login() {
       if (this.validate()) {
+        console.log('JSON.stringify(this.user) :', JSON.stringify(this.user));
         this.$store.dispatch("LOGIN", this.user).then(isMatch => {
           if (isMatch) {
+            console.log('test');
             this.$notify({
               message:
                 "Welcome to FDA Portal. You are logged in as " +
                 this.user.username,
               icon: "check_circle_outline",
-              initialMargin: 100
+              color: "success"
             });
             this.$router.push("/app");
           } else {
@@ -79,10 +81,8 @@ export default {
             this.$notify({
               message:
                 "Invalid Credentials. Please check your Username and Password.",
-              icon: "add_alert",
-              type: "warning",
-              horizontalAlign: "center",
-              initialMargin: 100
+              color: "warning",
+              icon: "error_outline"
             });
           }
         });

@@ -61,13 +61,14 @@ export default {
 
   methods: {
     init() {
+      this.admin = this.$store.state.user_session.account.user;
       // console.log("##########STORE" + this.$store.state.user_session.user._id);
-      this.$store
-        .dispatch("GET_PROFILE", this.$store.state.user_session.account.user._id)
-        .then(result => {
-          this.admin = result;
-          console.log("LOGS GET PROFILE" + JSON.stringify(this.admin));
-        });
+      // this.$store
+      //   .dispatch("GET_PROFILE", this.$store.state.user_session.account.user._id)
+      //   .then(result => {
+      //     this.admin = result;
+      //     console.log("LOGS GET PROFILE" + JSON.stringify(this.admin));
+      //   });
     },
     close() {
       this.new_admin = {};

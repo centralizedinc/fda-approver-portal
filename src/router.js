@@ -76,6 +76,10 @@ export default new Router({
         path: 'profile',
         name: 'Profile Management',
         component: () => import('@/views/app/profile.vue')
+      },{
+        path: 'password',
+        name: 'Change Password',
+        component: () => import('@/views/app/changePassword.vue')
       }]
     },
     {

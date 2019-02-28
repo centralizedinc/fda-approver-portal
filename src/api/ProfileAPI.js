@@ -13,9 +13,9 @@ export default class AuthAPI {
     constructor() {
         axios.defaults.baseURL = BaseURL.accounts_secured;
     }
-//Profile
+    //Profile
     getProfilebyId(profile_id, cb) {
-        console.log("##########GETPROFILEID" + profile_id )
+        console.log("##########GETPROFILEID" + profile_id)
         axios.get('admin/' + profile_id).then((result) => {
                 console.log("###API### GET PROFILE" + JSON.stringify(result.data))
                 if (result.data.success) {
@@ -51,5 +51,14 @@ export default class AuthAPI {
             })
     }
 
-   
+    editPassword(modified_password, cb) {
+        axios.post('admin/password', modified_password).then((result) => {
+                cb(result.data.model)
+            })
+            .catch(err => {
+                cb(err)
+            })
+    }
+
+
 }

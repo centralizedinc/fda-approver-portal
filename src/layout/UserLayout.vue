@@ -88,7 +88,7 @@
           </v-list-tile-content>
         </v-list-tile>
 
-        <v-list-tile  @click="goTo('/app/payments')" class="ma-1" :style="activeRoute('Notifications')">
+        <v-list-tile  @click="goTo('/app/password')" class="ma-1" :style="activeRoute('Notifications')">
           <v-list-tile-action>
             <v-icon color="success">lock_open</v-icon>
           </v-list-tile-action>

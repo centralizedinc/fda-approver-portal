@@ -19,7 +19,7 @@ export default class AuthAPI {
         axios.get('admin/' + profile_id).then((result) => {
                 console.log("###API### GET PROFILE" + JSON.stringify(result.data))
                 if (result.data.success) {
-                    cb(result.data.model)
+                    cb(result.data.errors, result.data.model)
                 } else {
                     cb(err)
                 }

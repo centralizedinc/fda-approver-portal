@@ -19,7 +19,7 @@ var actions = {
     GET_PROFILE(context, profile_id) {
         return new Promise((resolve, reject) => {
             console.log("##STORE #########" + JSON.stringify(profile_id))
-            new ProfileType(context.rootState.user_session.token).getProfilebyId(profile_id,(data, err) => {
+            new ProfileType(context.rootState.user_session.token).getProfilebyId(profile_id,(err, data) => {
                 console.log("#####DATA" + data)
                 if (err) {
                     reject(err)

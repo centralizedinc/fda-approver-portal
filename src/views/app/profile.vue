@@ -80,8 +80,17 @@ export default {
       );
       this.$store.dispatch("EDIT_PROFILE", this.new_admin).then(result => {
         console.log("edited:profile: " + JSON.stringify(result));
-        this.close();
-      });
+        this.$notify({
+              message: "Your Profile is successfuly updated",
+              color: "success",
+              icon: "check_box"
+            });
+          this.$router.push("/app");
+        })
+        .catch(err => {
+          console.log(err);
+          this.$notifyError(err);
+        });
     }
   }
 };

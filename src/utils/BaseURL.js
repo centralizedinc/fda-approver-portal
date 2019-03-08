@@ -1,6 +1,6 @@
 'use strict'
 
-var baseUrl = 'https://fda-services.herokuapp.com/v1.0'
+var baseUrl = 'VUE_APP_API_BASE_URI'
 var localhost = 'http://localhost:3000'
 
 var license = baseUrl + '/lto-api';

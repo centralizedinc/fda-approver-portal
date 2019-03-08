@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-// axios.defaults.baseURL = 'https://fda-services.herokuapp.com/v1.0'
+// axios.defaults.baseURL = 'VUE_APP_API_BASE_URI'
 
 // export default class ProfileType {
 //     constructor(token) {

@@ -1,6 +1,6 @@
 'use strict'
 
-var baseUrl = 'VUE_APP_API_BASE_URI'
+var baseUrl = process.env.VUE_APP_API_BASE_URI
 var localhost = 'http://localhost:3000'
 
 var license = baseUrl + '/lto-api';

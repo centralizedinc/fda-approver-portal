@@ -4,12 +4,22 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "dev": "npm run serve"
+    "serve-heroku": "vue-cli-service serve --mode heroku",
+    "serve-pcf": "vue-cli-service serve --mode pcf",
+    "build-heroku": "vue-cli-service build --mode heroku",
+    "build-pcf": "vue-cli-service build --mode pcf",
+    "build": "build-heroku",
+    "dev": "npm run serve-heroku",
+    "start": "node server.js",
+    "clean":"if [ -d app ]; then rm -r app; fi",
+    "pre-deploy":"npm run clean && mkdir app && cp -R dist app/dist && cp package.json app && cp server.js app && cd app",
+    "deploy-pcf":"npm run build-pcf && npm run pre-deploy && cf push fda-approver-portal -m 128M -k 512M"
+    
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.2.0",
     "axios": "^0.18.0",
+    "express": "^4.16.4",
     "fda-pdf-printer-plugin": "^1.0.12",
     "jspdf": "^1.5.3",
     "jspdf-autotable": "^3.0.10",
@@ -17,6 +27,7 @@
     "nprogress": "^0.2.0",
     "register-service-worker": "^1.5.2",
     "roboto-fontface": "*",
+    "serve-static": "^1.13.2",
     "vue": "^2.5.22",
     "vue-router": "^3.0.1",
     "vuetify": "^1.4.3",

@@ -30,9 +30,9 @@
         <v-card>
           <v-card-title class="title">Do you want to print again this application?</v-card-title>
           <v-card-actions>
-            <v-btn color="error" @click="cancel">Cancel</v-btn>
+            <v-btn class="font-weight-light" color="error" @click="cancel">Cancel</v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="success" @click="rePrint">Continue</v-btn>
+            <v-btn class="font-weight-light" color="success" @click="rePrint">Continue</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>

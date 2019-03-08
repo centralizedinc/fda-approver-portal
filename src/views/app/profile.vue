@@ -31,9 +31,9 @@
           </v-card-text>
           <v-divider class="mt-5"></v-divider>
           <v-card-actions>
-            <v-btn @click="close">Cancel</v-btn>
+            <v-btn class="font-weight-light" @click="close">Cancel</v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="success" @click="submit">Submit</v-btn>
+            <v-btn class="font-weight-light" color="success" @click="submit">Submit</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -61,13 +61,14 @@ export default {
 
   methods: {
     init() {
+      this.admin = this.$store.state.user_session.account.user;
       // console.log("##########STORE" + this.$store.state.user_session.user._id);
-      this.$store
-        .dispatch("GET_PROFILE", this.$store.state.user_session.account.user._id)
-        .then(result => {
-          this.admin = result;
-          console.log("LOGS GET PROFILE" + JSON.stringify(this.admin));
-        });
+      // this.$store
+      //   .dispatch("GET_PROFILE", this.$store.state.user_session.account.user._id)
+      //   .then(result => {
+      //     this.admin = result;
+      //     console.log("LOGS GET PROFILE" + JSON.stringify(this.admin));
+      //   });
     },
     close() {
       this.new_admin = {};
@@ -77,10 +78,21 @@ export default {
       console.log(
         "###########edited:ADMIN PROFILE: " + JSON.stringify(this.new_admin)
       );
-      this.$store.dispatch("EDIT_PROFILE", this.new_admin).then(result => {
-        console.log("edited:profile: " + JSON.stringify(result));
-        this.close();
-      });
+      this.$store
+        .dispatch("EDIT_PROFILE", this.new_admin)
+        .then(result => {
+          console.log("edited:profile: " + JSON.stringify(result));
+          this.$notify({
+            message: "Your Profile is successfuly updated",
+            color: "success",
+            icon: "check_box"
+          });
+          this.$router.push("/app");
+        })
+        .catch(err => {
+          console.log(err);
+          this.$notifyError(err);
+        });
     }
   }
 };

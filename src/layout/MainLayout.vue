@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-toolbar dark style="background: linear-gradient(45deg, #104b2a 0%, #b5c25a 100%)"></v-toolbar>
-    <notifications></notifications>
+    <notification></notification>
     <v-container fluid class="bg">
       <router-view></router-view>
     </v-container>
@@ -14,7 +14,10 @@
 </template>
 
 <script>
-export default {};
+import notification from "@/components/Notification";
+export default {
+  components: { notification }
+};
 </script>
 
 <style>

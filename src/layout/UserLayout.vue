@@ -2,10 +2,7 @@
   <v-app>
     <v-container fluid class="bg">
       <v-navigation-drawer app :mini-variant="mini" width="250">
-        <v-toolbar
-          dark
-          style="height: 100px; background: linear-gradient(45deg, #43A047 0%, #1de9b6 100%)"
-        >
+        <v-toolbar dark style="height:100px" class="toolbarStyle">
           <v-list class="pa-0">
             <v-list-tile
               class="pa-1"
@@ -25,9 +22,9 @@
           </v-list>
         </v-toolbar>
         <v-list>
-          <v-list-tile @click="goTo('/app')" class="ma-1" :style="activeRoute('Dashboard')">
+          <v-list-tile ripple @click="goTo('/app')" class="ma-1" :style="activeRoute('Dashboard')">
             <v-list-tile-action>
-              <v-icon color="success">dashboard</v-icon>
+              <v-icon color="primary">dashboard</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title class="body-1 font-weight-light">Dashboard</v-list-tile-title>
@@ -36,7 +33,7 @@
           <template v-if="isForPrinting">
             <v-list-tile @click="goTo('/app/print')" class="ma-1" :style="activeRoute('Print')">
               <v-list-tile-action>
-                <v-icon color="success">print</v-icon>
+                <v-icon color="primary">print</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title class="body-1 font-weight-light">For Printing</v-list-tile-title>
@@ -48,7 +45,7 @@
               :style="activeRoute('Batch')"
             >
               <v-list-tile-action>
-                <v-icon color="success">history</v-icon>
+                <v-icon color="primary">history</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title class="body-1 font-weight-light">Print History</v-list-tile-title>
@@ -56,40 +53,47 @@
             </v-list-tile>
           </template>
           <template v-else>
-            <v-list-tile @click="goTo('/app/inbox')" class="ma-1" :style="activeRoute('Inbox')">
+            <v-list-tile
+              ripple
+              @click="goTo('/app/inbox')"
+              class="ma-1"
+              :style="activeRoute('Inbox')"
+            >
               <v-list-tile-action>
-                <v-icon color="success">mail</v-icon>
+                <v-icon color="primary">mail</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title class="body-1 font-weight-light">Inbox</v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
             <v-list-tile
+              ripple
               @click="goTo('/app/participated')"
               class="ma-1"
               :style="activeRoute('Participated')"
             >
               <v-list-tile-action>
-                <v-icon color="success">book</v-icon>
+                <v-icon color="primary">book</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title class="body-1 font-weight-light">Participated</v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
             <v-list-tile
+              ripple
               @click="goTo('/app/unassigned')"
               class="ma-1"
               :style="activeRoute('Unassigned')"
             >
               <v-list-tile-action>
-                <v-icon color="success">drafts</v-icon>
+                <v-icon color="primary">drafts</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title class="body-1 font-weight-light">Unassigned</v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
           </template>
-          <v-list-tile
+          <!-- <v-list-tile
             @click="goTo('/app/payments')"
             class="ma-1"
             :style="activeRoute('Notifications')"
@@ -100,16 +104,17 @@
             <v-list-tile-content>
               <v-list-tile-title class="body-1 font-weight-light">Notifications</v-list-tile-title>
             </v-list-tile-content>
-          </v-list-tile>
+          </v-list-tile>-->
           <v-divider></v-divider>
 
           <v-list-tile
+            ripple
             @click="goTo('/app/profile')"
             class="ma-1"
-            :style="activeRoute('Notifications')"
+            :style="activeRoute('Profile Management')"
           >
             <v-list-tile-action>
-              <v-icon color="success">far fa-user-circle</v-icon>
+              <v-icon color="primary">far fa-user-circle</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title class="body-1 font-weight-light">My Profile</v-list-tile-title>
@@ -117,33 +122,62 @@
           </v-list-tile>
 
           <v-list-tile
-            @click="goTo('/app/payments')"
+            ripple
+            @click="goTo('/app/password')"
             class="ma-1"
-            :style="activeRoute('Notifications')"
+            :style="activeRoute('Password Management')"
           >
             <v-list-tile-action>
-              <v-icon color="success">lock_open</v-icon>
+              <v-icon color="primary">lock_open</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title class="body-1 font-weight-light">Password Settings</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
 
-          <v-list-tile @click="logout" class="ma-1" :style="activeRoute('Notifications')">
+          <v-list-tile
+            ripple
+            @click="showLogout = true"
+            class="ma-1"
+            :style="activeRoute('logout')"
+          >
             <v-list-tile-action>
-              <v-icon color="success">fas fa-sign-out-alt</v-icon>
+              <v-icon color="primary">fas fa-sign-out-alt</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title class="body-1 font-weight-light">Logout</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
+        <!-- LOGOUT DIALOG -->
+        <v-dialog v-model="showLogout" persistent max-width="300" transition="dialog-transition">
+          <v-card>
+            <v-toolbar
+              dark
+              color="fdaGreen"
+              style="background: linear-gradient(45deg, #104B2A 0%, #b5c25a 100%)"
+            >
+              <span class="title font-weight-light">Logout</span>
+            </v-toolbar>
+            <v-card-text>
+              <span class="font-weight-light">Are you sure you want to logout?</span>
+              <v-divider></v-divider>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                class="font-weight-light"
+                outline
+                color="primary"
+                dark
+                @click.native="showLogout = false"
+              >No</v-btn>
+              <v-btn class="font-weight-light" color="success" @click="logout">Yes</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-navigation-drawer>
-      <v-toolbar
-        app
-        dark
-        class="toolbarStyle"
-      >
+      <v-toolbar app dark class="toolbarStyle">
         <v-btn icon color="rgba(0, 0, 0, 0.18)" @click.stop="mini = !mini">
           <v-icon v-if="mini">menu</v-icon>
           <v-icon v-else>chevron_left</v-icon>
@@ -162,7 +196,7 @@
           <v-icon small>fas fa-indent</v-icon>
         </v-btn>
       </v-toolbar>
-      <notifications></notifications>
+      <notification></notification>
       <!-- <v-content> -->
       <v-container fluid>
         <!-- <span class="headline font-weight-thin">{{page_name}}</span>
@@ -178,7 +212,7 @@
        </v-breadcrumbs-item>  
       </v-breadcrumbs>
         <v-divider></v-divider>-->
-        <v-card class="mt-3 mx-auto">
+        <v-card class="mt-3 mx-auto" color="fdaSilver">
           <v-layout row wrap ml-3>
             <v-sheet
               class="v-sheet--offset pa-3"
@@ -212,7 +246,7 @@
         app
         dark
         class="pa-1"
-        style="background: linear-gradient(45deg, #43A047 0%, #1de9b6 100%)"
+        style="background: linear-gradient(5deg, #b5c25a 0%, #104b2a 100%)"
       >
         <span class="caption">Copyright © 2019 FDA All rights reserved.</span>
         <v-spacer></v-spacer>
@@ -223,12 +257,15 @@
 </template>
 
 <script>
+import notification from "@/components/Notification";
 export default {
+  components: { notification },
   //#########################
   // variables
   //#########################
   data() {
     return {
+      showLogout: false,
       mini: false,
       route_name: "",
       isForPrinting: false
@@ -311,8 +348,8 @@ export default {
 
 <style>
 .toolbarStyle {
-  background: linear-gradient(45deg, #43A047 0%, #1de9b6 100%); 
-  box-shadow: 0 6px 20px 0 rgba(77, 182, 172, 0.5)
+  background: linear-gradient(45deg, #b5c25a 0%, #104b2a 100%);
+  box-shadow: 0 6px 20px 0 rgba(77, 182, 172, 0.5);
 }
 .v-sheet--offset {
   top: -24px;

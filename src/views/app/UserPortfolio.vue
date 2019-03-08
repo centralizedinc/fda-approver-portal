@@ -1,122 +1,100 @@
 <template>
-    <v-layout row wrap>
-        <v-flex xs12 lg4 pa-2>
-            <dashboard-card
-                icon="card_membership" 
-                title="Unassigned"
-                :details="unassigned_details"
-                color="primary"
-                >
-            </dashboard-card>
-        </v-flex>
-        <v-flex xs12 lg4 pa-2>
-            <dashboard-card
-                icon="book" 
-                title="Inbox"
-                :details="inbox_details"
-                color="success"
-                >
-            </dashboard-card>
-        </v-flex>
-        <v-flex xs12 lg4 pa-2>
-            <dashboard-card
-                icon="far fa-credit-card" 
-                title="Participated"
-                :details="participated_details"
-                color="warning"
-                >
-            </dashboard-card>
-        </v-flex>
-        <v-flex xs12 lg6 pa-2>
-            <v-card>
-                <v-toolbar dark color="#00bfa5">
-                    <span class="subheadline font-weight-light">License Applications</span>
-                    <v-btn color="success"
-                        dark              
-                        absolute
-                        bottom
-                        right
-                        fab
-                        small
-                        >
-                        <v-icon>call_made</v-icon>
-                    </v-btn>
-                </v-toolbar>
-                <v-card-text>
-                    <v-list two-line subheader>
-                        <v-list-tile>
-                            <v-list-tile-content>
-                                <v-list-tile-title>CASE-123-45656</v-list-tile-title>
-                                <v-list-tile-sub-title>Application</v-list-tile-sub-title>
-                            </v-list-tile-content>
-                            <v-list-tile-action>
-                                <v-btn icon ripple>
-                                    <v-icon color="grey lighten-1">info</v-icon>
-                                </v-btn>
-                                </v-list-tile-action>
-                        </v-list-tile>
-                        <v-divider></v-divider>
-                        <v-list-tile>
-                            <v-list-tile-content>
-                                <v-list-tile-title>CASE-123-45656</v-list-tile-title>
-                                <v-list-tile-sub-title>Application</v-list-tile-sub-title>
-                            </v-list-tile-content>
-                            <v-list-tile-action>
-                                <v-btn icon ripple>
-                                    <v-icon color="grey lighten-1">info</v-icon>
-                                </v-btn>
-                                </v-list-tile-action>
-                        </v-list-tile>
-                    </v-list>
-                </v-card-text>
-            </v-card>
-        </v-flex>
-        <v-flex xs12 lg6 pa-2>
-            <v-card>
-                <v-toolbar dark color="#ff6e40">
-                    <span class="subheadline font-weight-light">Certificates Applications</span>
-                    <v-btn color="warning"
-                        dark              
-                        absolute
-                        bottom
-                        right
-                        fab
-                        small
-                        >
-                        <v-icon>call_made</v-icon>
-                    </v-btn>
-                </v-toolbar>
-                <v-card-text>
-                    <v-list two-line subheader>
-                        <v-list-tile>
-                            <v-list-tile-content>
-                                <v-list-tile-title>CASE-123-45656</v-list-tile-title>
-                                <v-list-tile-sub-title>Application</v-list-tile-sub-title>
-                            </v-list-tile-content>
-                            <v-list-tile-action>
-                                <v-btn icon ripple>
-                                    <v-icon color="grey lighten-1">info</v-icon>
-                                </v-btn>
-                                </v-list-tile-action>
-                        </v-list-tile>
-                        <v-divider></v-divider>
-                        <v-list-tile>
-                            <v-list-tile-content>
-                                <v-list-tile-title>CASE-123-45656</v-list-tile-title>
-                                <v-list-tile-sub-title>Application</v-list-tile-sub-title>
-                            </v-list-tile-content>
-                            <v-list-tile-action>
-                                <v-btn icon ripple>
-                                    <v-icon color="grey lighten-1">info</v-icon>
-                                </v-btn>
-                                </v-list-tile-action>
-                        </v-list-tile>
-                        <v-divider></v-divider>
-                    </v-list>
-                </v-card-text>
-            </v-card>
-        </v-flex>
-    </v-layout>    
+  <v-layout row wrap>
+    <v-flex xs12 lg4 pa-2>
+      <dashboard-card
+        icon="card_membership"
+        title="Unassigned"
+        :details="unassigned_details"
+        color="fdaOrange"
+      ></dashboard-card>
+    </v-flex>
+    <v-flex xs12 lg4 pa-2>
+      <dashboard-card icon="book" title="Inbox" :details="inbox_details" color="fdaBlueGreen"></dashboard-card>
+    </v-flex>
+    <v-flex xs12 lg4 pa-2>
+      <dashboard-card
+        icon="far fa-credit-card"
+        title="Participated"
+        :details="participated_details"
+        color="fdaMid"
+      ></dashboard-card>
+    </v-flex>
+    <!-- <v-flex xs12 lg6 pa-2>
+      <v-card>
+        <v-toolbar dark color="#00bfa5">
+          <span class="subheadline font-weight-light">License Applications</span>
+          <v-btn color="success" dark absolute bottom right fab small>
+            <v-icon>call_made</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-card-text>
+          <v-list two-line subheader>
+            <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title>CASE-123-45656</v-list-tile-title>
+                <v-list-tile-sub-title>Application</v-list-tile-sub-title>
+              </v-list-tile-content>
+              <v-list-tile-action>
+                <v-btn icon ripple>
+                  <v-icon color="grey lighten-1">info</v-icon>
+                </v-btn>
+              </v-list-tile-action>
+            </v-list-tile>
+            <v-divider></v-divider>
+            <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title>CASE-123-45656</v-list-tile-title>
+                <v-list-tile-sub-title>Application</v-list-tile-sub-title>
+              </v-list-tile-content>
+              <v-list-tile-action>
+                <v-btn icon ripple>
+                  <v-icon color="grey lighten-1">info</v-icon>
+                </v-btn>
+              </v-list-tile-action>
+            </v-list-tile>
+          </v-list>
+        </v-card-text>
+      </v-card>
+    </v-flex>
+    <v-flex xs12 lg6 pa-2>
+      <v-card>
+        <v-toolbar dark color="#ff6e40">
+          <span class="subheadline font-weight-light">Certificates Applications</span>
+          <v-btn color="warning" dark absolute bottom right fab small>
+            <v-icon>call_made</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-card-text>
+          <v-list two-line subheader>
+            <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title>CASE-123-45656</v-list-tile-title>
+                <v-list-tile-sub-title>Application</v-list-tile-sub-title>
+              </v-list-tile-content>
+              <v-list-tile-action>
+                <v-btn icon ripple>
+                  <v-icon color="grey lighten-1">info</v-icon>
+                </v-btn>
+              </v-list-tile-action>
+            </v-list-tile>
+            <v-divider></v-divider>
+            <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title>CASE-123-45656</v-list-tile-title>
+                <v-list-tile-sub-title>Application</v-list-tile-sub-title>
+              </v-list-tile-content>
+              <v-list-tile-action>
+                <v-btn icon ripple>
+                  <v-icon color="grey lighten-1">info</v-icon>
+                </v-btn>
+              </v-list-tile-action>
+            </v-list-tile>
+            <v-divider></v-divider>
+          </v-list>
+        </v-card-text>
+      </v-card>
+    </v-flex>-->
+  </v-layout>
 </template>
 
 <script>

@@ -9,7 +9,7 @@
         <v-flex xs12 pa-4 text-xs-center>
           <v-img :src="require('@/assets/FDA.png')" aspect-ratio="2.75"></v-img>
           <span
-            class="body-1 font-weight-thin black--text"
+            class="body-1 font-weight-light black--text"
             style="text-transform: uppercase center"
           >For FDA Approver/Personnel use only</span>
         </v-flex>
@@ -68,6 +68,7 @@ export default {
   methods: {
     login() {
       if (this.validate()) {
+        console.log("JSON.stringify(this.user) :", JSON.stringify(this.user));
         this.$store.dispatch("LOGIN", this.user).then(isMatch => {
           if (isMatch) {
             this.$notify({
@@ -75,7 +76,7 @@ export default {
                 "Welcome to FDA Portal. You are logged in as " +
                 this.user.username,
               icon: "check_circle",
-              initialMargin: 100
+              color: "success"
             });
             this.$router.push("/app");
           } else {
@@ -85,10 +86,8 @@ export default {
             this.$notify({
               message:
                 "Invalid Credentials. Please check your Username and Password.",
-              icon: "add_alert",
-              type: "warning",
-              horizontalAlign: "center",
-              initialMargin: 100
+              color: "error",
+              icon: "error_outline"
             });
           }
         });

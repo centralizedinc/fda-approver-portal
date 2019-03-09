@@ -1,7 +1,7 @@
 <template>
   <v-layout align-center justify-center>
     <v-flex xs4 pa-2 mt-4>
-      <v-card pa-5>
+      <v-card pa-5 class="elevation-15">
         <v-toolbar dark color="primary" class="toolbarStyle">
           <span class="font-weight-light title">Login</span>
           <v-spacer></v-spacer>

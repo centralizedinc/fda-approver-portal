@@ -1,5 +1,73 @@
 <template>
   <v-layout row wrap>
+    <!-- sparkline for unassigned license -->
+    <v-flex xs6 pa-2>
+      <v-card
+        class="mx-auto text-xs-center"
+        color="fdaSilver"
+        style="background: linear-gradient(360deg, #E9D758 0%, #E0C71C  100%); box-shadow: 0 6px 20px 0 rgba(200, 247, 197, 1)"
+      >
+        <v-card-text>
+          <v-container fluid>
+            <v-sparkline
+              color="primary"
+              :value="valueLic"
+              :gradient="gradient"
+              :smooth="radius || false"
+              :padding="padding"
+              :line-width="width"
+              :stroke-linecap="lineCap"
+              :gradient-direction="gradientDirection"
+              auto-draw
+            ></v-sparkline>
+          </v-container>
+        </v-card-text>
+        <v-card-text>
+          <div class="headline font-weight-thin">Unassigned Cases for License as of March 2019</div>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions
+          class="justify-center"
+          style="background: linear-gradient(180deg, #E9D758 0%, #E0C71C  100%); box-shadow: 0 6px 20px 0 rgba(200, 247, 197, 1)"
+        >
+          <v-btn color="primary" block flat @click="$router.push('/app/unassigned')">Go to Report</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-flex>
+    <!-- sparkline for unassigned certificate -->
+    <v-flex xs6 pa-2>
+      <v-card
+        class="mx-auto text-xs-center"
+        color="fdaSilver"
+        style="background: linear-gradient(180deg, #939D51 0%, #CAD0A0  100%); box-shadow: 0 6px 20px 0 rgba(200, 247, 197, 1)"
+      >
+        <v-card-text>
+          <v-container fluid>
+            <v-sparkline
+              :value="valueCert"
+              :gradient="gradient"
+              :smooth="radius || false"
+              :padding="padding"
+              :line-width="width"
+              :stroke-linecap="lineCap"
+              :gradient-direction="gradientDirection"
+              auto-draw
+            ></v-sparkline>
+          </v-container>
+        </v-card-text>
+        <v-card-text>
+          <div class="headline font-weight-thin">Unassigned Cases for Certificates as of March 2019</div>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions
+          class="justify-center"
+          style="background: linear-gradient(360deg, #939D51 0%, #CAD0A0  100%);"
+        >
+          <v-btn color="primary" block flat @click="$router.push('/app/unassigned')">Go to Report</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-flex>
+
     <v-flex xs12 lg4 pa-2>
       <dashboard-card
         icon="card_membership"
@@ -98,11 +166,24 @@
 </template>
 
 <script>
+const gradients = [];
 import DashboardCard from "@/components/DashboardCards";
 export default {
   components: { DashboardCard },
   data() {
     return {
+      // sparklines
+      width: 2,
+      radius: 10,
+      padding: 8,
+      lineCap: "round",
+      gradient: gradients[5],
+      valueLic: [10, 20, 30, 55, 10, 80, 3, 50, 112, 22, 70, 8],
+      valueCert: [0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8, 2, 9, 0],
+      gradientDirection: "top",
+      gradients,
+      // end
+
       unassigned_details: [
         {
           description: "License",

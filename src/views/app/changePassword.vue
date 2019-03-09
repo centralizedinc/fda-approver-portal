@@ -2,7 +2,7 @@
   <div>
     <v-layout align-center justify-center>
       <v-flex xs12>
-        <v-card>
+        <v-card color="rgb(230, 230, 230, 0.2)">
           <v-layout align-center justify-center>
             <v-flex xs8 pt-5>
               <v-text-field

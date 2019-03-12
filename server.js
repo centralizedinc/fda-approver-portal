@@ -9,3 +9,5 @@ var app = express();
 
 app.use(serveStatic(__dirname + "/dist"));
 app.listen(port);
+
+module.exports = app;

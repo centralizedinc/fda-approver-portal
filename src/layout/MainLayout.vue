@@ -10,7 +10,7 @@
       <v-spacer></v-spacer>
       <span class="caption">Food And Drug Administration of the Philippines</span>
     </v-footer>
-  </v-app>
+  </v-app> 
 </template>
 
 <script>

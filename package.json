@@ -8,7 +8,7 @@
     "serve-pcf": "vue-cli-service serve --mode pcf",
     "build-heroku": "vue-cli-service build --mode heroku",
     "build-pcf": "vue-cli-service build --mode pcf",
-    "build": "build-heroku",
+    "build": "npm run build-heroku",
     "dev": "npm run serve-heroku",
     "start": "node server.js",
     "clean": "if [ -d app ]; then rm -r app; fi",

@@ -13,7 +13,7 @@ chai.use(chaiHttp);
 describe('Test #1', () => {
     it('GET Success Response', (done) => {
       chai.request(server)
-          .get('/')
+          .get('/test')
           .end((err, res) => {
                 res.should.have.status(200);
             done();

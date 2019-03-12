@@ -1,0 +1,21 @@
+sudo: false
+language: node_js
+node_js:
+  - 'node'
+deploy:
+  provider: heroku
+  api_key:
+    secure: 0dfa3aa5-643d-41df-a9f2-451af3ac8fa4
+  app: fda-approver-portal
+  on:
+    repo: centralizedinc/fda-approver-portal
+notifications:
+  email:
+    - abalita@centralizedinc.com
+    - markjhonpaul.quijom@gmail.com 
+    - blitzkris24@gmail.com
+    - godofuri76@gmail.com
+    - fquiocho@centralizedinc.com
+    - venus.belo.rhi@gmail.com
+  on_success: change # default: change
+  on_failure: always # default: always

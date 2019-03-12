@@ -11,12 +11,11 @@
     "build": "build-heroku",
     "dev": "npm run serve-heroku",
     "start": "node server.js",
-    "clean":"if [ -d app ]; then rm -r app; fi",
-    "pre-deploy":"npm run clean && mkdir app && cp -R dist app/dist && cp package.json app && cp server.js app && cd app",
-    "deploy-pcf":"npm run build-pcf && npm run pre-deploy && cf push fda-approver-portal -m 128M -k 512M",
+    "clean": "if [ -d app ]; then rm -r app; fi",
+    "pre-deploy": "npm run clean && mkdir app && cp -R dist app/dist && cp package.json app && cp server.js app && cd app",
+    "deploy-pcf": "npm run build-pcf && npm run pre-deploy && cf push fda-approver-portal -m 128M -k 512M",
     "test": "mocha --timeout 10000",
     "push": "git add . && git commit -m 'update'&& npm version patch && git push"
-    
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.2.0",

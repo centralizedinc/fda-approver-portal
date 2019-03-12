@@ -27,4 +27,16 @@ export default {
 </script>
 
 <style>
+.bg {
+  /* The image used */
+  background-image: url("https://i.postimg.cc/c4jZYszr/FDASlider1-1920x675.png");
+
+  /* Full height */
+  height: 100%;
+
+  /* Center and scale the image nicely */
+  background-position: top;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
 </style>

@@ -7,6 +7,10 @@ var serveStatic = require('serve-static');
 var port = process.env.PORT || 5000;
 var app = express();
 
+app.get("/", (req,res)=>{
+    res.sendStatus(200)
+})
+
 app.use(serveStatic(__dirname + "/dist"));
 app.listen(port);
 

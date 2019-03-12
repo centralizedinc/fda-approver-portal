@@ -1,18 +1,16 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="models"
-    class="elevation-1"
-    :loading="loading">
+  <v-data-table :headers="headers" :items="models" class="elevation-1" :loading="loading">
     <template slot="items" slot-scope="props">
       <tr @click="$emit('view', props.item)" class="data-item">
         <template v-for="(item, index) in headers">
-          <td :class="item.class" :key="index">{{
-            item.value === 'case_type' ? getCaseType(props.item, item.value) : 
-            item.value === 'application_type' ? getAppType(props.item, item.value) : 
-            item.value.indexOf('.') > -1 ? getNestedField(props.item, item.value) : 
+          <td :class="item.class" :key="index">
+            {{
+            item.value === 'case_type' ? getCaseType(props.item, item.value) :
+            item.value === 'application_type' ? getAppType(props.item, item.value) :
+            item.value.indexOf('.') > -1 ? getNestedField(props.item, item.value) :
             item.value.indexOf('/') > -1 ? getFields(props.item, item.value) : checkValue(props.item[item.value])
-          }}</td>
+            }}
+          </td>
         </template>
       </tr>
     </template>

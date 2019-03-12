@@ -83,7 +83,7 @@
               ripple
               @click="goTo('/app/unassigned')"
               class="ma-1"
-              :style="activeRoute('Unassigned')"
+              :style="activeRoute('Unassigned Cases')"
             >
               <v-list-tile-action>
                 <v-icon color="primary">drafts</v-icon>

@@ -89,7 +89,7 @@ export default {
           this.$notify({
             message: "Your Profile is successfuly updated",
             color: "success",
-            icon: "check_box"
+            icon: "check_circle"
           });
           this.$router.push("/app");
         })

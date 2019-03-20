@@ -26,13 +26,13 @@ export default {
           return i >= 0 ? tasks[i] : {}
         },
         getAdminUser(user_id) {
-          var accounts = this.$store.state.account.admins_info;
+          var accounts = this.$store.state.accounts.admins_info;
           var i = accounts ? accounts.findIndex(x => x._id === user_id) : -1;
           return i >= 0 ? accounts[i] : {}
         },
-        getAccountUser(user_id) {
-          var accounts = this.$store.state.account.accounts_info;
-          var i = accounts ? accounts.findIndex(x => x._d === user_id) : -1;
+        getClientUser(user_id) {
+          var accounts = this.$store.state.accounts.accounts_info;
+          var i = accounts ? accounts.findIndex(x => x._id === user_id) : -1;
           return i >= 0 ? accounts[i] : {}
         },
         // getProduct(product_id) {
@@ -91,6 +91,10 @@ export default {
           var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
           validate = this.isEmpty(email) || !re.test(email);
           return validate;
+        },
+        getActivityStatus(status) {
+          var _status = ["Approved", "Recommend", "Denied"]
+          return _status[status]
         },
         logout() {
           this.$store.dispatch("LOGOUT");

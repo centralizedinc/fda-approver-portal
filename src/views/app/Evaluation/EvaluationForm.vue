@@ -56,12 +56,17 @@
                 class="elevation-1"
               >
                 <template slot="items" slot-scope="props">
-                  <td>{{ props.item.task_name }}</td>
-                  <td>{{ props.item.status }}</td>
-                  <td>{{ props.item.assigned_user }}</td>
+                  <td>{{ getTask(selected_case.case_type, props.item.task_id).name }}</td>
+                  <td :class="['text--approved', 'text--recommend', 'text--disapproved'][props.item.status]">{{ getActivityStatus(props.item.status) }}</td>
+                  <td :class="getClientUser(props.item.assigned_user).last_name ? 'text--fdaBlueGreen' : ''">
+                    {{ 
+                      getAdminUser(props.item.assigned_user).last_name || 
+                      (getClientUser(props.item.assigned_user).last_name ? 'Client' : "") 
+                    }}
+                  </td>
                   <td>{{ props.item.remarks }}</td>
-                  <td>{{ props.item.date_started }}</td>
-                  <td>{{ props.item.date_completed }}</td>
+                  <td>{{ formatDate(props.item.date_started) }}</td>
+                  <td>{{ formatDate(props.item.date_completed) }}</td>
                 </template>
               </v-data-table>
             </v-container>
@@ -202,7 +207,7 @@ export default {
           value: "status"
         },
         {
-          text: "Assigned Approver",
+          text: "Assigned User",
           value: "assigned_user"
         },
         {
@@ -303,12 +308,15 @@ export default {
     },
     getValue(key) {
       var keys = {
-        application_type: this.getAppType(this.selected_case[key]),
+        application_type: this.getAppType(this.selected_case.application_type),
         current_task: this.getTask(
           this.selected_case.case_type,
-          this.selected_case[key]
+          this.selected_case.current_task
         ).name,
-        primary_activity: this.getPrimaryActivity(this.selected_case[key]).name
+        primary_activity: this.getPrimaryActivity(
+          this.selected_case.primary_activity
+        ).name,
+        date_created: this.formatDate(this.selected_case.date_created)
       };
       var value = keys[key];
       return value ? value : this.selected_case[key];
@@ -343,4 +351,19 @@ export default {
 </script>
 
 <style>
+.text--fdaBlueGreen {
+  color: #f58555;
+}
+
+.text--approved {
+  color: #38c73c;
+}
+
+.text--disapproved {
+  color: #ff5252;
+}
+
+.text--recommend {
+  color: blue;
+}
 </style>

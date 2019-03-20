@@ -149,13 +149,13 @@
 </template>
 
 <script>
-import overview_components from "../../../components/ApplicationOverview/index.js";
-const tabscomponents = Object.assign(
-  {
-    ApplicationTable: () => import("@/components/ApplicationTable")
-  },
-  overview_components
-);
+import tabscomponents from "../../../components/ApplicationOverview/index.js";
+// const tabscomponents = Object.assign(
+//   {
+//     ApplicationTable: () => import("@/components/ApplicationTable")
+//   },
+//   overview_components
+// );
 export default {
   components: tabscomponents,
   data() {

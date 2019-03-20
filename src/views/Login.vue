@@ -35,7 +35,8 @@
             <v-spacer></v-spacer>
             <v-btn 
               color="primary" 
-              @click="login" 
+              @click="login"
+              :loading="loading"
               :disabled="!valid"
               class="caption font-weight-light">
               Login
@@ -53,6 +54,7 @@ export default {
     return {
       valid: false,
       value: true,
+      loading: false,
       user: {
         username: "",
         password: ""
@@ -61,11 +63,12 @@ export default {
   },
   methods: {
     login() {
+      this.loading = true;
       if (this.validate()) {
-        console.log('JSON.stringify(this.user) :', JSON.stringify(this.user));
+        console.log("JSON.stringify(this.user) :", JSON.stringify(this.user));
         this.$store.dispatch("LOGIN", this.user).then(isMatch => {
+          this.loading = false;
           if (isMatch) {
-            console.log('test');
             this.$notify({
               message:
                 "Welcome to FDA Portal. You are logged in as " +

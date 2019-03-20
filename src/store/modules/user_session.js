@@ -24,10 +24,28 @@ var actions = {
                     console.log('login: ' + JSON.stringify(account.isMatch))
                     if (account.isMatch) {
                         context.commit('LOGIN', account)
-                        context.dispatch('GET_TASKS', {}, { root: true })
-                        context.dispatch('GET_PRIMARY', {}, { root: true })
+                        context.dispatch('GET_TASKS', {}, {
+                            root: true
+                        }).then((result) => {
+                            return context.dispatch('GET_PRIMARY', {}, {
+                                root: true
+                            })
+                        }).then((result) => {
+                            return context.dispatch('GET_ACCOUNTS_INFO', {}, {
+                                root: true
+                            })
+                        }).then((result) => {
+                            return context.dispatch('GET_ADMINS_INFO', {}, {
+                                root: true
+                            })
+                        }).then((result) => {
+                            resolve(true);
+                        }).catch((err) => {
+
+                        });
+                    } else {
+                        resolve(false);
                     }
-                    resolve(account.isMatch); 
                 } else {
                     console.log(JSON.stringify(err))
                     reject(err)

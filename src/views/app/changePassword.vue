@@ -1,11 +1,12 @@
 <template>
   <div>
     <v-layout align-center justify-center>
-      <v-flex xs12 sm10 offset-sm1>
-        <v-card>
+      <v-flex xs12>
+        <v-card color="rgb(230, 230, 230, 0.2)">
           <v-layout align-center justify-center>
-            <v-flex xs8>
+            <v-flex xs8 pt-5>
               <v-text-field
+                outline
                 :append-icon="new_password ? 'visibility' : 'visibility_off'"
                 :rules="[rules.required, rules.password]"
                 :type="new_password ? 'text' : 'password'"
@@ -14,6 +15,7 @@
                 v-model="admin.new_password"
               ></v-text-field>
               <v-text-field
+                outline
                 :append-icon="confirm_password ? 'visibility' : 'visibility_off'"
                 :rules="[rules.required, password_match]"
                 :type="confirm_password ? 'text' : 'password'"
@@ -23,10 +25,9 @@
               ></v-text-field>
             </v-flex>
           </v-layout>
-          <v-divider class="mt-5"></v-divider>
+          <v-divider></v-divider>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="success" @click="submit()">Submit</v-btn>
+            <v-btn block class="font-weight-light" color="success" @click="submit()">Submit</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -71,7 +72,8 @@ export default {
   methods: {
     init() {
       console.log(
-        "######## " + JSON.stringify(this.$store.state.user_session.account.user)
+        "######## " +
+          JSON.stringify(this.$store.state.user_session.account.user)
       );
       this.admin.user_id = this.$store.state.user_session.account.user._id;
     },
@@ -83,11 +85,11 @@ export default {
         .dispatch("EDIT_PASSWORD", this.admin)
         .then(result => {
           console.log("edited:password: " + JSON.stringify(result));
-            this.$notify({
-              message: "Your Password is successfuly updated",
-              color: "success",
-              icon: "check_box"
-            });
+          this.$notify({
+            message: "Your Password is successfuly updated",
+            color: "success",
+            icon: "check_circle"
+          });
           this.$router.push("/app");
         })
         .catch(err => {

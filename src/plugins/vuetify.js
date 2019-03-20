@@ -4,13 +4,31 @@ import 'vuetify/src/stylus/app.styl'
 
 Vue.use(Vuetify, {
   theme: {
-    primary: '#43A047',
+    // FDA Green
+    primary: '#104B2A',
+    // default
     secondary: '#424242',
-    accent: '#82B1FF',
+    // FDA Orange
+    accent: '#F58555',
     error: '#FF5252',
-    info: '#2196F3',
-    success: '#4CAF50',
-    warning: '#FFC107'
+    // FDA Gold
+    info: '#B5C25A',
+    // FDA Light Green
+    success: '#38C73C',
+    // default
+    warning: '#FFC107',
+
+    // FDA Colors
+    fdaGreen: '#104B2A',
+    fdaMed: '#0F901A',
+    fdaLight: '38C737',
+    fdaGold: 'B5C25A',
+    fdaTan: 'CAD0A0',
+    fdaYellow: 'E9D758',
+    fdaBlueGreen: '297373',
+    fdaOrange: 'F58555',
+    fdaSilver: 'E6E6E6',
+    fdaGray: '58595B'
   },
   customProperties: true,
   iconfont: 'fa',

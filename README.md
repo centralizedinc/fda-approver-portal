@@ -1,4 +1,5 @@
-# fda-approver-portal
+# fda-approver-portal [![Build Status](https://travis-ci.org/centralizedinc/fda-approver-portal.svg?branch=master)](https://travis-ci.org/centralizedinc/fda-approver-portal)
+
 
 FDA portal for employees
 

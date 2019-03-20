@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-// axios.defaults.baseURL = 'https://fda-services.herokuapp.com/v1.0'
+// axios.defaults.baseURL = 'VUE_APP_API_BASE_URI'
 
 // export default class ProfileType {
 //     constructor(token) {
@@ -19,7 +19,7 @@ export default class AuthAPI {
         axios.get('admin/' + profile_id).then((result) => {
                 console.log("###API### GET PROFILE" + JSON.stringify(result.data))
                 if (result.data.success) {
-                    cb(result.data.model)
+                    cb(result.data.errors, result.data.model)
                 } else {
                     cb(err)
                 }

@@ -41,7 +41,7 @@ export default new Router({
         path: '',
         name: 'Login',
         component: () =>
-          import ('@/views/Login.vue')
+          import('@/views/Login.vue')
       }],
       beforeEnter: (to, from, next) => {
         new AuthAPI().checkAuth(store.state.user_session.token, (isAuth) => {
@@ -70,58 +70,58 @@ export default new Router({
           path: '',
           name: 'Dashboard',
           component: () =>
-            import ('@/views/app/UserPortfolio.vue')
+            import('@/views/app/UserPortfolio.vue')
         },
         {
           path: 'print',
           name: 'Print',
           beforeEnter: forPrinting,
           component: () =>
-            import ('@/views/app/Print/Print.vue')
+            import('@/views/app/Print/Print.vue')
         },
         {
           path: 'print/history',
           name: 'Print History',
           beforeEnter: forPrinting,
           component: () =>
-            import ('@/views/app/Print/History.vue')
+            import('@/views/app/Print/History.vue')
         },
         {
           path: 'inbox',
           name: 'Inbox',
           beforeEnter: notForPrinting,
           component: () =>
-            import ('@/views/app/Inbox/Inbox.vue')
+            import('@/views/app/Inbox/Inbox.vue')
         }, {
           path: 'participated',
-          name: 'Participated',
+          name: 'Participated Cases',
           beforeEnter: notForPrinting,
           component: () =>
-            import ('@/views/app/Participated/Participated.vue')
+            import('@/views/app/Participated/Participated.vue')
         }, {
           path: 'unassigned',
-          name: 'Unassigned',
+          name: 'Unassigned Cases',
           beforeEnter: notForPrinting,
           component: () =>
-            import ('@/views/app/Unassigned/Unassigned.vue')
+            import('@/views/app/Unassigned/Unassigned.vue')
         }, {
           path: 'evaluation',
           name: 'Evaluation',
           beforeEnter: notForPrinting,
           component: () =>
-            import ('@/views/app/Evaluation/EvaluationForm.vue')
+            import('@/views/app/Evaluation/EvaluationForm.vue')
         }, {
           path: 'profile',
           name: 'Profile Management',
           component: () =>
-            import ('@/views/app/profile.vue')
-        },{
-        path: 'password',
-        name: 'Password Management',
-        component: () =>
-          import ('@/views/app/changePassword.vue')
-      }
-        
+            import('@/views/app/profile.vue')
+        }, {
+          path: 'password',
+          name: 'Password Management',
+          component: () =>
+            import('@/views/app/changePassword.vue')
+        }
+
       ]
     },
     {
@@ -131,7 +131,7 @@ export default new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () =>
-        import ( /* webpackChunkName: "about" */ './views/About.vue')
+        import( /* webpackChunkName: "about" */ './views/About.vue')
     }
   ]
 })

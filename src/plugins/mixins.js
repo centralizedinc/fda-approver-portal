@@ -81,6 +81,19 @@ export default {
             return ''
           }
         },
+        getAdminUser(user_id) {
+          var accounts = this.$store.state.accounts.admins_info;
+          var i = accounts ? accounts.findIndex(x => x._id === user_id) : -1;
+          return i >= 0 ? accounts[i] : {}
+        },
+        getClientUser(user_id) {
+          var accounts = this.$store.state.accounts.accounts_info;
+          var i = accounts ? accounts.findIndex(x => x._id === user_id) : -1;
+          return i >= 0 ? accounts[i] : {}
+        },
+        numberWithCommas(x) {
+          return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      },
         // getProduct(product_id) {
         //   if (this.$store.state.products.productType) {
         //     var product = null;
@@ -137,6 +150,45 @@ export default {
           var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
           validate = this.isEmpty(email) || !re.test(email);
           return validate;
+        },
+        getActivityStatus(status) {
+          var _status = ["Approved", "Recommend", "Denied"]
+          return _status[status]
+        },
+        getActivity(task) {
+          var case_holder = this.$store.state.evaluate.selected_case;
+          var activity_holder = {}
+          case_holder.activities.forEach(data => {
+            if(data.task_id === task){
+              activity_holder = data
+            }
+          })
+          return activity_holder
+          console.log("")
+        },
+        getRegionName(id) {
+          for (var i = 0; i < this.$store.state.places.regions.length; i++) {
+            var region = this.$store.state.places.regions[i]
+            if (region._id === id) {
+              return region.name
+            }
+          }
+        },
+        getProvinceName(id) {
+          for (var i = 0; i < this.$store.state.places.provinces.length; i++) {
+            var province = this.$store.state.places.provinces[i]
+            if (province._id === id) {
+              return province.name
+            }
+          }
+        },
+        getCityName(id) {
+          for (var i = 0; i < this.$store.state.places.city.length; i++) {
+            var city = this.$store.state.places.city[i]
+            if (city._id === id) {
+              return city.name
+            }
+          }
         },
         logout() {
           this.$store.dispatch("LOGOUT");

@@ -240,6 +240,9 @@ export default {
           return this.$store.dispatch("GET_PRODUCT_REFERENCE")
         }).then(result => {
           console.log("get product reference: " + JSON.stringify(this.result))
+          return this.$store.dispatch("GET_PLACES_REFERENCE")
+        }).then(result =>{
+          console.log("places data: " + JSON.stringify(this.$store.state.places.regions))
         })
         .catch(err => {
           console.log("err :", err);

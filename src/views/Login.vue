@@ -44,6 +44,7 @@
           <v-btn
             color="primary"
             @click="login"
+            :loading="loading"
             :disabled="!valid"
             class="caption font-weight-light"
           >Login</v-btn>
@@ -59,6 +60,7 @@ export default {
     return {
       valid: false,
       value: true,
+      loading: false,
       user: {
         username: "",
         password: ""
@@ -67,9 +69,10 @@ export default {
   },
   methods: {
     login() {
+      this.loading = true;
       if (this.validate()) {
-        console.log("JSON.stringify(this.user) :", JSON.stringify(this.user));
         this.$store.dispatch("LOGIN", this.user).then(isMatch => {
+          this.loading = false;
           if (isMatch) {
             this.$notify({
               message:
@@ -80,9 +83,6 @@ export default {
             });
             this.$router.push("/app");
           } else {
-            console.log(
-              "Invalid Credentials. Please check your Username and Password."
-            );
             this.$notify({
               message:
                 "Invalid Credentials. Please check your Username and Password.",

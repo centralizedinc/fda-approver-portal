@@ -64,4 +64,11 @@ export default class AccountAPI {
         })
     }
 
+    getAccountsInfo() {
+        return axios.get('/users/info')
+    }
+
+    getAdminsInfo() {
+        return axios.get('/admin/users/info')
+    }
 }

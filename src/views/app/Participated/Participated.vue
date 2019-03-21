@@ -2,12 +2,12 @@
     <div>
       <application-table :models="participated" :headers="headers" :loading="loading" @view="viewApp"></application-table>
       <application-overview :show="show_overview" @close="close">
-        <app-summary :form="form" slot="appsummary"></app-summary>
+        <app-summary :form="form" :form_case="selected_case" slot="appsummary"></app-summary>
         <app-data :form="form" slot="appdata"></app-data>
         <uploaded-files :form="form" slot="uploadedfiles"></uploaded-files>
         <output-docs :form="form" slot="outputdocs"></output-docs>
         <app-history :form="form" slot="apphistory"></app-history>
-        <payment-details :form="form" slot="paymentdetails"></payment-details>
+        <payment-details :form="form" :charges="charges" :form_case="selected_case" slot="paymentdetails"></payment-details>
       </application-overview>
     </div>
 </template>
@@ -70,7 +70,8 @@ export default {
         },
         qualified: {}
       },
-      show_overview: false
+      show_overview: false,
+      charges: {}
     };
   },
   created() {
@@ -80,6 +81,7 @@ export default {
     init() {
       this.loading = true;
       this.participated = this.$store.state.participated.participated;
+      console.log("participated data: " + JSON.stringify(this.$store.state.evaluate.selected_case))
       this.$store
         .dispatch("GET_PARTICIPATED")
         .then(result => {
@@ -95,12 +97,27 @@ export default {
 
     viewApp(app) {
       this.selected_case = app;
+
       this.$store
         .dispatch("GET_LICENSE_BY_CASE", this.selected_case._id)
         .then(result => {
           this.form = result;
           this.checkForm(result);
           this.show_overview = true;
+
+          var details = {
+            productType: this.form.general_info.product_type,
+            primaryActivity: this.form.general_info.primary_activity,
+            declaredCapital: this.form.general_info.declared_capital,
+            appType: this.form.application_type
+          };
+          return this.$store.dispatch("GET_FEES", details);
+        })
+        .then(result => {
+          this.charges = result;
+          console.log(
+            "charges data payment details: " + JSON.stringify(this.charges)
+          );
         })
         .catch(err => {
           console.log("err viewApp:", err);

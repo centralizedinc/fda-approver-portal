@@ -56,12 +56,17 @@
                 class="elevation-1"
               >
                 <template slot="items" slot-scope="props">
-                  <td>{{ props.item.task_name }}</td>
-                  <td>{{ props.item.status }}</td>
-                  <td>{{ props.item.assigned_user }}</td>
+                  <td>{{ getTask(selected_case.case_type, props.item.task_id).name }}</td>
+                  <td :class="['text--approved', 'text--recommend', 'text--disapproved'][props.item.status]">{{ getActivityStatus(props.item.status) }}</td>
+                  <td :class="getClientUser(props.item.assigned_user).last_name ? 'text--fdaBlueGreen' : ''">
+                    {{ 
+                      getAdminUser(props.item.assigned_user).last_name || 
+                      (getClientUser(props.item.assigned_user).last_name ? 'Client' : "") 
+                    }}
+                  </td>
                   <td>{{ props.item.remarks }}</td>
-                  <td>{{ props.item.date_started }}</td>
-                  <td>{{ props.item.date_completed }}</td>
+                  <td>{{ formatDate(props.item.date_started) }}</td>
+                  <td>{{ formatDate(props.item.date_completed) }}</td>
                 </template>
               </v-data-table>
             </v-container>
@@ -157,19 +162,19 @@
       <uploaded-files :form="form" slot="uploadedfiles"></uploaded-files>
       <output-docs :form="form" slot="outputdocs"></output-docs>
       <app-history :form="form" slot="apphistory"></app-history>
-      <payment-details :form="form" :charges="charges" slot="paymentdetails"></payment-details>
+      <payment-details :form="form" :charges="charges" :form_case="selected_case" slot="paymentdetails"></payment-details>
     </application-overview>
   </v-layout>
 </template>
 
 <script>
-import overview_components from "../../../components/ApplicationOverview/index.js";
-const tabscomponents = Object.assign(
-  {
-    ApplicationTable: () => import("@/components/ApplicationTable")
-  },
-  overview_components
-);
+import tabscomponents from "../../../components/ApplicationOverview/index.js";
+// const tabscomponents = Object.assign(
+//   {
+//     ApplicationTable: () => import("@/components/ApplicationTable")
+//   },
+//   overview_components
+// );
 export default {
   components: tabscomponents,
   data() {
@@ -202,7 +207,7 @@ export default {
           value: "status"
         },
         {
-          text: "Assigned Approver",
+          text: "Assigned User",
           value: "assigned_user"
         },
         {
@@ -230,12 +235,13 @@ export default {
       loading: false,
       show_confirmation: false,
       selected_case: {},
+
       form: {},
       checklist: [],
       recommended_tasks: [],
       charges: {},
       cases: null,
-      case_holder: null
+      case_holder: null,
     };
   },
   created() {
@@ -246,7 +252,7 @@ export default {
       this.loading = true;
       this.selected_case = this.$store.state.evaluate.selected_case;
       this.evaluated_case.case_id = this.selected_case._id;
-      console.log("case data: " + JSON.stringify(this.selected_case))
+      console.log("get user data: " + JSON.stringify(this.$store.state.users.users))
       this.$store
         .dispatch("GET_LICENSE_BY_CASE", this.selected_case._id)
         .then(result => {
@@ -333,7 +339,9 @@ export default {
           this.selected_case.case_type,
           this.selected_case.current_task
         ).name,
-        primary_activity: this.getPrimaryActivity(this.selected_case.primary_activity).name,
+        primary_activity: this.getPrimaryActivity(
+          this.selected_case.primary_activity
+        ).name,
         date_created: this.formatDate(this.selected_case.date_created)
       };
       var value = keys[key];
@@ -369,4 +377,19 @@ export default {
 </script>
 
 <style>
+.text--fdaBlueGreen {
+  color: #f58555;
+}
+
+.text--approved {
+  color: #38c73c;
+}
+
+.text--disapproved {
+  color: #ff5252;
+}
+
+.text--recommend {
+  color: blue;
+}
 </style>

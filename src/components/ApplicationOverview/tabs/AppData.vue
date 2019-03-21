@@ -56,7 +56,7 @@
         <v-flex
           xs12
           md8
-        >{{form.addresses.office.address + " " + form.addresses.office.region + " " + form.addresses.office.province + " " + form.addresses.office.city + " " + form.addresses.office.zipcode}}</v-flex>
+        >{{form.addresses.office.address + " " + getRegionName(form.addresses.office.region) + " " + getProvinceName(form.addresses.office.province) + " " + getCityName(form.addresses.office.city) + " " + form.addresses.office.zipcode}}</v-flex>
       </v-layout>
     </v-container>
     <!-- Authorized Officer -->
@@ -84,7 +84,7 @@
         <v-flex
           xs12
           md8
-        >{{form.auth_officer.mail_add.address + " " + form.auth_officer.mail_add.region + " " + form.auth_officer.mail_add.province + " " + form.auth_officer.mail_add.city + " " + form.auth_officer.mail_add.zipcode}}</v-flex>
+        >{{form.auth_officer.mail_add.address + " " + getRegionName(form.auth_officer.mail_add.region) + " " + getProvinceName(form.auth_officer.mail_add.province) + " " + getCityName(form.auth_officer.mail_add.city) + " " + form.auth_officer.mail_add.zipcode}}</v-flex>
       </v-layout>
     </v-container>
     <!-- Qualified Personnel -->

@@ -56,4 +56,12 @@ export default class AccountAPI {
         })
     }
 
+    getUsers(cb){
+        axios.get('users/info').then(result => {
+            cb(result.data.errors, result.data.model)
+        }).catch(err => {
+            cb(err) 
+        })
+    }
+
 }

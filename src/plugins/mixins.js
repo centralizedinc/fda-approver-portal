@@ -21,9 +21,65 @@ export default {
             this.$store.state.task.license_tasks,
             this.$store.state.task.certificate_tasks
           ]
+          console.log('this.$store.state.task.license_tasks :', this.$store.state.task.license_tasks);
           var tasks = _tasks[case_type];
           var i = tasks ? tasks.findIndex(x => x._id === task_id) : -1;
           return i >= 0 ? tasks[i] : {}
+        },
+        getProduct(product_id) {
+          if (this.$store.state.products.productType) {
+            var product = null;
+            product = this.$store.state.products.productType.find(x => {
+              return x._id === product_id
+            })
+            return product ? product.name : ''
+          } else {
+            return ''
+          }
+        },
+        getPrimary(primary_id) {
+          if (this.$store.state.products.primaryActivity) {
+            var primary = null;
+            primary = this.$store.state.products.primaryActivity.find(x => {
+              return x._id === primary_id
+            })
+            return primary ? primary.name : ''
+          } else {
+            return ''
+          }
+        },
+        getDeclared(declared_id) {
+          if (this.$store.state.products.declared) {
+            var declared = null;
+            declared = this.$store.state.products.declared.find(x => {
+              return x._id === declared_id
+            })
+            return declared ? declared.name : ''
+          } else {
+            return ''
+          }
+        },
+        getUser(user_id){
+          if(this.$store.state.users.users){
+            var user = null;
+            user = this.$store.state.users.users.find(x => {
+              return x._id === user_id
+            })
+            return user ? user.name : ''
+          }else{
+            return ''
+          }
+        },
+        getProductLine(productLine_id){
+          if(this.$store.state.products.prod_line){
+            var product_line = null;
+            product_line = this.$store.state.products.prod_line.find(x => {
+              return x._id === productLine_id
+            })
+            return product_line ? product_line.name : ''
+          }else{
+            return ''
+          }
         },
         // getProduct(product_id) {
         //   if (this.$store.state.products.productType) {

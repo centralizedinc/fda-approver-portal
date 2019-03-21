@@ -152,12 +152,12 @@
       </v-card>
     </v-dialog>
     <application-overview v-if="show_overview" :show="show_overview" @close="show_overview=false">
-      <app-summary :form="form" slot="appsummary"></app-summary>
+      <app-summary :form="form" :form_case="selected_case" slot="appsummary"></app-summary>
       <app-data :form="form" slot="appdata"></app-data>
       <uploaded-files :form="form" slot="uploadedfiles"></uploaded-files>
       <output-docs :form="form" slot="outputdocs"></output-docs>
       <app-history :form="form" slot="apphistory"></app-history>
-      <payment-details :form="form" slot="paymentdetails"></payment-details>
+      <payment-details :form="form" :charges="charges" slot="paymentdetails"></payment-details>
     </application-overview>
   </v-layout>
 </template>
@@ -232,7 +232,10 @@ export default {
       selected_case: {},
       form: {},
       checklist: [],
-      recommended_tasks: []
+      recommended_tasks: [],
+      charges: {},
+      cases: null,
+      case_holder: null
     };
   },
   created() {
@@ -243,6 +246,7 @@ export default {
       this.loading = true;
       this.selected_case = this.$store.state.evaluate.selected_case;
       this.evaluated_case.case_id = this.selected_case._id;
+      console.log("case data: " + JSON.stringify(this.selected_case))
       this.$store
         .dispatch("GET_LICENSE_BY_CASE", this.selected_case._id)
         .then(result => {
@@ -267,6 +271,27 @@ export default {
             JSON.stringify(this.recommended_tasks)
           );
           this.loading = false;
+
+          console.log("this is form data: " + JSON.stringify(this.form));
+          var details = {
+            productType: this.form.general_info.product_type,
+            primaryActivity: this.form.general_info.primary_activity,
+            declaredCapital: this.form.general_info.declared_capital,
+            appType: this.form.application_type
+          };
+          console.log("load fees new license: " + JSON.stringify(details));
+          return this.$store.dispatch("GET_FEES", details);
+        })
+        .then(result => {
+          this.charges = result;
+          console.log(
+            "charges data payment details: " + JSON.stringify(this.charges)
+          );
+          return this.$store.dispatch("SET_USER");
+        })
+        .then(result => {
+          console.log("set user: " + JSON.stringify(result))
+          return this.$store.dispatch()
         })
         .catch(err => {
           console.log("err loadEvaluator:", err);
@@ -303,12 +328,13 @@ export default {
     },
     getValue(key) {
       var keys = {
-        application_type: this.getAppType(this.selected_case[key]),
+        application_type: this.getAppType(this.selected_case.application_type),
         current_task: this.getTask(
           this.selected_case.case_type,
-          this.selected_case[key]
+          this.selected_case.current_task
         ).name,
-        primary_activity: this.getPrimaryActivity(this.selected_case[key]).name
+        primary_activity: this.getPrimaryActivity(this.selected_case.primary_activity).name,
+        date_created: this.formatDate(this.selected_case.date_created)
       };
       var value = keys[key];
       return value ? value : this.selected_case[key];

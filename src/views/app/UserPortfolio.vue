@@ -236,6 +236,10 @@ export default {
         .then(result => {
           this.participated_details[0].count = this.getCounts(2, 0);
           this.participated_details[1].count = this.getCounts(2, 1);
+          console.log("preparing for dispatch get product type")
+          return this.$store.dispatch("GET_PRODUCT_REFERENCE")
+        }).then(result => {
+          console.log("get product reference: " + JSON.stringify(this.result))
         })
         .catch(err => {
           console.log("err :", err);

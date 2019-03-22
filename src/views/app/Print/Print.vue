@@ -16,6 +16,7 @@
             <tr>
               <th>
                 <v-checkbox
+                  color="primary"
                   :input-value="props.all"
                   :indeterminate="props.indeterminate"
                   primary
@@ -41,7 +42,7 @@
               class="data-item"
             >
               <td>
-                <v-checkbox :input-value="props.selected" primary hide-details></v-checkbox>
+                <v-checkbox color="primary" :input-value="props.selected" primary hide-details></v-checkbox>
               </td>
               <td class="text-xs-center">{{ props.item.case_no }}</td>
               <td class="text-xs-center">{{ getCaseType(props.item.case_type) }}</td>

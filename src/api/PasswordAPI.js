@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export default class TaskApi {
+export default class PasswordAPI {
     constructor(token) {
         axios.defaults.baseURL = 'https://fda-services.herokuapp.com/v1.0/secured/accounts/admin';
         axios.defaults.headers.common['Content-Type'] = 'application/json'

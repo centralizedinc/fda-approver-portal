@@ -157,13 +157,16 @@ export default {
                 color: "success",
                 icon: "check_circle"
               });
-              this.home()
+              this.home();
             } else {
+              this.loading = false;
+              this.dialog = false;
               this.$notifyError(result.data.errors);
             }
           })
           .catch(err => {
             this.loading = false;
+            this.dialog = false;
             console.log("### RESET_PASSWORD err :", err);
             this.$notifyError(err);
           });

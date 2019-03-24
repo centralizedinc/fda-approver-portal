@@ -70,7 +70,7 @@
               ripple
               @click="goTo('/app/participated')"
               class="ma-1"
-              :style="activeRoute('Participated')"
+              :style="activeRoute('Participated Cases')"
             >
               <v-list-tile-action>
                 <v-icon color="primary">book</v-icon>
@@ -308,36 +308,11 @@ export default {
     page_name() {
       return this.$route.name;
     },
-    breadcrumbs() {
-      return [
-        {
-          icon: "home",
-          name: "Dashboard",
-          disabled: false,
-          href: "breadcrumbs_dashboard"
-        },
-        // {
-        //   icon: "card_membership",
-        //   name: "License",
-        //   disabled: false,
-        //   href: "breadcrumbs_dashboard"
-        // },
-        {
-          icon: "book",
-          name: "Certificates",
-          disabled: false,
-          href: "breadcrumbs_dashboard"
-        }
-        // {
-        //   icon: "far fa-creadit-card",
-        //   name: "Payments",
-        //   disabled: false,
-        //   href: "breadcrumbs_dashboard"
-        // },
-      ];
-    },
     app_version() {
       return process.env.VUE_APP_VERSION;
+    },
+    breadcrumbs() {
+      return this.$store.state.breadcrumbs.navigation;
     }
   }
 };

@@ -20,6 +20,7 @@ function forPrinting(to, from, next) {
   })
 }
 
+
 function notForPrinting(to, from, next) {
   store.dispatch('IS_FOR_PRINTING').then((isForPrinting) => {
     if (!isForPrinting) {
@@ -30,6 +31,14 @@ function notForPrinting(to, from, next) {
   }).catch(err => {
     next('/app')
   })
+}
+
+function dropBreadcrumbs(to, from, next) {
+  store.commit('DROP_BREADCRUMBS', {
+    name: to.name,
+    href: to.path
+  })
+  next();
 }
 
 export default new Router({
@@ -48,6 +57,7 @@ export default new Router({
           if (isAuth) {
             next('/app')
           } else {
+
             next()
           }
         })
@@ -59,6 +69,11 @@ export default new Router({
       beforeEnter: (to, from, next) => {
         new AuthAPI().checkAuth(store.state.user_session.token, (isAuth) => {
           if (isAuth) {
+            //leaving breadcrumbs behind    
+            store.commit('DROP_BREADCRUMBS', {
+              name: to.name,
+              href: to.path
+            })
             next()
           } else {
             store.commit('LOGOUT')
@@ -75,49 +90,51 @@ export default new Router({
         {
           path: 'print',
           name: 'Print',
-          beforeEnter: forPrinting,
+          beforeEnter: forPrinting && dropBreadcrumbs,
           component: () =>
             import('@/views/app/Print/Print.vue')
         },
         {
           path: 'print/history',
           name: 'Print History',
-          beforeEnter: forPrinting,
+          beforeEnter: forPrinting && dropBreadcrumbs,
           component: () =>
             import('@/views/app/Print/History.vue')
         },
         {
           path: 'inbox',
           name: 'Inbox',
-          beforeEnter: notForPrinting,
+          beforeEnter: notForPrinting && dropBreadcrumbs,
           component: () =>
             import('@/views/app/Inbox/Inbox.vue')
         }, {
           path: 'participated',
           name: 'Participated Cases',
-          beforeEnter: notForPrinting,
+          beforeEnter: notForPrinting && dropBreadcrumbs,
           component: () =>
             import('@/views/app/Participated/Participated.vue')
         }, {
           path: 'unassigned',
           name: 'Unassigned Cases',
-          beforeEnter: notForPrinting,
+          beforeEnter: notForPrinting && dropBreadcrumbs,
           component: () =>
             import('@/views/app/Unassigned/Unassigned.vue')
         }, {
           path: 'evaluation',
           name: 'Evaluation',
-          beforeEnter: notForPrinting,
+          beforeEnter: notForPrinting && dropBreadcrumbs,
           component: () =>
             import('@/views/app/Evaluation/EvaluationForm.vue')
         }, {
           path: 'profile',
           name: 'Profile Management',
+          beforeEnter: dropBreadcrumbs,
           component: () =>
             import('@/views/app/profile.vue')
         }, {
           path: 'password',
           name: 'Password Management',
+          beforeEnter: dropBreadcrumbs,
           component: () =>
             import('@/views/app/changePassword.vue')
         }

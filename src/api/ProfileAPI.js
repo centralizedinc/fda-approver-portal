@@ -50,15 +50,5 @@ export default class AuthAPI {
                 cb(err)
             })
     }
-
-    editPassword(modified_password, cb) {
-        axios.post('admin/password', modified_password).then((result) => {
-                cb(result.data.errors, result.data.model)
-            })
-            .catch(err => {
-                cb(err)
-            })
-    }
-
-
+    
 }

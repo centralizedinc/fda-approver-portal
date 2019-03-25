@@ -198,10 +198,10 @@
                 <v-breadcrumbs-item
                   v-for="(item, index) in breadcrumbs"
                   :key="index"
-                  @click="goTo('/app')"
+                  @click="goTo(item.href)"
                 >
-                  <v-icon color="primary">{{item.icon}}</v-icon>
-                  <span class="body-1 font-weight-light">{{item.name}}</span>
+                  <v-icon color="fdaGreen">{{item.icon}}</v-icon>
+                  <span class="caption font-weight-light">{{item.name}}</span>
                 </v-breadcrumbs-item>
               </v-breadcrumbs>
             </v-sheet>

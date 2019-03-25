@@ -1,7 +1,7 @@
 <template>
     <div>
       <application-table :models="unassigned" :headers="headers" :loading="loading" @view="viewApp"></application-table>
-      <application-overview v-if="show_overview" :show="show_overview" :canclaim="true" @claim="claim" @close="close">
+      <application-overview v-if="show_overview" :show="show_overview" :canclaim="true" :loading="loading_btn" @claim="claim" @close="close">
         <app-summary :form="form" :form_case="selected_case" slot="appsummary"></app-summary>
         <app-data :form="form" slot="appdata"></app-data>
         <uploaded-files :form="form" slot="uploadedfiles"></uploaded-files>
@@ -86,7 +86,7 @@ export default {
         .then(result => {
           this.unassigned = this.$store.state.unassigned.unassigned;
           this.loading = false;
-          
+
           var details = {
             productType: this.form.general_info.product_type,
             primaryActivity: this.form.general_info.primary_activity,
@@ -108,7 +108,7 @@ export default {
     },
     viewApp(app) {
       this.selected_case = app;
-      console.log("selected case: " + JSON.stringify(this.selected_case))
+      console.log("selected case: " + JSON.stringify(this.selected_case));
       this.$store
         .dispatch("GET_LICENSE_BY_CASE", this.selected_case._id)
         .then(result => {
@@ -168,18 +168,21 @@ export default {
     claim() {
       // console.log("test app: " + JSON.stringify(app));
       this.loading = true;
+      this.loading_btn = true;
       this.$store
         .dispatch("CLAIM", this.selected_case)
         .then(result => {
-          // this.init();
-          this.$store.commit("SET_CASE", { 
+          this.loading = false;
+          this.loading_btn = true;
+          this.$store.commit("SET_CASE", {
             _case: this.selected_case,
-            prev_module: '/app/unassigned'
+            prev_module: "/app/unassigned"
           });
           this.$router.push("/app/evaluation");
         })
         .catch(err => {
           this.loading = false;
+          this.loading_btn = true;
           console.log("err claim: ", err);
         });
     }

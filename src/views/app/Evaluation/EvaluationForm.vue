@@ -137,7 +137,7 @@
         <v-card-actions>
           <v-btn class="font-weight-light" outline color="error" @click="cancel">Cancel</v-btn>
           <v-spacer></v-spacer>
-          <v-btn class="font-weight-light" color="success" @click="decision(1)">Submit</v-btn>
+          <v-btn class="font-weight-light" :loading="loading" :disabled="loading" color="success" @click="decision(1)">Submit</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -158,7 +158,7 @@
             @click="show_confirmation=false"
           >Cancel</v-btn>
           <v-spacer></v-spacer>
-          <v-btn class="font-weight-light" color="success" @click="submit">Continue</v-btn>
+          <v-btn class="font-weight-light" color="success" :loading="loading" :disabled="loading" @click="submit">Continue</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -370,18 +370,18 @@ export default {
       this.show_confirmation = true;
     },
     submit() {
+      this.loading = true;
       this.evaluated_case.case_type = this.selected_case.case_type;
-      console.log("evaluated_case :", JSON.stringify(this.evaluated_case));
       this.$store
         .dispatch("EVALUATE", this.evaluated_case)
         .then(result => {
-          console.log("#######EVALUATE :", result);
+          this.loading = false;
           var prev_module = this.$store.state.evaluate.prev_module;
           this.$store.commit("CLEAR_CASE");
-          console.log("prev_module :", prev_module);
           this.$router.push(prev_module);
         })
         .catch(err => {
+          this.loading = false;
           console.log("err decision: ", err);
         });
     }

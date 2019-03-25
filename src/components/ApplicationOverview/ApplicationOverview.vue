@@ -64,7 +64,7 @@
       <v-divider></v-divider>
 
       <v-card-actions>
-        <v-btn flat v-if="canclaim" block color="success" @click="$emit('claim')">Claim</v-btn>
+        <v-btn flat v-if="canclaim" block color="success" :loading="loading" :disabled="loading" @click="$emit('claim')">Claim</v-btn>
         <v-btn v-else color="error" flat block @click="$emit('close')">Close</v-btn>
       </v-card-actions>
     </v-card>
@@ -87,6 +87,10 @@ export default {
        * 1 - inbox
        * 2 - participated
        */
+    },
+    loading: {
+      type: Boolean,
+      default: false
     }
   },
   data: () => ({

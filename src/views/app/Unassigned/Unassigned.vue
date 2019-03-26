@@ -71,7 +71,8 @@ export default {
         },
         charges: {},
         qualified: {}
-      }
+      },
+      loading_btn: false
     };
   },
   created() {

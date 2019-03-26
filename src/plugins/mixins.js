@@ -59,41 +59,41 @@ export default {
             return ''
           }
         },
-        getUser(user_id){
-          if(this.$store.state.users.users){
+        getUser(user_id) {
+          if (this.$store.state.users.users) {
             var user = null;
             user = this.$store.state.users.users.find(x => {
               return x._id === user_id
             })
             return user ? user.name : ''
-          }else{
+          } else {
             return ''
           }
         },
-        getProductLine(productLine_id){
-          if(this.$store.state.products.prod_line){
+        getProductLine(productLine_id) {
+          if (this.$store.state.products.prod_line) {
             var product_line = null;
             product_line = this.$store.state.products.prod_line.find(x => {
               return x._id === productLine_id
             })
             return product_line ? product_line.name : ''
-          }else{
+          } else {
             return ''
           }
         },
         getAdminUser(user_id) {
           var accounts = this.$store.state.accounts.admins_info;
-          var i = accounts ? accounts.findIndex(x => x._id === user_id) : -1;
+          var i = accounts ? accounts.findIndex(x => x._id.toString() === user_id) : -1;
           return i >= 0 ? accounts[i] : {}
         },
         getClientUser(user_id) {
           var accounts = this.$store.state.accounts.accounts_info;
-          var i = accounts ? accounts.findIndex(x => x._id === user_id) : -1;
-          return i >= 0 ? accounts[i] : {}
+          var account = accounts ? accounts.find(x => x._id.toString() === user_id) : {};
+          return account ? account : {}
         },
         numberWithCommas(x) {
-          return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      },
+          return x ? x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "0.00";
+        },
         // getProduct(product_id) {
         //   if (this.$store.state.products.productType) {
         //     var product = null;
@@ -155,16 +155,9 @@ export default {
           var _status = ["Approved", "Recommend", "Denied"]
           return _status[status]
         },
-        getActivity(task) {
-          var case_holder = this.$store.state.evaluate.selected_case;
-          var activity_holder = {}
-          case_holder.activities.forEach(data => {
-            if(data.task_id === task){
-              activity_holder = data
-            }
-          })
-          return activity_holder
-          console.log("")
+        getActivity(_case) {
+          var activity = _case && _case.activities ? _case.activities.find(x => x.task_id.toString() === _case.previous_task) : {};
+          return activity ? activity : {}
         },
         getRegionName(id) {
           for (var i = 0; i < this.$store.state.places.regions.length; i++) {

@@ -37,7 +37,6 @@
             ></v-text-field>
           </v-form>
         </v-card-text>
-
         <v-divider></v-divider>
         <v-card-actions transparent>
           <v-spacer></v-spacer>

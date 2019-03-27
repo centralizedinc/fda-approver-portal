@@ -70,7 +70,7 @@
               ripple
               @click="goTo('/app/participated')"
               class="ma-1"
-              :style="activeRoute('Participated')"
+              :style="activeRoute('Participated Cases')"
             >
               <v-list-tile-action>
                 <v-icon color="primary">book</v-icon>
@@ -149,33 +149,6 @@
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
-        <!-- LOGOUT DIALOG -->
-        <v-dialog v-model="showLogout" persistent max-width="300" transition="dialog-transition">
-          <v-card>
-            <v-toolbar
-              dark
-              color="fdaGreen"
-              style="background: linear-gradient(45deg, #104B2A 0%, #b5c25a 100%)"
-            >
-              <span class="title font-weight-light">Logout</span>
-            </v-toolbar>
-            <v-card-text>
-              <span class="font-weight-light">Are you sure you want to logout?</span>
-              <v-divider></v-divider>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                class="font-weight-light"
-                outline
-                color="primary"
-                dark
-                @click.native="showLogout = false"
-              >No</v-btn>
-              <v-btn class="font-weight-light" color="success" @click="logout">Yes</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
       </v-navigation-drawer>
       <v-toolbar app dark class="toolbarStyle">
         <v-btn icon color="rgba(0, 0, 0, 0.18)" @click.stop="mini = !mini" v-if="!isMiniView">
@@ -203,17 +176,17 @@
       <!-- <v-content> -->
       <v-container fluid>
         <!-- <span class="headline font-weight-thin">{{page_name}}</span>
-      <v-breadcrumbs divider="/">
-       <v-breadcrumbs-item>
-         <v-icon color="primary">home</v-icon><span class="caption font-weight-light">Home</span>
-       </v-breadcrumbs-item> 
-       <v-breadcrumbs-item>
-         <v-icon>book</v-icon><span class="caption font-weight-light">Certficates</span>
-       </v-breadcrumbs-item>
-       <v-breadcrumbs-item>
-         <v-icon>edit</v-icon><span class="caption font-weight-light">New Application</span>
-       </v-breadcrumbs-item>  
-      </v-breadcrumbs>
+        <v-breadcrumbs divider="/">
+        <v-breadcrumbs-item>
+          <v-icon color="primary">home</v-icon><span class="caption font-weight-light">Home</span>
+        </v-breadcrumbs-item> 
+        <v-breadcrumbs-item>
+          <v-icon>book</v-icon><span class="caption font-weight-light">Certficates</span>
+        </v-breadcrumbs-item>
+        <v-breadcrumbs-item>
+          <v-icon>edit</v-icon><span class="caption font-weight-light">New Application</span>
+        </v-breadcrumbs-item>  
+        </v-breadcrumbs>
         <v-divider></v-divider>-->
         <v-card class="mt-3 mx-auto" color="fdaSilver">
           <v-layout row wrap ml-3>
@@ -228,10 +201,10 @@
                 <v-breadcrumbs-item
                   v-for="(item, index) in breadcrumbs"
                   :key="index"
-                  @click="goTo('/app')"
+                  @click="goTo(item.href)"
                 >
-                  <v-icon color="primary">{{item.icon}}</v-icon>
-                  <span class="body-1 font-weight-light">{{item.name}}</span>
+                  <v-icon color="fdaGreen">{{item.icon}}</v-icon>
+                  <span class="caption font-weight-light">{{item.name}}</span>
                 </v-breadcrumbs-item>
               </v-breadcrumbs>
             </v-sheet>
@@ -244,25 +217,40 @@
         <router-view></router-view>
         <!-- </transition> -->
       </v-container>
-      <!-- </v-content> -->
-      <v-footer
-        app
-        dark
-        class="pa-1"
-        style="background: linear-gradient(5deg, #b5c25a 0%, #104b2a 100%)"
-      >
-        <span class="caption">Copyright © 2019 FDA All rights reserved.</span>
-        <v-spacer></v-spacer>
-        <span class="caption">Food And Drugs Administration of the Philippines</span>
-      </v-footer>
     </v-container>
-  <!-- </v-content> -->
-   <v-footer dark style="background: linear-gradient(45deg, #b5c25a 0%, #104b2a 100%)">
+    <v-footer app dark style="background: linear-gradient(45deg, #b5c25a 0%, #104b2a 100%)">
       <span class="caption">Copyright © 2019 FDA All rights reserved. v{{app_version}}</span>
       <v-spacer></v-spacer>
-      <span class="caption">Food And Drug Administration of the Philippines </span>                           
+      <span class="caption">Food And Drug Administration of the Philippines</span>
     </v-footer>
-</v-app>
+    <!-- LOGOUT DIALOG -->
+    <v-dialog v-model="showLogout" persistent max-width="300" transition="dialog-transition">
+      <v-card>
+        <v-toolbar
+          dark
+          color="fdaGreen"
+          style="background: linear-gradient(45deg, #104B2A 0%, #b5c25a 100%)"
+        >
+          <span class="title font-weight-light">Logout</span>
+        </v-toolbar>
+        <v-card-text>
+          <span class="font-weight-light">Are you sure you want to logout?</span>
+          <v-divider></v-divider>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            class="font-weight-light"
+            outline
+            color="primary"
+            dark
+            @click.native="showLogout = false"
+          >No</v-btn>
+          <v-btn class="font-weight-light" color="success" @click="logout">Yes</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-app>
 </template>
 
 <script>
@@ -324,39 +312,17 @@ export default {
     page_name() {
       return this.$route.name;
     },
-    breadcrumbs() {
-      return [
-        {
-          icon: "home",
-          name: "Dashboard",
-          disabled: false,
-          href: "breadcrumbs_dashboard"
-        },
-        // {
-        //   icon: "card_membership",
-        //   name: "License",
-        //   disabled: false,
-        //   href: "breadcrumbs_dashboard"
-        // },
-        {
-          icon: "book",
-          name: "Certificates",
-          disabled: false,
-          href: "breadcrumbs_dashboard"
-        }
-        // {
-        //   icon: "far fa-creadit-card",
-        //   name: "Payments",
-        //   disabled: false,
-        //   href: "breadcrumbs_dashboard"
-        // },
-      ];
+    app_version() {
+      return process.env.VUE_APP_VERSION;
     },
     app_version(){
       return process.env.VUE_APP_VERSION
     },
     isMiniView(){
         return this.$vuetify.breakpoint.smAndDown
+    },
+    breadcrumbs() {
+      return this.$store.state.breadcrumbs.navigation;
     }
   }
 };

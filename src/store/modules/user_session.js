@@ -1,7 +1,7 @@
 import AuthAPI from '@/api/AuthAPI';
+import PasswordApi from '../../api/PasswordAPI'
 
 const state = {
-    isAuthenticated: false,
     token: null,
     account: {}
 }
@@ -9,10 +9,11 @@ const state = {
 const mutations = {
     LOGIN(state, account) {
         state.token = account.token;
-        state.account = account;
+        state.account = account.user;
     },
     LOGOUT(state) {
         state.token = null;
+        state.account = {}
     }
 }
 
@@ -52,6 +53,24 @@ var actions = {
                 }
             })
         })
+    },
+    
+    LOGOUT(context){
+        context.commit('LOGOUT')
+    },
+
+    REQUEST_RESET_PASSWORD(context, old_password) {
+        return new PasswordApi(context.rootState.user_session.token)
+            .requestResetPassword(old_password)
+    },
+
+    CONFIRM_RESET_PASSWORD(context, token) {
+        return new PasswordApi(token).confirmResetPassword()
+    },
+
+    RESET_PASSWORD(context, account) {
+        console.log('account :', account);
+        return new PasswordApi().resetPassword(account)
     }
 }
 

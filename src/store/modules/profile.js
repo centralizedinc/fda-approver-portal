@@ -53,18 +53,6 @@ var actions = {
             })
         })
 
-    },
-    EDIT_PASSWORD(context, modified_credentials) {
-        return new Promise((resolve, reject) => {
-            new ProfileType(context.rootState.user_session.token).editPassword(modified_credentials, (err, data) => {
-                if (err) {
-                    reject(err)
-                } else {
-                    resolve(data)
-                }
-            })
-        })
-
     }
 
 }

@@ -57,11 +57,15 @@
               >
                 <template slot="items" slot-scope="props">
                   <td>{{ getTask(selected_case.case_type, props.item.task_id).name }}</td>
-                  <td :class="['text--approved', 'text--recommend', 'text--disapproved'][props.item.status]">{{ getActivityStatus(props.item.status) }}</td>
-                  <td :class="getClientUser(props.item.assigned_user).last_name ? 'text--fdaBlueGreen' : ''">
-                    {{ 
-                      getAdminUser(props.item.assigned_user).last_name || 
-                      (getClientUser(props.item.assigned_user).last_name ? 'Client' : "") 
+                  <td
+                    :class="['text--approved', 'text--recommend', 'text--disapproved'][props.item.status]"
+                  >{{ getActivityStatus(props.item.status) }}</td>
+                  <td
+                    :class="getClientUser(props.item.assigned_user).last_name ? 'text--fdaBlueGreen' : ''"
+                  >
+                    {{
+                    getAdminUser(props.item.assigned_user).last_name ||
+                    (getClientUser(props.item.assigned_user).last_name ? 'Client' : "")
                     }}
                   </td>
                   <td>{{ props.item.remarks }}</td>
@@ -115,7 +119,7 @@
         >Recommend</v-btn>
       </v-card-actions>
     </v-card>
-    <v-dialog v-model="show_recommend" persistent transition="dialog-transition">
+    <v-dialog v-model="show_recommend" persistent width="400px" transition="dialog-transition">
       <v-card>
         <v-card-title class="headline">Recommend to</v-card-title>
         <v-card-text>
@@ -129,9 +133,11 @@
             item-value="_id"
           ></v-autocomplete>
         </v-card-text>
+        <v-divider></v-divider>
         <v-card-actions>
-          <v-btn class="font-weight-light" color="error" @click="cancel">Cancel</v-btn>
-          <v-btn class="font-weight-light" color="success" @click="decision(1)">Submit</v-btn>
+          <v-btn class="font-weight-light" outline color="error" @click="cancel">Cancel</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn class="font-weight-light" :loading="loading" :disabled="loading" color="success" @click="decision(1)">Submit</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -152,7 +158,7 @@
             @click="show_confirmation=false"
           >Cancel</v-btn>
           <v-spacer></v-spacer>
-          <v-btn class="font-weight-light" color="success" @click="submit">Continue</v-btn>
+          <v-btn class="font-weight-light" color="success" :loading="loading" :disabled="loading" @click="submit">Continue</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -162,7 +168,12 @@
       <uploaded-files :form="form" slot="uploadedfiles"></uploaded-files>
       <output-docs :form="form" slot="outputdocs"></output-docs>
       <app-history :form="form" slot="apphistory"></app-history>
-      <payment-details :form="form" :charges="charges" :form_case="selected_case" slot="paymentdetails"></payment-details>
+      <payment-details
+        :form="form"
+        :charges="charges"
+        :form_case="selected_case"
+        slot="paymentdetails"
+      ></payment-details>
     </application-overview>
   </v-layout>
 </template>
@@ -241,7 +252,7 @@ export default {
       recommended_tasks: [],
       charges: {},
       cases: null,
-      case_holder: null,
+      case_holder: null
     };
   },
   created() {
@@ -252,7 +263,9 @@ export default {
       this.loading = true;
       this.selected_case = this.$store.state.evaluate.selected_case;
       this.evaluated_case.case_id = this.selected_case._id;
-      console.log("get user data: " + JSON.stringify(this.$store.state.users.users))
+      console.log(
+        "get user data: " + JSON.stringify(this.$store.state.users.users)
+      );
       this.$store
         .dispatch("GET_LICENSE_BY_CASE", this.selected_case._id)
         .then(result => {
@@ -296,8 +309,8 @@ export default {
           return this.$store.dispatch("SET_USER");
         })
         .then(result => {
-          console.log("set user: " + JSON.stringify(result))
-          return this.$store.dispatch()
+          console.log("set user: " + JSON.stringify(result));
+          return this.$store.dispatch();
         })
         .catch(err => {
           console.log("err loadEvaluator:", err);
@@ -357,18 +370,18 @@ export default {
       this.show_confirmation = true;
     },
     submit() {
+      this.loading = true;
       this.evaluated_case.case_type = this.selected_case.case_type;
-      console.log("evaluated_case :", JSON.stringify(this.evaluated_case));
       this.$store
         .dispatch("EVALUATE", this.evaluated_case)
         .then(result => {
-          console.log("#######EVALUATE :", result);
+          this.loading = false;
           var prev_module = this.$store.state.evaluate.prev_module;
           this.$store.commit("CLEAR_CASE");
-          console.log("prev_module :", prev_module);
           this.$router.push(prev_module);
         })
         .catch(err => {
+          this.loading = false;
           console.log("err decision: ", err);
         });
     }

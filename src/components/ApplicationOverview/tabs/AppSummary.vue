@@ -18,10 +18,10 @@
     <v-flex xs12 md8>{{}}</v-flex> -->
     <v-flex xs12 md4 class="subheading">Previous Task</v-flex>
     <v-flex xs12 md8>{{getTask(form_case.case_type, form_case.previous_task).name}}</v-flex>
-    <v-flex xs12 md4 class="subheading">Previous Task Status</v-flex>
-    <v-flex xs12 md8>{{getActivityStatus(getActivity(form_case.previous_task).status)}}</v-flex>
+    <v-flex xs12 md4 class="subheading">Previous Task Action</v-flex>
+    <v-flex xs12 md8>{{getActivityStatus(getActivity(form_case).status)}}</v-flex>
     <v-flex xs12 md4 class="subheading">Created by</v-flex>
-    <v-flex xs12 md8>{{getClientUser(form.created_by).first_name + getClientUser(form.created_by).last_name}}</v-flex>
+    <v-flex xs12 md8>{{getClientUser(form.created_by).first_name}} {{getClientUser(form.created_by).last_name}}</v-flex>
     <v-flex xs12 md4 class="subheading">Created Date</v-flex>
     <v-flex xs12 md8>{{formatDate(form_case.date_created)}}</v-flex>
   </v-layout>

@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-container fluid class="bg">
-      <v-navigation-drawer app :mini-variant="mini" width="250">
+      <v-navigation-drawer app :mini-variant="mini" width="250" v-model="showNav">
         <v-toolbar dark style="height:100px" class="toolbarStyle">
           <v-list class="pa-0">
             <v-list-tile
@@ -178,7 +178,7 @@
         </v-dialog>
       </v-navigation-drawer>
       <v-toolbar app dark class="toolbarStyle">
-        <v-btn icon color="rgba(0, 0, 0, 0.18)" @click.stop="mini = !mini">
+        <v-btn icon color="rgba(0, 0, 0, 0.18)" @click.stop="mini = !mini" v-if="!isMiniView">
           <v-icon v-if="mini">menu</v-icon>
           <v-icon v-else>chevron_left</v-icon>
         </v-btn>
@@ -194,6 +194,9 @@
         </v-btn>
         <v-btn icon>
           <v-icon small>fas fa-indent</v-icon>
+        </v-btn>
+        <v-btn flat icon v-if="isMiniView" @click="showNav=!showNav">
+          <v-icon>menu</v-icon>
         </v-btn>
       </v-toolbar>
       <notification></notification>
@@ -271,6 +274,7 @@ export default {
   //#########################
   data() {
     return {
+      showNav:true,
       showLogout: false,
       mini: false,
       route_name: "",
@@ -350,6 +354,9 @@ export default {
     },
     app_version(){
       return process.env.VUE_APP_VERSION
+    },
+    isMiniView(){
+        return this.$vuetify.breakpoint.smAndDown
     }
   }
 };

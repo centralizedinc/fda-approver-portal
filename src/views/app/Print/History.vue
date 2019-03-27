@@ -29,8 +29,9 @@
       <v-dialog v-model="dialog" persistent max-width="500px" transition="dialog-transition">
         <v-card>
           <v-card-title class="title">Do you want to print again this application?</v-card-title>
+          <v-divider></v-divider>
           <v-card-actions>
-            <v-btn class="font-weight-light" color="error" @click="cancel">Cancel</v-btn>
+            <v-btn class="font-weight-light" color="secondary" outline @click="cancel">Cancel</v-btn>
             <v-spacer></v-spacer>
             <v-btn class="font-weight-light" color="success" @click="rePrint">Continue</v-btn>
           </v-card-actions>

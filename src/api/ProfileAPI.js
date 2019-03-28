@@ -11,12 +11,12 @@ import BaseURL from '../utils/BaseURL';
 
 export default class AuthAPI {
     constructor() {
-        axios.defaults.baseURL = BaseURL.accounts_secured;
+        axios.defaults.baseURL = process.env.VUE_APP_API_BASE_URI
     }
     //Profile
     getProfilebyId(profile_id, cb) {
         console.log("##########GETPROFILEID" + profile_id)
-        axios.get('admin/' + profile_id).then((result) => {
+        axios.get('secured/accounts/admin/' + profile_id).then((result) => {
                 console.log("###API### GET PROFILE" + JSON.stringify(result.data))
                 if (result.data.success) {
                     cb(result.data.errors, result.data.model)
@@ -31,7 +31,7 @@ export default class AuthAPI {
 
     addProfile(new_profile, cb) {
         console.log("api############# add admin" + JSON.stringify(new_profile))
-        axios.post('admin', new_profile).then((result) => {
+        axios.post('secured/accounts/admin/', new_profile).then((result) => {
                 console.log("api############# ADD PROFILE")
                 cb(result.data.errors, result.data.model)
             })
@@ -40,15 +40,38 @@ export default class AuthAPI {
             })
     }
 
-    editProfile(modified_profile, cb) {
-        var id = modified_profile._id
-        axios.post('admin/' + id, modified_profile).then((result) => {
-                console.log("api############# Edit PROFILE" + JSON.stringify(modified_profile))
-                cb(result.data.errors, result.data.model)
-            })
-            .catch(err => {
-                cb(err)
-            })
-    }
+    editProfile(profile) {
+        console.log(JSON.stringify(profile))
+        return new Promise((resolve, reject) => {
+          if(profile.avatar){
+              axios.post("documents/avatars?account_id=" + profile.account._id, profile.avatar)
+                .then(result1 => {
+                  if (result1.data.success) {
+                      console.log("############# SAVING RESPONSE: " + JSON.stringify(result1.data))
+                    profile.account.avatar = result1.data.model;
+                    return axios.post("secured/accounts/admin/" + profile.account._id,profile.account);
+                  } else {
+                    resolve(result1.data);
+                  }
+                })
+                .then(result2 => {
+                  console.log("############# SAVING RESPONSE: " + JSON.stringify(result2.data))
+                  resolve(result2.data);
+                })
+                .catch(err => {
+                  reject(err);
+                });
+              }else{
+                axios.post("secured/accounts/admin/" + profile.account._id,profile.account)
+                  .then(result2 => {
+                    console.log("############# SAVING RESPONSE: " + JSON.stringify(result2.data))
+                    resolve(result2.data);
+                  })
+                  .catch(err => {
+                    reject(err);
+                  });
+              }
+        });
+      }
     
 }

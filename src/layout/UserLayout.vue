@@ -10,7 +10,10 @@
               style=" height: 100px; background:url('https://i.postimg.cc/YCbD5mHP/image.png') repeat center center"
             >
               <v-list-tile-avatar class="mt-4">
-                <img src="http://i.pravatar.cc/300">
+                <v-avatar size="40" color="teal">
+                  <img v-if="admin.avatar" :src="admin.avatar.location" alt="alt">
+                  <span v-else>{{admin.first_name.substring(0,1) + admin.last_name.substring(0,1)}}</span>
+                </v-avatar>
               </v-list-tile-avatar>
               <v-spacer></v-spacer>
               <v-list-tile-content class="mt-4">
@@ -161,8 +164,9 @@
           <v-icon small>far fa-bell</v-icon>
         </v-btn>
         <v-btn icon>
-          <v-avatar size="40">
-            <img src="http://i.pravatar.cc/200" alt="alt">
+         <v-avatar size="40" color="teal">
+            <img v-if="admin.avatar" :src="admin.avatar.location" alt="alt">
+            <span v-else>{{admin.first_name.substring(0,1) + admin.last_name.substring(0,1)}}</span>
           </v-avatar>
         </v-btn>
         <v-btn icon>
@@ -266,7 +270,8 @@ export default {
       showLogout: false,
       mini: false,
       route_name: "",
-      isForPrinting: false
+      isForPrinting: false,
+      admin:{}
     };
   },
   //#########################
@@ -280,6 +285,7 @@ export default {
   //#########################
   methods: {
     init() {
+      this.admin = this.$store.state.user_session.account;
       this.$store
         .dispatch("IS_FOR_PRINTING")
         .then(result => {

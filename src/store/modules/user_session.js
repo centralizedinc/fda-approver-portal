@@ -14,6 +14,12 @@ const mutations = {
     LOGOUT(state) {
         state.token = null;
         state.account = {}
+    },
+    SET_AVATAR(state, avatar) {
+        if(!state.account.avatar){
+            state.account.avatar = {};
+        }
+        state.account.avatar.location = avatar;
     }
 }
 

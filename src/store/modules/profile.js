@@ -11,7 +11,8 @@ const mutations = {
         console.log("###PROFILE:SET###" + JSON.stringify(data))
         state.profile = data
         
-    }
+    },
+    
 }
 
 var actions = {
@@ -43,15 +44,7 @@ var actions = {
 
     },
     EDIT_PROFILE(context, modified_profile) {
-        return new Promise((resolve, reject) => {
-            new ProfileType(context.rootState.user_session.token).editProfile(modified_profile, (err, data) => {
-                if (err) {
-                    reject(err)
-                } else {
-                    resolve(data)
-                }
-            })
-        })
+        return  new ProfileType(context.rootState.user_session.token).editProfile(modified_profile);
 
     }
 

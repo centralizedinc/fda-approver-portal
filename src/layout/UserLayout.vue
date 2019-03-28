@@ -272,6 +272,7 @@ export default {
       route_name: "",
       isForPrinting: false,
       admin:{}
+      
     };
   },
   //#########################

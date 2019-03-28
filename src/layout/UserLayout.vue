@@ -30,12 +30,14 @@
               <v-icon color="primary">dashboard</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title class="body-1 font-weight-light">Dashboard</v-list-tile-title>
+              
+              <v-list-tile-title class="body-1 font-weight-light">Dashboard</v-list-tile-title> 
+                           
             </v-list-tile-content>
           </v-list-tile>
           <template v-if="isForPrinting">
             <v-list-tile @click="goTo('/app/print')" class="ma-1" :style="activeRoute('Print')">
-              <v-list-tile-action>
+              <v-list-tile-action>                
                 <v-icon color="primary">print</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
@@ -63,12 +65,13 @@
               :style="activeRoute('Inbox')"
             >
               <v-list-tile-action>
-                <v-icon color="primary">mail</v-icon>
+                <v-icon color="primary">mail</v-icon>                           
               </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title class="body-1 font-weight-light">Inbox</v-list-tile-title>
+              <v-list-tile-content> 
+                <span class="body-1 font-weight-light">Inbox <v-chip small outline color="primary">{{inbox_count}}</v-chip></span>                                               
               </v-list-tile-content>
             </v-list-tile>
+            
             <v-list-tile
               ripple
               @click="goTo('/app/participated')"
@@ -78,8 +81,8 @@
               <v-list-tile-action>
                 <v-icon color="primary">book</v-icon>
               </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title class="body-1 font-weight-light">Participated</v-list-tile-title>
+              <v-list-tile-content>                
+                <span class="body-1 font-weight-light">Participated <v-chip small outline color="primary">{{participated_count}}</v-chip></span>                                               
               </v-list-tile-content>
             </v-list-tile>
             <v-list-tile
@@ -92,7 +95,7 @@
                 <v-icon color="primary">drafts</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
-                <v-list-tile-title class="body-1 font-weight-light">Unassigned</v-list-tile-title>
+                <span class="body-1 font-weight-light">Unassigned <v-chip small outline color="primary">{{unassigned_count}}</v-chip></span>                                               
               </v-list-tile-content>
             </v-list-tile>
           </template>
@@ -272,7 +275,7 @@ export default {
       route_name: "",
       isForPrinting: false,
       admin:{}
-      
+
     };
   },
   //#########################
@@ -330,6 +333,15 @@ export default {
     },
     breadcrumbs() {
       return this.$store.state.breadcrumbs.navigation;
+    },
+    inbox_count(){
+      return this.$store.state.inbox.inboxes?this.$store.state.inbox.inboxes.length:0
+    },
+    participated_count(){
+      return this.$store.state.participated.participated?this.$store.state.participated.participated.length:0
+    },
+    unassigned_count(){
+      return this.$store.state.unassigned.unassigned?this.$store.state.unassigned.unassigned.length:0
     }
   }
 };

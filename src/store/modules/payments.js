@@ -86,34 +86,51 @@ var actions = {
     },
     SAVE_PAYMENT(context, fullDetails) {
         return new Promise((resolve, reject) => {
-        console.log("save payment store actions" + JSON.stringify(fullDetails))
+            console.log("save payment store actions" + JSON.stringify(fullDetails))
 
-        new PaymentAPI(context.rootState.user_session.token).savePayment(fullDetails, (details, err) => {
-            if (!err) {
-                console.log('actions save licenses: ' + JSON.stringify(details))
-                resolve(details)
-            } else {
-                console.log("actions save licenses error: " + JSON.stringify(err))
-                reject(err)
-            }
+            new PaymentAPI(context.rootState.user_session.token).savePayment(fullDetails, (details, err) => {
+                if (!err) {
+                    console.log('actions save licenses: ' + JSON.stringify(details))
+                    resolve(details)
+                } else {
+                    console.log("actions save licenses error: " + JSON.stringify(err))
+                    reject(err)
+                }
+            })
         })
-    })
     },
     BILLS_PAYMENT(context, fullDetails) {
         console.log("bill payment store actions" + JSON.stringify(fullDetails))
         return new Promise((resolve, reject) => {
-        new PaymentAPI(context.rootState.user_session.token).feesDetails(fullDetails, (details, err) => {
-            if (!err) {
-                console.log('actions save licenses: ' + JSON.stringify(details))
-                resolve(details)
-            } else {
-                console.log("actions save licenses error: " + JSON.stringify(err))
-                reject(err)
-            }
+            new PaymentAPI(context.rootState.user_session.token).feesDetails(fullDetails, (details, err) => {
+                if (!err) {
+                    console.log('actions save licenses: ' + JSON.stringify(details))
+                    resolve(details)
+                } else {
+                    console.log("actions save licenses error: " + JSON.stringify(err))
+                    reject(err)
+                }
+            })
         })
-    })
-    }
-
+    },
+    SAVE_TRANSACTION(context, transaction) {
+        return new PaymentAPI(context.rootState.user_session.token).saveTransaction(transaction)
+    },
+    GET_COMPUTED_FEES(context, data) {
+        return new Promise((resolve, reject) => {
+            new PaymentAPI(context.rootState.user_session.token).computePayments(data)
+                .then((result) => {
+                    console.log("returning mutation GET_FEES: " + JSON.stringify(result.data))
+                    if (result.data.success) {
+                        context.commit('FEES', result.data.model.fees)
+                    }
+                    resolve(result.data)
+                }).catch((err) => {
+                    console.log(JSON.stringify(err))
+                    reject(err)
+                });
+        })
+    },
 }
 
 export default {

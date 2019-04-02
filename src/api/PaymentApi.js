@@ -74,6 +74,12 @@ export default class PaymentAPI {
         })
     }
 
+    saveTransaction(transaction) {
+        return axios.post('payments/transactions', transaction)
+    }
 
+    computePayments(data, cb) {
+        return axios.post('payments/rates/compute/case_no/' + data.case_no, data.details)
+    }
 
 }

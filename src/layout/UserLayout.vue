@@ -12,7 +12,7 @@
               <v-list-tile-avatar class="mt-4">
                 <v-avatar size="40" color="teal">
                   <img v-if="admin.avatar" :src="admin.avatar.location" alt="alt">
-                  <span v-else>{{admin.first_name.substring(0,1) + admin.last_name.substring(0,1)}}</span>
+                  <span v-else>{{userInitials}}</span>
                 </v-avatar>
               </v-list-tile-avatar>
               <v-spacer></v-spacer>
@@ -169,7 +169,7 @@
         <v-btn icon>
          <v-avatar size="40" color="teal">
             <img v-if="admin.avatar" :src="admin.avatar.location" alt="alt">
-            <span v-else>{{admin.first_name.substring(0,1) + admin.last_name.substring(0,1)}}</span>
+            <span v-else>{{userInitials}}</span>
           </v-avatar>
         </v-btn>
         <v-btn icon>
@@ -269,13 +269,12 @@ export default {
   //#########################
   data() {
     return {
-      showNav:true,
+      showNav: true,
       showLogout: false,
       mini: false,
       route_name: "",
       isForPrinting: false,
-      admin:{}
-
+      admin: {}
     };
   },
   //#########################
@@ -325,23 +324,38 @@ export default {
     app_version() {
       return process.env.VUE_APP_VERSION;
     },
-    app_version(){
-      return process.env.VUE_APP_VERSION
+    app_version() {
+      return process.env.VUE_APP_VERSION;
     },
-    isMiniView(){
-        return this.$vuetify.breakpoint.smAndDown
+    isMiniView() {
+      return this.$vuetify.breakpoint.smAndDown;
     },
     breadcrumbs() {
       return this.$store.state.breadcrumbs.navigation;
     },
-    inbox_count(){
-      return this.$store.state.inbox.inboxes?this.$store.state.inbox.inboxes.length:0
+    inbox_count() {
+      return this.$store.state.inbox.inboxes
+        ? this.$store.state.inbox.inboxes.length
+        : 0;
     },
-    participated_count(){
-      return this.$store.state.participated.participated?this.$store.state.participated.participated.length:0
+    participated_count() {
+      return this.$store.state.participated.participated
+        ? this.$store.state.participated.participated.length
+        : 0;
     },
-    unassigned_count(){
-      return this.$store.state.unassigned.unassigned?this.$store.state.unassigned.unassigned.length:0
+    unassigned_count() {
+      return this.$store.state.unassigned.unassigned
+        ? this.$store.state.unassigned.unassigned.length
+        : 0;
+    },
+    userInitials() {
+      var initials = "";
+      if (this.admin && this.admin.first_name && this.admin.last_name) {
+        initials =
+          this.admin.first_name.substring(0, 1) +
+          this.admin.last_name.substring(0, 1);
+      }
+      return initials;
     }
   }
 };

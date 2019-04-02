@@ -97,23 +97,54 @@
               </v-layout>
             </template>
           </v-flex>
+          
+          <v-flex xs5 v-if="is_payment">
+            <v-autocomplete
+              :items="mode_of_payments"
+              item-text="description"
+              item-value="code"
+              label="Mode of Payment"
+              outline
+              v-model="transaction.payment_details.mode_of_payment"
+            ></v-autocomplete>
+          </v-flex>
+
+          <v-flex xs6 offset-xs1 v-if="is_payment">
+            <v-text-field
+              name="amount"
+              label="Amount"
+              id="amount" outline 
+              prefix="₱"
+              type="number"
+              placeholder="0.00"
+              v-model="transaction.payment_details.total_amount"
+            ></v-text-field>
+          </v-flex>
 
           <!-- Remarks -->
-          <v-flex xs12 pa-3>
+          <v-flex xs12>
             <v-textarea outline label="Remarks" v-model="evaluated_case.remarks"></v-textarea>
           </v-flex>
         </v-layout>
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
-        <v-btn class="font-weight-light" color="error" @click="decision(2)">Disapprove</v-btn>
+        <v-btn class="font-weight-light" color="error" @click="decision(2)" :loading="loading">Disapprove</v-btn>
         <v-spacer></v-spacer>
 
-        <v-btn class="font-weight-light" color="success" @click="decision(0)">Approve</v-btn>
+        <v-btn 
+          class="font-weight-light" 
+          color="success" 
+          @click="decision(0)" 
+          :disabled="is_payment&&transaction.payment_details.mode_of_payment&&transaction.payment_details.total_amount<1"
+          :loading="loading">
+          {{ is_payment ? 'Submit Payment' : 'Approve'}}
+        </v-btn>
         <v-spacer v-if="recommended_tasks.length > 0"></v-spacer>
         <v-btn
           class="font-weight-light"
           color="info"
+          :loading="loading"
           v-if="recommended_tasks.length > 0"
           @click="show_recommend=true"
         >Recommend</v-btn>
@@ -143,13 +174,74 @@
     </v-dialog>
     <v-dialog
       v-model="show_confirmation"
-      max-width="300px"
+      :max-width="is_payment ? '700px' : '300px'"
       height="300px"
       persistent
-      transition="dialog-transition"
-    >
+      transition="dialog-transition">
       <v-card>
-        <v-card-title class="title">Do you want to proceed?</v-card-title>
+        <v-toolbar
+          height="80px"
+          color="fdaGreen"
+          dark class="headline"
+          style="background: linear-gradient(45deg, #104B2A 0%, #b5c25a 100%)">
+          {{is_payment ? 'Transaction Details' : 'Confirmation'}}
+        </v-toolbar>
+        <v-card-text>
+          <div v-if="is_payment">
+            <v-container grid-list-xl>
+              <v-layout row wrap>
+                <v-flex xs5 class="subheading">Application Fee:</v-flex>
+                <v-flex xs4>₱ {{numberWithCommas(charges.fee)}}</v-flex>
+                <v-flex xs3></v-flex>
+                <v-flex xs5 class="subheading">No. of year/s applied:</v-flex>
+                <v-flex xs4>{{charges.yearsApplied}} years</v-flex>
+                <v-flex xs3></v-flex>
+                <v-flex xs5 class="subheading">Surcharge:</v-flex>
+                <v-flex xs4>₱ {{numberWithCommas(charges.surcharge)}}</v-flex>
+                <v-flex xs3></v-flex>
+                <v-flex xs5 class="subheading">Legal Research Fund (LRF):</v-flex>
+                <v-flex xs4>₱ {{numberWithCommas(charges.lrf)}}</v-flex>
+                <v-flex xs3></v-flex>
+                <v-flex xs9 class="title" mt-1 mb-1>Total Payment Due:</v-flex>
+                <v-flex xs3>₱ {{numberWithCommas(charges.total)}}</v-flex>
+                <v-flex xs12>
+                  <v-divider></v-divider>
+                </v-flex>
+                <v-flex xs12>
+                  Previous Transactions
+                </v-flex>
+                <v-flex xs12 v-if="history_transactions && history_transactions.length > 0">
+                  <v-layout row wrap>
+                    <template v-for="(item, index) in history_transactions">
+                      <v-flex xs5 class="subheading" mt-1 mb-1 :key="index">
+                        <i>{{formatDate(item.date_created)}}</i>
+                      </v-flex>
+                      <v-flex xs4 :key="index">₱ {{numberWithCommas(item.payment_details.total_amount)}}</v-flex>
+                      <v-flex xs3 :key="index"></v-flex>
+                    </template>
+                  </v-layout>
+                </v-flex>
+                <v-flex xs11 offset-xs1 class="body-2" v-else>
+                  <i>No Previous Transaction</i>
+                </v-flex>
+                <v-flex xs9 class="title" mt-1 mb-1>Total Previous Amount:</v-flex>
+                <v-flex xs3>₱ {{numberWithCommas(total_previous)}}</v-flex>
+                <v-flex xs12>
+                  <v-divider></v-divider>
+                </v-flex>
+                <v-flex xs9 class="title" mt-1 mb-1>Total:</v-flex>
+                <v-flex xs3>₱ {{numberWithCommas(total_remaining)}}</v-flex>
+                <v-flex xs9 class="title" mt-1 mb-1>Amount Due ({{modeOfPayment.description}}):</v-flex>
+                <v-flex xs3>₱ {{numberWithCommas(transaction.payment_details.total_amount)}}</v-flex>
+                <v-flex xs9 class="title" mt-1 mb-1>Remaining Balance:</v-flex>
+                <v-flex xs3>₱ {{numberWithCommas(remaining_balance)}}</v-flex>
+              </v-layout>
+            </v-container>
+          </div>
+          <div v-else>
+            Do you want to proceed?
+          </div>
+        </v-card-text>
         <v-card-actions>
           <v-btn
             class="font-weight-light"
@@ -252,17 +344,84 @@ export default {
       recommended_tasks: [],
       charges: {},
       cases: null,
-      case_holder: null
+      case_holder: null,
+      is_payment: false,
+      transaction: {
+        payment_details: {
+          total_amount: null,
+          mode_of_payment: ""
+        },
+        transaction_details: {
+          application_type: "",
+          application: "",
+          case_no: "",
+          order_payment: {
+            fee: 0,
+            lrf: 0,
+            penalty: 0,
+            total_amount: 0
+          }
+        }
+      },
+      mode_of_payments: [
+        {
+          description: "Cash",
+          code: 1
+        },
+        {
+          description: "Credit Card",
+          code: 2
+        },
+        {
+          description: "Cheque",
+          code: 3
+        },
+        {
+          description: "ECPay",
+          code: 4
+        }
+      ],
+      history_transactions: []
     };
   },
   created() {
     this.init();
+  },
+  computed: {
+    total_previous() {
+      var total = 0;
+      this.history_transactions.forEach(trans => {
+        total += trans.payment_details.total_amount;
+      });
+      return total;
+    },
+    total_remaining() {
+      return this.charges.total - this.total_previous;
+    },
+    remaining_balance() {
+      var total =
+        this.total_remaining - this.transaction.payment_details.total_amount;
+      if (total < 1) {
+        return 0;
+      }
+      return total;
+    },
+    modeOfPayment() {
+      if (this.transaction.payment_details.mode_of_payment) {
+        return this.mode_of_payments.find(
+          x => x.code === this.transaction.payment_details.mode_of_payment
+        );
+      } else return {};
+    }
   },
   methods: {
     init() {
       this.loading = true;
       this.selected_case = this.$store.state.evaluate.selected_case;
       this.evaluated_case.case_id = this.selected_case._id;
+      this.transaction.transaction_details.application_type = this.selected_case.application_type;
+      this.transaction.transaction_details.application = this.selected_case.case_type;
+      this.transaction.transaction_details.case_no = this.selected_case.case_no;
       console.log(
         "get user data: " + JSON.stringify(this.$store.state.users.users)
       );
@@ -289,7 +448,6 @@ export default {
             "this.recommended_tasks :",
             JSON.stringify(this.recommended_tasks)
           );
-          this.loading = false;
 
           console.log("this is form data: " + JSON.stringify(this.form));
           var details = {
@@ -299,18 +457,41 @@ export default {
             appType: this.form.application_type
           };
           console.log("load fees new license: " + JSON.stringify(details));
-          return this.$store.dispatch("GET_FEES", details);
+          return this.$store.dispatch("GET_COMPUTED_FEES", {
+            details,
+            case_no: this.selected_case.case_no
+          });
         })
         .then(result => {
-          this.charges = result;
+          this.charges = result.model.fees;
+          this.history_transactions = result.model.transactions;
           console.log(
-            "charges data payment details: " + JSON.stringify(this.charges)
+            "charges data payment details: " + JSON.stringify(result.model)
           );
+          if (this.charges) {
+            this.transaction.transaction_details.order_payment = {
+              fee: this.charges.fee,
+              lrf: this.charges.lrf,
+              penalty:
+                parseInt(this.charges.surcharge) +
+                parseInt(this.charges.interest),
+              total_amount: this.charges.total
+            };
+          }
           return this.$store.dispatch("SET_USER");
         })
         .then(result => {
           console.log("set user: " + JSON.stringify(result));
-          return this.$store.dispatch();
+          return this.$store.dispatch(
+            "GET_TASK_BY_ID",
+            this.selected_case.current_task
+          );
+        })
+        .then(result => {
+          console.log("is_paymentresult :", result.data);
+          this.is_payment =
+            result.data.model.start_process && !this.selected_case.is_paid;
+          this.loading = false;
         })
         .catch(err => {
           console.log("err loadEvaluator:", err);
@@ -372,18 +553,53 @@ export default {
     submit() {
       this.loading = true;
       this.evaluated_case.case_type = this.selected_case.case_type;
-      this.$store
-        .dispatch("EVALUATE", this.evaluated_case)
-        .then(result => {
-          this.loading = false;
-          var prev_module = this.$store.state.evaluate.prev_module;
-          this.$store.commit("CLEAR_CASE");
-          this.$router.push(prev_module);
-        })
-        .catch(err => {
-          this.loading = false;
-          console.log("err decision: ", err);
-        });
+      if (this.is_payment) {
+        var transaction = {};
+        this.$store
+          .dispatch("SAVE_TRANSACTION", this.transaction)
+          .then(result => {
+            transaction = result.data.model.transaction;
+            if (result.data.isFullyPaid) {
+              return this.$store.dispatch("EVALUATE", this.evaluated_case);
+            }
+          })
+          .then(result => {
+            console.log("transaction :", transaction);
+            this.loading = false;
+
+            var details = {
+              case_no: this.selected_case.case_no,
+              fee: this.charges.fee,
+              lrf: this.charges.lrf,
+              penalty:
+                parseFloat(this.charges.surcharge) +
+                parseFloat(this.charges.interest),
+              total: this.charges.total,
+              amount: this.transaction.payment_details.total_amount,
+              remaining_balance: this.remaining_balance
+            };
+            this.$print(details, "RCPT");
+
+            this.$store.commit("CLEAR_CASE");
+            this.$router.go(-1);
+          })
+          .catch(err => {
+            this.loading = false;
+            console.log("err decision: ", err);
+          });
+      } else {
+        this.$store
+          .dispatch("EVALUATE", this.evaluated_case)
+          .then(result => {
+            this.loading = false;
+            this.$store.commit("CLEAR_CASE");
+            this.$router.go(-1);
+          })
+          .catch(err => {
+            this.loading = false;
+            console.log("err decision: ", err);
+          });
+      }
     }
   }
 };

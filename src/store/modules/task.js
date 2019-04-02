@@ -25,7 +25,7 @@ var actions = {
         if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {
                 new TaskAPI(context.rootState.user_session.token).getTasksLicense(function (err, tasks) {
-                    if(!err){
+                    if (!err) {
                         context.commit('SET_LICENSE_TASKS', tasks)
                         resolve(tasks);
                     } else {
@@ -34,6 +34,9 @@ var actions = {
                 })
             });
         }
+    },
+    GET_TASK_BY_ID(context, task) {
+        return new TaskAPI(context.rootState.user_session.token).getTaskById(task)
     }
 }
 

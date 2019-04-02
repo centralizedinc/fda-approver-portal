@@ -29,4 +29,8 @@ export default class TaskAPI {
                 cb(err);
             });
     }
+
+    getTaskById(task) {
+        return axios.get('/lto-api/task/' + task)
+    }
 }

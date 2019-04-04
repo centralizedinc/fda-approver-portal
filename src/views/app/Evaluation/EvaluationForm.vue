@@ -375,10 +375,6 @@ export default {
         {
           description: "Cheque",
           code: 3
-        },
-        {
-          description: "ECPay",
-          code: 4
         }
       ],
       history_transactions: []

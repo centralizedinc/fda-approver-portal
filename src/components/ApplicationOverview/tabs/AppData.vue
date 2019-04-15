@@ -6,11 +6,11 @@
       style="padding: 2px"
     >Application Information</v-flex>
     <v-flex xs12 md4 class="subheading">Product Type</v-flex>
-    <v-flex xs12 md8>{{getProduct(form.general_info.product_type)}}</v-flex>
+    <v-flex xs12 md8>{{getProduct(form.general_info.product_type).name}}</v-flex>
     <v-flex xs12 md4 class="subheading">Primary Activity</v-flex>
     <v-flex xs12 md8>{{getPrimary(form.general_info.primary_activity)}}</v-flex>
     <v-flex xs12 md4 class="subheading">Declared Capital</v-flex>
-    <v-flex xs12 md8>{{getDeclared(form.general_info.declared_capital)}}</v-flex>
+    <v-flex xs12 md8>{{getDeclared(form.general_info.declared_capital).name}}</v-flex>
     <!-- Establishment Info -->
     <v-flex
       xs12
@@ -40,7 +40,7 @@
       :key="index"
     >
       <v-layout row wrap>
-        <v-flex xs12 md8 class="subheading">{{getProductLine(item.prod_line)}}</v-flex>
+        <v-flex xs12 md8 class="subheading">{{getProductLine(item.prod_line).name}}</v-flex>
         <v-flex xs12 md4>{{item.remarks}}</v-flex>
       </v-layout>
     </v-container>

@@ -7,7 +7,7 @@
     <v-flex xs12 md4 class="subheading">Name of Establishment</v-flex>
     <v-flex xs12 md8>{{form.estab_details.establishment_name}}</v-flex>
     <v-flex xs12 md4 class="subheading">Product Type</v-flex>
-    <v-flex xs12 md8>{{getProduct(form.general_info.product_type)}}</v-flex>
+    <v-flex xs12 md8>{{getProduct(form.general_info.product_type).name}}</v-flex>
     <v-flex xs12 md4 class="subheading">Primary Activity</v-flex>
     <v-flex xs12 md8>{{getPrimary(form.general_info.primary_activity)}}</v-flex>
     <v-flex xs12 md4 class="subheading">Current Task</v-flex>

@@ -1,6 +1,9 @@
 <template>
   <v-card>
     <v-card-title>
+      <v-btn color="success" @click="$emit('refresh')">REFRESH 
+        <v-icon dark right>refresh</v-icon>
+      </v-btn>
       <v-spacer></v-spacer>
       <v-text-field
         label="Search"

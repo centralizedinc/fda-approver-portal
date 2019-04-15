@@ -94,7 +94,6 @@ export default {
         .dispatch("CONFIRM_RESET_PASSWORD", this.$route.params.token)
         .then(result => {
           if (result.data.success) {
-            console.log("this.account :", result.data.model);
             this.account = result.data.model;
             var _self = this;
             this.rules.match_password = v =>

@@ -5,7 +5,8 @@ const state = {
     credit_card: null,
     cvv: null,
     expiry: null,
-    fee: null
+    fee: null,
+    history_transactions: []
 }
 
 const mutations = {
@@ -20,6 +21,9 @@ const mutations = {
     },
     FEES(state, charges) {
         state.fee = charges
+    },
+    SET_HISTORY_TRANSACTION(state, transaction) {
+        state.history_transaction = transaction
     },
     CLEAR_DATA(state) {
         state.credit_card = null
@@ -71,10 +75,8 @@ var actions = {
     },
     GET_FEES(context, fees) {
         return new Promise((resolve, reject) => {
-            console.log("entering mutation GET_FEES: " + JSON.stringify(fees))
             new PaymentAPI(context.rootState.user_session.token).feesDetails(fees, (fee, err) => {
                 if (!err) {
-                    console.log("returning mutation GET_FEES: " + JSON.stringify(fee))
                     context.commit('FEES', fee)
                     resolve(fee)
                 } else {
@@ -86,11 +88,8 @@ var actions = {
     },
     SAVE_PAYMENT(context, fullDetails) {
         return new Promise((resolve, reject) => {
-            console.log("save payment store actions" + JSON.stringify(fullDetails))
-
             new PaymentAPI(context.rootState.user_session.token).savePayment(fullDetails, (details, err) => {
                 if (!err) {
-                    console.log('actions save licenses: ' + JSON.stringify(details))
                     resolve(details)
                 } else {
                     console.log("actions save licenses error: " + JSON.stringify(err))
@@ -100,11 +99,9 @@ var actions = {
         })
     },
     BILLS_PAYMENT(context, fullDetails) {
-        console.log("bill payment store actions" + JSON.stringify(fullDetails))
         return new Promise((resolve, reject) => {
             new PaymentAPI(context.rootState.user_session.token).feesDetails(fullDetails, (details, err) => {
                 if (!err) {
-                    console.log('actions save licenses: ' + JSON.stringify(details))
                     resolve(details)
                 } else {
                     console.log("actions save licenses error: " + JSON.stringify(err))
@@ -120,11 +117,14 @@ var actions = {
         return new Promise((resolve, reject) => {
             new PaymentAPI(context.rootState.user_session.token).computePayments(data)
                 .then((result) => {
-                    console.log("returning mutation GET_FEES: " + JSON.stringify(result.data))
+                    console.log('result :', result.data)
                     if (result.data.success) {
                         context.commit('FEES', result.data.model.fees)
+                        context.commit('SET_HISTORY_TRANSACTION', result.data.model.transaction)
+                        resolve(result.data.model)
+                    } else {
+                        reject(result.data.errors)
                     }
-                    resolve(result.data)
                 }).catch((err) => {
                     console.log(JSON.stringify(err))
                     reject(err)

@@ -1,65 +1,46 @@
 <template>
     <div>
-      <application-table :models="inboxes" :headers="headers" :loading="loading" @view="evaluate"></application-table>
+      <application-table @refresh="init(true)" :models="inboxes" :loading="loading" @view="viewApp"></application-table>
+
+      <v-navigation-drawer
+        right
+        v-model="show_overview"
+        app
+        temporary>
+        <application-summary @close="show_overview=false"></application-summary>
+      </v-navigation-drawer>
     </div>
 </template>
 
 <script>
+import ApplicationTable from "@/components/ApplicationTable"
+import ApplicationSummary from "@/components/ApplicationSummary"
+
 export default {
   components: {
-    ApplicationTable: () => import("@/components/ApplicationTable")
+    ApplicationTable,
+    ApplicationSummary
   },
   data() {
     return {
-      inboxes: [],
-      headers: [
-        {
-          text: "Case No",
-          value: "case_no"
-        },
-        {
-          text: "Application",
-          value: "case_type"
-        },
-        {
-          text: "Type",
-          value: "application_type"
-        },
-        {
-          text: "Created By",
-          value: "client_name.last"
-        },
-        {
-          text: "Current Task",
-          value: "current_task_name"
-        },
-        {
-          text: "Current User",
-          value: "current_assigned_user_name.last_name"
-        },
-        {
-          text: "Remarks",
-          value: "remarks"
-        }
-        // {
-        //   text: "Actions",
-        //   value: "actions"
-        // }
-      ],
-      loading: false
+      loading: false,
+      show_overview: null
     };
   },
   created() {
     this.init();
   },
+  computed: {
+    inboxes(){
+      return this.$store.state.inbox.inboxes;
+    }
+  },
   methods: {
-    init() {
+    init(refresh) {
       this.loading = true;
-      this.inboxes = this.$store.state.inbox.inboxes;
       this.$store
-        .dispatch("GET_INBOX")
+        .dispatch("GET_INBOX", refresh)
         .then(result => {
-          this.inboxes = this.$store.state.inbox.inboxes;
           this.loading = false;
         })
         .catch(err => {
@@ -67,12 +48,9 @@ export default {
           this.loading = false;
         });
     },
-    evaluate(_case){
-      this.$store.commit('SET_CASE', {
-        _case,
-        prev_module: '/app/inbox'
-      })
-      this.$router.push('/app/evaluation')
+    viewApp(selected_case){
+      this.$store.commit("SET_CASE", selected_case);
+      this.show_overview = true;
     }
   }
 };

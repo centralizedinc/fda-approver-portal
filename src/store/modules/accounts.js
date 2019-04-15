@@ -22,7 +22,6 @@ var actions = {
                     .getAdminsInfo()
                     .then((result) => {
                         if (result.data.success) {
-                            console.log("admin users: " + JSON.stringify(result.data.model))
                             context.commit('SET_ADMINS_INFO', result.data.model)
                         }
                         resolve(result.data)

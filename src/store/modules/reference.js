@@ -1,11 +1,12 @@
 import LicenseAPI from '@/api/LicenseAPI';
-import AccountAPI from '@/api/AccountAPI';
 import CoreAPI from '../../api/CoreAPI';
 
 const state = {
     primary: null,
     batch: null,
-    prints: null
+    prints: null,
+    id_types: null,
+    designations: null
 }
 
 const mutations = {
@@ -17,6 +18,12 @@ const mutations = {
     },
     SET_PRINTS(state, prints) {
         state.prints = prints;
+    },
+    SET_ID_TYPE(state, id_types) {
+        state.id_types = id_types;
+    },
+    SET_DESIGNATION(state, designations) {
+        state.designations = designations;
     }
 }
 
@@ -26,7 +33,6 @@ var actions = {
             return new Promise((resolve, reject) => {
                 new CoreAPI(context.rootState.user_session.token).getPrimary((err, primary) => {
                     if (!err) {
-                        console.log('primary :', primary.length);
                         context.commit('SET_PRIMARY', primary);
                         resolve(primary)
                     } else {
@@ -42,7 +48,6 @@ var actions = {
             return new Promise((resolve, reject) => {
                 new CoreAPI(context.rootState.user_session.token).getBatch((err, batch) => {
                     if (!err) {
-                        console.log('batch :', batch.length);
                         context.commit('SET_BATCH', batch);
                         resolve(batch)
                     } else {
@@ -58,7 +63,6 @@ var actions = {
             return new Promise((resolve, reject) => {
                 new CoreAPI(context.rootState.user_session.token).addBatch(batch, (err, batch) => {
                     if (!err) {
-                        console.log('batch :', JSON.stringify(batch));
                         resolve(batch)
                     } else {
                         console.log('GET BATCH ERR :', err)
@@ -73,7 +77,6 @@ var actions = {
             return new Promise((resolve, reject) => {
                 new CoreAPI(context.rootState.user_session.token).getPrints((err, prints) => {
                     if (!err) {
-                        console.log('prints :', prints.length);
                         context.commit('SET_PRINTS', prints);
                         resolve(prints)
                     } else {
@@ -95,6 +98,52 @@ var actions = {
                         reject(err)
                     }
                 })
+            })
+        }
+    },
+    GET_ID_TYPES(context, refresh) {
+        if (context.rootState.user_session.token) {
+            return new Promise((resolve, reject) => {
+                if (refresh || !context.state.id_types) {
+                    new CoreAPI(context.rootState.user_session.token)
+                        .getIdType()
+                        .then((result) => {
+                            if (result.data.success) {
+                                context.commit('SET_ID_TYPE', result.data.model);
+                                resolve(result.data.model)
+                            } else {
+                                reject(result.data.errors)
+                            }
+                        }).catch((err) => {
+                            console.log('GET_ID_TYPE ERR :', err)
+                            reject(err)
+                        });
+                } else {
+                    resolve(context.state.id_types)
+                }
+            })
+        }
+    },
+    GET_DESIGNATIONS(context, refresh) {
+        if (context.rootState.user_session.token) {
+            return new Promise((resolve, reject) => {
+                if (refresh || !context.state.id_types) {
+                    new CoreAPI(context.rootState.user_session.token)
+                        .getDesignation()
+                        .then((result) => {
+                            if (result.data.success) {
+                                context.commit('SET_DESIGNATION', result.data.model);
+                                resolve(result.data.model)
+                            } else {
+                                reject(result.data.errors)
+                            }
+                        }).catch((err) => {
+                            console.log('GET_DESIGNATION ERR :', err)
+                            reject(err)
+                        });
+                } else {
+                    resolve(context.state.designations);
+                }
             })
         }
     }

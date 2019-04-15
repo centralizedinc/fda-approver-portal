@@ -1,5 +1,4 @@
 import LicenseAPI from '@/api/LicenseAPI';
-import AccountAPI from '@/api/AccountAPI';
 
 const state = {
     inboxes: []
@@ -13,28 +12,27 @@ const mutations = {
 }
 
 var actions = {
-    GET_INBOX(context) {
+    GET_INBOX(context, refresh) {
         if (context.rootState.user_session.token) {
-            const promises = [
-                new Promise((resolve, reject) => {
-                    new LicenseAPI(context.rootState.user_session.token).getInbox((err, inbox) => {
-                        if (!err) {
-                            resolve(inbox)
-                        } else {
-                            console.log(JSON.stringify(err))
+            return new Promise((resolve, reject) => {
+                if (refresh || !context.state.inboxes || context.state.inboxes.length === 0) {
+                    var inboxes = [];
+                    new LicenseAPI(context.rootState.user_session.token)
+                        .getInbox()
+                        .then((result) => {
+                            if (result.data.success) {
+                                inboxes = result.data.model;
+                                context.commit('SET_INBOX', inboxes)
+                                resolve(inboxes);
+                            } else {
+                                reject(result.data.errors)
+                            }
+                        }).catch((err) => {
                             reject(err)
-                        }
-                    })
-                })
-            ]
-            return Promise.all(promises).then(inboxes => {
-                var _inboxes = []
-                inboxes.forEach(inbox => {
-                    _inboxes = _inboxes.concat(inbox)
-                })
-                console.log('inboxes: ' + JSON.stringify(_inboxes))
-                context.commit('SET_INBOX', _inboxes)
-                return _inboxes;
+                        });
+                } else {
+                    resolve(context.state.inboxes)
+                }
             })
         }
     }

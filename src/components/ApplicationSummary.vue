@@ -1,99 +1,113 @@
 <template>
-    <v-dialog
-        v-model="show"
-        persistent
-        max-width="1000px"
-        transition="dialog-transition">
-        <v-card>
-            <v-card-title primary-title>
-                {{title}}
-                <v-spacer></v-spacer>
-                <v-btn color="error" flat icon @click="$emit('close')">
-                    <v-icon>close</v-icon>
+    <div>
+        <v-toolbar dark color="primary">
+            <span class="title font-weight-light">Application Overview</span>
+            <v-spacer></v-spacer>
+            <v-tooltip bottom>
+                <v-btn :loading="loading" slot="activator" flat icon
+                    @click="launchApp">
+                    <v-icon>launch</v-icon>
                 </v-btn>
-            </v-card-title>
-            <v-divider></v-divider>
-            <v-card-text>
-                <v-layout row wrap>
-                    <v-flex xs2 pr-3>
-                        <v-card class="header-panel">
-                            <v-item-group v-model="window" class="shrink mr-4 text-xs-center" mandatory tag="v-flex">
-                                <v-item v-for="item in tabs" :key="item">
-                                    <div slot-scope="{ active, toggle }">
-                                        <v-btn :input-value="active" icon @click="toggle">
-                                            <slot v-bind:name="`header-${item}`"></slot>
-                                        </v-btn>
-                                    </div>
-                                </v-item>
-                            </v-item-group>
-                        </v-card>
-                    </v-flex>
-                    <v-flex xs10>
-                        <v-card class="content-panel">
-                            <v-container id="scroll-target" pa-0 class="scroll-y container-panel">
-                                <v-layout row wrap v-scroll:#scroll-target="onScroll">
-                                    <v-window v-model="window" vertical class="window-panel">
-                                        <v-window-item v-for="item in tabs" :key="item">
-                                            <slot v-bind:name="`content-${item}`"></slot>
-                                        </v-window-item>
-                                    </v-window>
-                                </v-layout>
-                            </v-container>
-                        </v-card>
-                    </v-flex>
-                </v-layout>
-            </v-card-text>
-            <v-card-actions>
-                
-            </v-card-actions>
-        </v-card>
-    </v-dialog>
+                View Full Details
+            </v-tooltip>
+        </v-toolbar>
+        <v-layout row wrap>
+            <v-flex xs12 pa-1>
+                <v-card>
+                    <v-divider></v-divider>
+                    <v-card-text>
+                        <v-flex xs12 class="subheading" pa-1>
+                            Reference Number:
+                        </v-flex>
+                        <v-flex xs12 class="subheading font-weight-bold" pa-1>
+                            {{case_details.case_no}}
+                        </v-flex>
+                        <v-flex xs12>
+                            <v-divider></v-divider>
+                        </v-flex>
+                        <v-flex xs12 class="subheading" pa-1 mt-2>
+                            Application Type:
+                        </v-flex>
+                        <v-flex xs12 class="subheading font-weight-bold" pa-1>
+                            {{getAppType(case_details.application_type)}}
+                        </v-flex>
+                        <v-flex xs12>
+                            <v-divider></v-divider>
+                        </v-flex>
+                        <v-flex xs12 class="subheading" pa-1 mt-2>
+                            Date Applied:
+                        </v-flex>
+                        <v-flex xs12 class="subheading font-weight-bold" pa-1>
+                            {{formatDate(case_details.date_created)}}
+                        </v-flex>
+                        <v-flex xs12>
+                            <v-divider></v-divider>
+                        </v-flex>
+                        <v-flex xs12 class="subheading" pa-1 mt-2>
+                            Status:
+                        </v-flex>
+                        <v-flex xs12 class="subheading font-weight-bold" pa-1>
+                            {{getAppStatus(case_details.status)}}
+                        </v-flex>
+                        <v-flex xs12>
+                            <v-divider></v-divider>
+                        </v-flex>
+                        <v-flex xs12 class="subheading" pa-1 mt-2>
+                            Current Task:
+                        </v-flex>
+                        <v-flex xs12 class="subheading font-weight-bold" pa-1>
+                            {{getTask(case_details.case_type, case_details.current_task).name}}
+                        </v-flex>
+                        <v-flex xs12>
+                            <v-divider></v-divider>
+                        </v-flex>
+                        <v-flex xs12 class="subheading" pa-1 mt-2>
+                            Remarks:
+                        </v-flex>
+                        <v-flex xs12 class="subheading font-weight-bold" pa-1>
+                            {{case_details.remarks}}
+                        </v-flex>
+                    </v-card-text>
+                    <v-divider></v-divider>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="primary" :disabled="loading" outline @click="$emit('close')">Close</v-btn>
+                        <v-btn color="primary" :loading="loading" @click="launchApp">View</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-flex>
+        </v-layout>
+    </div>
 </template>
 
 <script>
 export default {
-  props: {
-    show: {
-      type: Boolean,
-      default: false
-    },
-    title: {
-      type: String,
-      default: "Application Summary"
-    },
-    tabs: {
-      type: Number,
-      default: 1
-    }
-  },
   data() {
     return {
-      window: 0
+      loading: false
     };
   },
+  computed: {
+    case_details() {
+      return this.$store.state.case.case_details;
+    }
+  },
   methods: {
-    onScroll(e) {
-      this.$emit("onscroll", e);
+    launchApp() {
+      this.loading = true;
+      this.$store
+        .dispatch("SHOW_REVIEW")
+        .then(result => {
+          this.loading = false;
+        })
+        .catch(err => {
+          this.$notifyError(err);
+          this.loading = false;
+        });
     }
   }
 };
 </script>
 
 <style>
-.header-panel {
-  max-height: 400px;
-}
-
-.content-panel {
-  min-height: 350px;
-}
-
-.container-panel {
-  max-height: 800px;
-  min-height: 400px;
-}
-
-.window-panel {
-  width: 1000px;
-}
 </style>

@@ -37,14 +37,19 @@ var actions = {
     GET_LICENSE_BY_CASE_NO(context, case_no) {
         if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {
-                new LicenseAPI(context.rootState.user_session.token).getLicenseByCaseNo(case_no, (err, license) => {
-                    if (!err) {
-                        resolve(license)
+                new LicenseAPI(context.rootState.user_session.token)
+                .getLicenseByCaseNo(case_no)
+                .then((result) => {
+                    if(result.data.success){
+                        context.commit('SET_LICENSE', result.data.model)
+                        resolve(result.data.model);
                     } else {
-                        console.log(JSON.stringify(err))
-                        reject(err)
+                        reject(result.data.errors)
                     }
-                })
+                }).catch((err) => {
+                    console.log('err :', err);  
+                    reject(err)
+                });
             })
         }
     },

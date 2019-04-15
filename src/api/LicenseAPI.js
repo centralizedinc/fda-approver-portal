@@ -3,14 +3,14 @@ import BaseURL from '../utils/BaseURL';
 
 export default class LicenseAPI {
     constructor(token) {
-        axios.defaults.baseURL = BaseURL.license;
+        axios.defaults.baseURL = process.env.VUE_APP_API_BASE_URI
         // axios.defaults.baseURL = 'http://localhost:3000/'
         axios.defaults.headers.common['Content-Type'] = 'application/json'
         axios.defaults.headers.common['access_token'] = token;
     }
 
     getLicenses(cb) {
-        axios.get('/').then((result) => {
+        axios.get('/lto-api').then((result) => {
             cb(result.data.errors, result.data.model)
         }).catch(err => {
             cb(err)
@@ -18,23 +18,19 @@ export default class LicenseAPI {
     }
 
     getLicensesByCase(case_id, cb) {
-        axios.get('/case_id/' + case_id).then((result) => {
+        axios.get('/lto-api/case_id/' + case_id).then((result) => {
             cb(result.data.errors, result.data.model)
         }).catch(err => {
             cb(err)
         })
     }
 
-    getLicenseByCaseNo(case_no, cb) {
-        axios.get('/case_no/' + case_no).then((result) => {
-            cb(result.data.errors, result.data.model)
-        }).catch(err => {
-            cb(err)
-        })
+    getLicenseByCaseNo(case_no) {
+        return axios.get('/lto-api/case_no/' + case_no)
     }
 
     getManyLicensesByCase(cases_id, cb) {
-        axios.post('/cases', cases_id).then((result) => {
+        axios.post('/lto-api/cases', cases_id).then((result) => {
             cb(result.data.errors, result.data.model)
         }).catch(err => {
             cb(err)
@@ -42,7 +38,7 @@ export default class LicenseAPI {
     }
 
     getChecklistByTask(task_id, cb) {
-        axios.get('/checklist/task/' + task_id).then((result) => {
+        axios.get('/lto-api/checklist/task/' + task_id).then((result) => {
             cb(result.data.errors, result.data.model)
         }).catch(err => {
             cb(err)
@@ -50,61 +46,34 @@ export default class LicenseAPI {
     }
 
     getRecommendedTasks(task_id, cb) {
-        axios.get('/task/recommended/' + task_id).then((result) => {
+        axios.get('/lto-api/task/recommended/' + task_id).then((result) => {
             cb(result.data.errors, result.data.model)
         }).catch(err => {
             cb(err)
         })
     }
 
-    getInbox(cb) {
-        console.log('enter claim')
-        axios.get('case/inbox').then((result) => {
-            console.log('license case/inbox: ' + JSON.stringify(result.data))
-            cb(result.data.errors, result.data.model)
-        }).catch(err => {
-            cb(err)
-        })
+    getInbox() {
+        return axios.get('/lto-api/case/inbox')
     }
 
-    getParticipated(cb) {
-        axios.get('case/participated').then((result) => {
-            console.log('license case/participated: ' + JSON.stringify(result.data))
-            cb(result.data.errors, result.data.model)
-        }).catch(err => {
-            cb(err)
-        })
+    getParticipated() {
+        return axios.get('/lto-api/case/participated')
     }
 
-    getUnassigned(cb) {
-        axios.get('case/unassigned').then((result) => {
-            console.log('license case/unassigned: ' + JSON.stringify(result.data.model))
-            cb(result.data.errors, result.data.model)
-        }).catch(err => {
-            cb(err)
-        })
+    getUnassigned() {
+        return axios.get('/lto-api/case/unassigned')
     }
 
-    claim(claimed_id, cb) {
-        console.log("claimed_id: " + JSON.stringify(claimed_id));
-        axios.post('case/claim', {
-            id: claimed_id
-        }).then((result) => {
-            console.log('license case/claim: ' + JSON.stringify(result.data))
-            cb(result.data.errors, result.data.model)
-        }).catch(err => {
-            cb(err)
-        })
+    claim(case_no) {
+        return axios.get('/lto-api/case/claim/' + case_no)
     }
 
-    evaluate(params, cb) {
-        console.log('evaluate license params: ' + JSON.stringify(params))
-        axios.post('case/evaluate', params).then((result) => {
-            console.log('license case/evaluate: ' + JSON.stringify(result.data))
-            cb(result.data.errors, result.data.model)
-        }).catch(err => {
-            console.log('check err: ', err)
-            cb(err)
-        })
+    unclaim(case_no) {
+        return axios.get('/lto-api/case/unclaim/' + case_no)
+    }
+
+    evaluate(params) {
+        return axios.post('/lto-api/case/evaluate', params)
     }
 }

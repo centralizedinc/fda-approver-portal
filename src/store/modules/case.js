@@ -1,8 +1,19 @@
 import CaseAPI from '../../api/CaseAPI';
 
 const state = {
+    case_details: {},
+    form_details: {
+        general_info: {},
+        estab_details: {},
+        auth_officer: {
+            mail_add: {}
+        },
+        qualified: []
+    },
     cases: [],
-    complied: []
+    complied: [],
+    overview: null,
+    review: false
 }
 
 const mutations = {
@@ -14,6 +25,24 @@ const mutations = {
     },
     CLEAR_DATA(state) {
         state.cases = [];
+    },
+    SET_CASE(state, case_details) {
+        state.case_details = case_details
+    },
+    SET_FORM(state, form_details) {
+        state.form_details = form_details
+    },
+    SHOW_OVERVIEW(state) {
+        state.overview = true
+    },
+    CLOSE_OVERVIEW(state) {
+        state.overview = false
+    },
+    SHOW_REVIEW(state) {
+        state.review = true
+    },
+    CLOSE_REVIEW(state) {
+        state.review = false
     }
 }
 
@@ -23,7 +52,6 @@ var actions = {
             new CaseAPI(context.rootState.user_session.token).getLicenseCases()
                 .then((result) => {
                     if (result.data.success) {
-                        console.log("get cases commit: " + JSON.stringify(result))
                         context.commit('SET_CASES', result.data.model);
                         resolve(result.data.model)
                     } else {
@@ -53,7 +81,6 @@ var actions = {
             CaseApi.uploadFile(comply)
                 .then((result) => {
                     var files = result.data.model
-                    console.log('files :', files);
                     var compliance = {
                         case_id: comply.case_id,
                         remarks: comply.remarks,
@@ -61,7 +88,6 @@ var actions = {
                     }
                     return CaseApi.submitCompliance(compliance)
                 }).then((result) => {
-                    console.log('result :', result);
                     resolve(result.data)
                 })
                 .catch((err) => {
@@ -73,6 +99,23 @@ var actions = {
         if (context.rootState.user_session.token) {
             return new CaseAPI(context.rootState.user_session.token).getActivities();
         }
+    },
+    SHOW_REVIEW(context) {
+        // temporary license only
+        return new Promise((resolve, reject) => {
+            context.dispatch("GET_LICENSE_BY_CASE_NO",
+                    context.state.case_details.case_no, {
+                        root: true
+                    })
+                .then(license => {
+                    context.commit('SET_FORM', license);
+                    context.commit('SHOW_REVIEW')
+                    resolve(license);
+                })
+                .catch(err => {
+                    reject(err)
+                });
+        })
     }
 }
 

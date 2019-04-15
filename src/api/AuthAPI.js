@@ -3,18 +3,16 @@ import BaseURL from '../utils/BaseURL';
 
 export default class AuthAPI {
     constructor() {
-        axios.defaults.baseURL = BaseURL.auth;
+        axios.defaults.baseURL = process.env.VUE_APP_API_BASE_URI
     }
 
     login(user, cb) {
-        axios.post("/auth/admin", user)
+        axios.post("/public/accounts/auth/admin", user)
             .then(result => {
-                console.log('user: ' + JSON.stringify(result.data.model));
-
                 cb(result.data.errors, result.data.model)
             })
             .catch(err => {
-                console.log('err: ' + JSON.stringify(err))
+                console.log('login err: ' + JSON.stringify(err))
                 cb(err)
             });
     }

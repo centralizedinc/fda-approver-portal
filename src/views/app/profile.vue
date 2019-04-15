@@ -130,7 +130,6 @@ export default {
   computed: {},
   methods: {
     init() {
-      console.log(JSON.stringify(this.$store.state.user_session.account))
       this.admin = JSON.parse(JSON.stringify(this.$store.state.user_session.account));
     },
     showProfile() {

@@ -13,15 +13,18 @@ const mutations = {
 var actions = {
     SET_USER(context) {
         return new Promise((resolve, reject) => {
-            new AccountApi(context.rootState.user_session.token).getUsers((err, users) => {
-                if (!err && users) {
-                    context.commit('USER', users)
-                    resolve(); 
-                } else {
-                    console.log(JSON.stringify(err))
+            new AccountApi(context.rootState.user_session.token)
+                .getUsers()
+                .then((result) => {
+                    if (result.data.success) {
+                        context.commit('USER', result.data.model)
+                        resolve(result.data.model);
+                    } else {
+                        reject(result.data.errors)
+                    }
+                }).catch((err) => {
                     reject(err)
-                }
-            })
+                });
         })
     }
 }

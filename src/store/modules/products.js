@@ -89,7 +89,6 @@ var actions = {
                     if (result.data.success) {
                         products.prod_line = result.data.model;
                         context.commit("SET_PROD_LINE", result.data.model);
-                        console.log('products :', products);
                         resolve(products)
                     } else {
                         reject(result.data.errors);
@@ -103,7 +102,6 @@ var actions = {
     },
     GET_PRODUCT_TYPE(context) {
         return new Promise((resolve, reject) => {
-            console.log("get product type store")
             new ProductApi(context.rootState.user_session.token).productType((productType, err) => {
                 if (!err) {
                     context.commit('SET_PRODUCT_TYPE', productType)

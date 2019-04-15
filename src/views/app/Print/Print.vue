@@ -120,7 +120,6 @@ export default {
       this.$store
         .dispatch("ADD_BATCH", this.selected)
         .then(result => {
-          console.log("result in adding batch :", JSON.stringify(result));
           var selected_ids = [];
           this.selected.forEach(element => {
             selected_ids.push(element._id);
@@ -168,14 +167,6 @@ export default {
           return this.$download(result, "LIC");
         })
         .then(result => {
-          console.log("result :", JSON.stringify(result));
-          // return this.$store.dispatch("ADD_BATCH", {
-          //   copies: 1,
-          //   applications: this.selected
-          // });
-        })
-        .then(result => {
-          console.log("result in adding batch :", JSON.stringify(result));
           this.loading = false;
         })
         .catch(err => {

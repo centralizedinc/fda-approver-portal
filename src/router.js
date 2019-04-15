@@ -47,6 +47,11 @@ export default new Router({
       name: 'Main',
       component: MainLayout,
       children: [{
+        path: 'review',
+        name: 'Review',
+        component: () =>
+          import ('@/components/ReviewApplication.vue')
+      }, {
         path: '',
         name: 'Login',
         component: () =>

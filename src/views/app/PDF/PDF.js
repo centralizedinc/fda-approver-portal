@@ -5,7 +5,6 @@ import "jspdf-autotable";
 import * as FDAImages from "./FDAImages";
 
 export function generatePDF(form) {
-    console.log("RATES: " + JSON.stringify(rates))
     let doc = new jsPDF();
     doc.addImage(FDAImages.doh_logo, "JPEG", 30, 15, 20, 20);
     doc.addImage(FDAImages.fda_logo, "JPEG", 160, 10, 30, 30);

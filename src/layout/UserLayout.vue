@@ -180,6 +180,7 @@
         </v-btn>
       </v-toolbar>
       <notification></notification>
+      <review-application></review-application>
       <!-- <v-content> -->
       <v-container fluid>
         <!-- <span class="headline font-weight-thin">{{page_name}}</span>
@@ -262,8 +263,10 @@
 
 <script>
 import notification from "@/components/Notification";
+import ReviewApplication from "@/components/ReviewApplication";
+
 export default {
-  components: { notification },
+  components: { notification, ReviewApplication },
   //#########################
   // variables
   //#########################

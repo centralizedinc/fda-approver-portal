@@ -3,57 +3,33 @@ import BaseURL from '../utils/BaseURL';
 
 export default class CertificateAPI {
     constructor(token) {
-        axios.defaults.baseURL = BaseURL.certificate;
+        axios.defaults.baseURL = process.env.VUE_APP_API_BASE_URI;
         axios.defaults.headers.common['Content-Type'] = 'application/json'
         axios.defaults.headers.common['access_token'] = token;
     }
 
     getInbox(cb) {
-        console.log('enter claim')
-        axios.get('case/inbox').then((result) => {
-            console.log('case/inbox: ' + JSON.stringify(result.data))
-            cb(result.data.errors, result.data.model)
-        }).catch(err => {
-            cb(err)
-        })
+        return axios.get('cpr-api/case/inbox')
     }
 
     getParticipated(cb) {
-        axios.get('case/participated').then((result) => {
-            console.log('case/participated: ' + JSON.stringify(result.data))
-            cb(result.data.errors, result.data.model)
-        }).catch(err => {
-            cb(err)
-        })
+        return axios.get('cpr-api/case/participated')
     }
 
     getUnassigned(cb) {
-        axios.get('case/unassigned').then((result) => {
-            console.log('case/unassigned: ' + JSON.stringify(result.data))
-            cb(result.data.errors, result.data.model)
-        }).catch(err => {
-            cb(err)
-        })
+        return axios.get('cpr-api/case/unassigned')
     }
 
-    claim(claimed_id, cb) {
-        axios.post('case/claim', {
-            id: claimed_id
-        }).then((result) => {
-            console.log('case/claim: ' + JSON.stringify(result.data))
-            cb(result.data.errors, result.data.model)
-        }).catch(err => {
-            cb(err)
-        })
+    claim(case_no) {
+        return axios.get('cpr-api/case/claim/' + case_no)
     }
 
-    evaluate(params, cb) {
-        axios.post('case/evaluate', params).then((result) => {
-            console.log('case/evaluate: ' + JSON.stringify(result.data))
-            cb(result.data.errors, result.data.model)
-        }).catch(err => {
-            cb(err)
-        })
+    unclaim(case_no) {
+        return axios.get('cpr-api/case/unclaim/' + case_no)
+    }
+
+    evaluate(params) {
+        return axios.post('cpr-api/case/evaluate', params)
     }
 
 }

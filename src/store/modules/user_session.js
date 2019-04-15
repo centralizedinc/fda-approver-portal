@@ -46,6 +46,14 @@ var actions = {
                                 root: true
                             })
                         }).then((result) => {
+                            return context.dispatch('GET_ID_TYPES', {}, {
+                                root: true
+                            })
+                        }).then((result) => {
+                            return context.dispatch('GET_DESIGNATIONS', {}, {
+                                root: true
+                            })
+                        }).then((result) => {
                             resolve(true);
                         }).catch((err) => {
 
@@ -75,7 +83,6 @@ var actions = {
     },
 
     RESET_PASSWORD(context, account) {
-        console.log('account :', account);
         return new PasswordApi().resetPassword(account)
     }
 }

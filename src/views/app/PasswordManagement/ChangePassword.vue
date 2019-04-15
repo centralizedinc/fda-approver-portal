@@ -85,7 +85,6 @@ export default {
   methods: {
     init() {
       this.account = this.$store.state.user_session.account;
-      console.log("#### My account" + JSON.stringify(this.account));
     },
     isEmpty(str) {
       return !str || str === null || str === "";
@@ -111,7 +110,6 @@ export default {
         this.$store
           .dispatch("REQUEST_RESET_PASSWORD", this.old_password)
           .then(result => {
-            console.log("result.data :", result.data);
             this.loading = false;
             this.dialog = false;
             if (result.data.success) {

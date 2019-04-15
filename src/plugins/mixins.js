@@ -21,21 +21,17 @@ export default {
             this.$store.state.task.license_tasks,
             this.$store.state.task.certificate_tasks
           ]
-          console.log('this.$store.state.task.license_tasks :', this.$store.state.task.license_tasks);
           var tasks = _tasks[case_type];
           var i = tasks ? tasks.findIndex(x => x._id === task_id) : -1;
           return i >= 0 ? tasks[i] : {}
         },
         getProduct(product_id) {
-          if (this.$store.state.products.productType) {
-            var product = null;
-            product = this.$store.state.products.productType.find(x => {
-              return x._id === product_id
-            })
-            return product ? product.name : ''
-          } else {
-            return ''
-          }
+          if (!product_id) return {}
+          var product = null;
+          product = this.$store.state.products.productType.find(x => {
+            return x._id.toString() === product_id
+          })
+          return product ? product : {}
         },
         getPrimary(primary_id) {
           if (this.$store.state.products.primaryActivity) {
@@ -49,15 +45,12 @@ export default {
           }
         },
         getDeclared(declared_id) {
-          if (this.$store.state.products.declared) {
-            var declared = null;
-            declared = this.$store.state.products.declared.find(x => {
-              return x._id === declared_id
-            })
-            return declared ? declared.name : ''
-          } else {
-            return ''
-          }
+          if (!declared_id) return {}
+          var declared = null;
+          declared = this.$store.state.products.declared.find(x => {
+            return x._id.toString() === declared_id
+          })
+          return declared ? declared : {}
         },
         getUser(user_id) {
           if (this.$store.state.users.users) {
@@ -71,15 +64,12 @@ export default {
           }
         },
         getProductLine(productLine_id) {
-          if (this.$store.state.products.prod_line) {
-            var product_line = null;
-            product_line = this.$store.state.products.prod_line.find(x => {
-              return x._id === productLine_id
-            })
-            return product_line ? product_line.name : ''
-          } else {
-            return ''
-          }
+          if (!productLine_id) return {}
+          var product_line = null;
+          product_line = this.$store.state.products.prod_line.find(x => {
+            return x._id.toString() === productLine_id
+          })
+          return product_line ? product_line : {}
         },
         getAdminUser(user_id) {
           var accounts = this.$store.state.accounts.admins_info;
@@ -92,7 +82,8 @@ export default {
           return account ? account : {}
         },
         numberWithCommas(x) {
-          return x ? x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "0.00";
+          if (!x || isNaN(x)) return "0.00"
+          return parseFloat(x).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
         },
         // getProduct(product_id) {
         //   if (this.$store.state.products.productType) {
@@ -182,6 +173,34 @@ export default {
               return city.name
             }
           }
+        },
+        getAdditionals(additionals) {
+          if (!additionals) return ''
+          var items = this.$store.state.products.additional.filter(additional => {
+            return additionals.includes(additional._id.toString())
+          })
+          if (!items || items.length <= 0) return ''
+          var additionals_desc = []
+          items.forEach(item => {
+            additionals_desc.push(item.name)
+          })
+          return additionals_desc.join(', ');
+        },
+        getAppStatus(app) {
+          var app_status = ["On Process", "Approved", "Compliance", "Denied", "Expired", "Waiting for Client Confirmation"]
+          return app_status[app];
+        },
+        getIdType(id){
+          var id_types = this.$store.state.reference.id_types;
+          if(!id || !id_types) return {}
+          var id_type = id_types.find(x => x._id.toString() === id)
+          return id_type ? id_type : {}
+        },
+        getDesignation(id){
+          var designations = this.$store.state.reference.designations;
+          if(!id || !designations) return {}
+          var designation = designations.find(x => x._id.toString() === id)
+          return designation ? designation : {}
         },
         logout() {
           this.$store.dispatch("LOGOUT");

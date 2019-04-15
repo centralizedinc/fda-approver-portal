@@ -3,16 +3,14 @@ import axios from 'axios';
 
 export default class ProductAPI {
   constructor(token) {
-    axios.defaults.baseURL = 'https://fda-services.herokuapp.com/v1.0';
+    axios.defaults.baseURL = process.env.VUE_APP_API_BASE_URI;
     axios.defaults.headers.common['Content-Type'] = 'application/json'
     axios.defaults.headers.common['access_token'] = token;
   }
   productType(cb) {
     axios.get('core/products')
       .then(result => {
-        console.log("get product type api")
         if (result.data.success) {
-          console.log("core products data: " + JSON.stringify(result.data.model))
           cb(result.data.model)
         }
       })
@@ -89,7 +87,6 @@ export default class ProductAPI {
     axios.get('core/productLine')
       .then(result => {
         if (result.data.success) {
-          console.log("api product line: " + JSON.stringify(result.data.success))
           cb(result.data.model)
         }
       })

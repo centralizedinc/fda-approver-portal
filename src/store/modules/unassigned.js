@@ -1,5 +1,4 @@
 import LicenseAPI from '@/api/LicenseAPI';
-import AccountAPI from '@/api/AccountAPI';
 import TaskAPI from '../../api/TaskAPI';
 
 const state = {
@@ -13,30 +12,28 @@ const mutations = {
 }
 
 var actions = {
-    GET_UNASSIGNED(context) {
+    GET_UNASSIGNED(context, refresh) {
         if (context.rootState.user_session.token) {
             var token = context.rootState.user_session.token;
-            var promises = []
-            promises = [
-                new Promise((resolve, reject) => {
-                    new LicenseAPI(token).getUnassigned((err, unassigned) => {
-                        if (!err) {
-                            resolve(unassigned)
-                        } else {
-                            console.log(JSON.stringify(err))
+            return new Promise((resolve, reject) => {
+                if (refresh || !context.state.unassigned || context.state.unassigned.length === 0) {
+                    var unassigns = []
+                    new LicenseAPI(token)
+                        .getUnassigned()
+                        .then((result) => {
+                            if (result.data.success) {
+                                unassigns = result.data.model;
+                                context.commit('SET_UNASSIGNED', unassigns)
+                                resolve(unassigns);
+                            } else {
+                                reject(result.data.errors)
+                            }
+                        }).catch((err) => {
                             reject(err)
-                        }
-                    })
-                })
-            ]
-            return Promise.all(promises).then(unassigns => {
-                var _unassigns = []
-                unassigns.forEach(unassign => {
-                    _unassigns = _unassigns.concat(unassign)
-                })
-                console.log('_unassigns: ' + JSON.stringify(_unassigns.length))
-                context.commit('SET_UNASSIGNED', _unassigns)
-                return _unassigns;
+                        });
+                } else {
+                    resolve(context.state.unassigned)
+                }
             })
         }
     },
@@ -44,17 +41,52 @@ var actions = {
         if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {
                 var token = context.rootState.user_session.token;
-                console.log("app: " + JSON.stringify(app));
                 var APIClass = app.case_type === 0 ? new LicenseAPI(token) : null
                 // app.case_type === 1 ? new CertificateAPI(token) : null
                 if (APIClass) {
-                    APIClass.claim(app._id, function (err, claimed_app) {
-                        if (!err) {
-                            resolve(claimed_app);
-                        } else {
-                            reject(err);
-                        }
-                    })
+                    APIClass.claim(app.case_no)
+                        .then((result) => {
+                            if (result.data.success) {
+                                context.dispatch("GET_UNASSIGNED", true)
+                                context.dispatch("GET_INBOX", true, {
+                                    root: true
+                                })
+                                context.commit('SET_CASE', result.data.model)
+                                resolve(result.data.model)
+                            } else {
+                                reject(result.data.errors)
+                            }
+                        }).catch((err) => {
+                            reject(err)
+                        });
+                } else {
+                    reject()
+                }
+            })
+        }
+    },
+    UNCLAIM(context, app) {
+        if (context.rootState.user_session.token) {
+            return new Promise((resolve, reject) => {
+                var token = context.rootState.user_session.token;
+                var APIClass = app.case_type === 0 ? new LicenseAPI(token) : null
+                // app.case_type === 1 ? new CertificateAPI(token) : null
+                if (APIClass) {
+                    APIClass.unclaim(app.case_no)
+                        .then((result) => {
+                            if (result.data.success) {
+                                context.dispatch("GET_UNASSIGNED", true)
+                                context.dispatch("GET_INBOX", true, {
+                                    root: true
+                                })
+                                context.commit('SET_CASE', result.data.model)
+                                resolve(result.data.model)
+                            } else {
+                                reject(result.data.errors)
+                            }
+                        }).catch((err) => {
+                            reject(err)
+                        });
                 } else {
                     reject()
                 }
@@ -66,7 +98,7 @@ var actions = {
             return new Promise((resolve, reject) => {
                 new TaskAPI(context.rootState.user_session.token)
                     .isForPrintingLicense(function (err, license) {
-                        if(!err){
+                        if (!err) {
                             resolve(license.for_printing)
                         } else {
                             reject(err);

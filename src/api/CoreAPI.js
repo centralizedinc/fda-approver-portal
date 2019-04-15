@@ -3,7 +3,7 @@ import BaseURL from '../utils/BaseURL';
 
 export default class CoreAPI {
     constructor(token) {
-        axios.defaults.baseURL = BaseURL.baseUrl;
+        axios.defaults.baseURL = process.env.VUE_APP_API_BASE_URI
         axios.defaults.headers.common['Content-Type'] = 'application/json'
         axios.defaults.headers.common['access_token'] = token;
     }
@@ -14,12 +14,12 @@ export default class CoreAPI {
                 cb(result.data.errors, result.data.model)
             })
             .catch(err => {
-                console.log('err getBatch: ' + err)
+                console.log('err addBatch: ' + err)
                 cb(err)
             });
     }
 
-    getPrints(cb) {
+    getBatch(cb) {
         axios.get("/core/batch")
             .then(result => {
                 cb(result.data.errors, result.data.model)
@@ -61,5 +61,17 @@ export default class CoreAPI {
                 console.log('err license tasks: ' + err)
                 cb(err)
             });
+    }
+
+    getAdditionals() {
+        return axios.get('/core/additional');
+    }
+
+    getIdType() {
+        return axios.get('/core/identification');
+    }
+
+    getDesignation() {
+        return axios.get('/core/designation');
     }
 }

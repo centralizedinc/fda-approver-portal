@@ -1,5 +1,4 @@
 import LicenseAPI from '@/api/LicenseAPI';
-import AccountAPI from '@/api/AccountAPI';
 
 const state = {
     participated: []
@@ -12,31 +11,27 @@ const mutations = {
 }
 
 var actions = {
-    GET_PARTICIPATED(context) {
+    GET_PARTICIPATED(context, refresh) {
         if (context.rootState.user_session.token) {
-            const promises = [
-                new Promise((resolve, reject) => {
-                    new LicenseAPI(context.rootState.user_session.token).getParticipated((err, participated) => {
-                        if (!err) {
-                            participated.forEach(p => {
-                                p.application = "FOR LICENSE";
-                            })
+            return new Promise((resolve, reject) => {
+                if(refresh || !context.state.participated || context.state.participated.length === 0){
+                    var participated = [];
+                    new LicenseAPI(context.rootState.user_session.token)
+                    .getParticipated()
+                    .then((result) => {
+                        if(result.data.success){
+                            participated = result.data.model;
+                            context.commit('SET_PARTICIPATED', participated)
                             resolve(participated)
                         } else {
-                            console.log(JSON.stringify(err))
-                            reject(err)
+                            reject(result.data.errors)
                         }
-                    })
-                })
-            ]
-            return Promise.all(promises).then(participateds => {
-                var _participateds = []
-                participateds.forEach(participated => {
-                    _participateds = _participateds.concat(participated)
-                })
-                console.log('_participateds: ' + JSON.stringify(_participateds))
-                context.commit('SET_PARTICIPATED', _participateds)
-                return _participateds;
+                    }).catch((err) => {
+                        reject(err)
+                    });
+                } else {
+                    resolve(context.state.participated)
+                }
             })
         }
     }

@@ -96,10 +96,6 @@ export default {
       this.$store
         .dispatch("GET_PRINTS")
         .then(result => {
-          console.log(
-            "this.$store.state.reference.prints :",
-            JSON.stringify(this.$store.state.reference.prints)
-          );
           this.models = this.$store.state.reference.prints;
           this.loading = false;
         })
@@ -120,7 +116,6 @@ export default {
       this.$store
         .dispatch("RE_PRINT", this.selected)
         .then(result => {
-          console.log("success reprint");
           this.init();
           this.cancel();
           var app = result;

@@ -328,7 +328,7 @@
                                                 <v-card-text>
                                                     <v-layout row wrap>
                                                         <v-flex xs12 class="body-2">
-                                                            Payment Status: <v-chip class="body-2 font-weight-bold" style="float: right" label color="fdaYellow" text-color="black">{{paymentStatus[case_details.payment_status]}}</v-chip>
+                                                            Payment Status: <v-chip class="body-2 font-weight-bold" style="float: right" label color="fdaYellow" text-color="black">{{getPaymentStatus(case_details.payment_status)}}</v-chip>
                                                         </v-flex>
                                                         <v-flex xs12 v-if="case_details.payment_status">
                                                             Date of Payment: <span style="float: right">{{formatDate(case_details.payment_date)}}</span>
@@ -354,6 +354,36 @@
                                                         <v-flex xs12 class="body-2">
                                                             Total Payment: <span style="float: right">₱ {{numberWithCommas(charges.total)}}</span>
                                                         </v-flex>
+                                                        <template v-if="history_transactions && history_transactions.length > 0">
+                                                            <v-flex xs12>
+                                                                <v-divider></v-divider>
+                                                            </v-flex>
+                                                            <v-flex xs12 class="body-2">
+                                                                Transaction history
+                                                            </v-flex>
+                                                            <v-flex xs12 v-for="(item, index) in history_transactions" :key="`e${index}`">
+                                                                <span class="body-1">{{getModeOfPayments(item.payment_details.mode_of_payment)}}</span> - 
+                                                                <i class="caption">
+                                                                    {{
+                                                                        formatDate(item.date_created, {
+                                                                            month: "2-digit", 
+                                                                            day: "2-digit",
+                                                                            year: "2-digit"
+                                                                        })
+                                                                    }}
+                                                                </i> 
+                                                                <span class="body-1" style="float: right">₱ {{numberWithCommas(item.payment_details.total_amount)}}</span>
+                                                            </v-flex>
+                                                            <v-flex xs12 class="body-2">
+                                                                Total Amount Paid: <span style="float: right">₱ {{numberWithCommas(total_amount_paid)}}</span>
+                                                            </v-flex>
+                                                            <v-flex xs12>
+                                                                <v-divider></v-divider>
+                                                            </v-flex>
+                                                            <v-flex xs12 class="body-2">
+                                                                Total Remaining Balance: <span style="float: right">₱ {{numberWithCommas(current_remaining_balance)}}</span>
+                                                            </v-flex>
+                                                        </template>
                                                     </v-layout>
                                                 </v-card-text>
                                             </v-card>
@@ -469,8 +499,7 @@ export default {
   data() {
     return {
       loading: false,
-      show_confirmation: false,
-      paymentStatus: ["UNPAID", "PARTIAL", "PAID"]
+      show_confirmation: false
     };
   },
   computed: {
@@ -491,23 +520,28 @@ export default {
     },
     charges() {
       return this.$store.state.payments.fee || {};
+    },
+    history_transactions() {
+      var history = this.$store.state.payments.history_transactions;
+      if (!history) return [];
+      var hist_trans = [];
+      history.forEach(hist => {
+        if (hist.payment_details.status !== 0) hist_trans.push(hist);
+      });
+      return hist_trans;
+    },
+    total_amount_paid() {
+      var total = 0;
+      this.history_transactions.forEach(trans => {
+        total += trans.payment_details.total_amount;
+      });
+      return total;
+    },
+    current_remaining_balance() {
+      return this.charges.total - this.total_amount_paid;
     }
   },
-  created() {
-    this.init();
-  },
   methods: {
-    init() {
-      this.$store.dispatch("GET_COMPUTED_FEES", {
-        details: {
-          productType: this.form_details.general_info.product_type,
-          primaryActivity: this.form_details.general_info.primary_activity,
-          declaredCapital: this.form_details.general_info.declared_capital,
-          appType: this.form_details.application_type
-        },
-        case_no: this.case_details.case_no
-      });
-    },
     claim() {
       this.loading = true;
       this.$store

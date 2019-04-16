@@ -18,12 +18,12 @@
       </v-flex>
       <v-flex xs8 >
         <!-- <v-chip class="font-weight-bold" label color="fdaYellow" text-color="black">PENDING</v-chip> -->
-        <v-chip class="headline font-weight-bold" label color="fdaYellow" text-color="black">{{form_case.is_paid ? "Paid" : "Unpaid" }}</v-chip>
+        <v-chip class="headline font-weight-bold" label color="fdaYellow" text-color="black">{{getPaymentStatus(form_case.payment_status)}}</v-chip>
       </v-flex>
-      <v-flex xs4 v-show="form_case.is_paid">
+      <v-flex xs4 v-show="form_case.payment_status === 2">
         <span class="headline font-weight-bold">Date of Payment</span>
       </v-flex>
-      <v-flex xs8 v-show="form_case.is_paid" class="headline font-weight-bold">{{formatDate(form_case.payment_date)}}</v-flex>
+      <v-flex xs8 v-show="payment_status === 2" class="headline font-weight-bold">{{formatDate(form_case.payment_date)}}</v-flex>
       <v-flex xs12>
         <v-divider></v-divider>
       </v-flex>

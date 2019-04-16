@@ -18,11 +18,6 @@ const mutations = {
     //SET CITY
     SET_CITY(state, data) {
         state.city = data
-    },
-    CLEAR_DATA(state) {
-        state.regions = []
-        state.provinces = []
-        state.city = []
     }
 }
 

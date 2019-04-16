@@ -190,17 +190,32 @@ export default {
           var app_status = ["On Process", "Approved", "Compliance", "Denied", "Expired", "Waiting for Client Confirmation"]
           return app_status[app];
         },
-        getIdType(id){
+        getIdType(id) {
           var id_types = this.$store.state.reference.id_types;
-          if(!id || !id_types) return {}
+          if (!id || !id_types) return {}
           var id_type = id_types.find(x => x._id.toString() === id)
           return id_type ? id_type : {}
         },
-        getDesignation(id){
+        getDesignation(id) {
           var designations = this.$store.state.reference.designations;
-          if(!id || !designations) return {}
+          if (!id || !designations) return {}
           var designation = designations.find(x => x._id.toString() === id)
           return designation ? designation : {}
+        },
+        getPaymentStatus(status) {
+          var paymentStatus = ["UNPAID", "PARTIAL", "PAID"];
+          return paymentStatus[status];
+        },
+        getModeOfPayments(mode){
+          var mode_of_payments = [
+            "Credit Card Online",
+            "Cashier(Cash)",
+            "Cashier(Credit Card)",
+            "Cashier(Cheque)",
+            "EC Pay",
+            "FDAC"
+          ]
+          return mode_of_payments[mode]
         },
         logout() {
           this.$store.dispatch("LOGOUT");

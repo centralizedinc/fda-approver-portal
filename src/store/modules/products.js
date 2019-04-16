@@ -32,7 +32,7 @@ const mutations = {
     SET_PROD_LINE(state, prod_line) {
         state.prod_line = prod_line;
     },
-    CLEAR_DATA(state) {
+    CLEAR_PRODUCTS(state) {
         state.productType = []
         state.primaryActivity = []
         state.secondaryActivity = []

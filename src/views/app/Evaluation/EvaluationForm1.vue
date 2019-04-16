@@ -471,7 +471,7 @@ export default {
         })
         .then(result => {
           this.is_payment =
-            result.data.model.start_process && !this.selected_case.is_paid;
+            result.data.model.start_process && this.selected_case.payment_status !== 2;
           this.loading = false;
         })
         .catch(err => {

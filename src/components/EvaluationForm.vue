@@ -190,7 +190,7 @@
         </v-toolbar>
         <v-card-text>
           <span v-if="is_unclaim">Do you want to unclaim an application with case no.: <b>{{case_details.case_no}}</b> ?</span>
-          <span v-else-if="is_payment">Do you want to proceed with an amount of <b>₱ {{numberWithCommas(transaction.payment_details.total_amount)}}</b> thru <b>{{mode_description.description}}</b>?</span>
+          <span v-else-if="is_payment">Do you want to proceed with an amount of <b>₱ {{numberWithCommas(transaction.payment_details.total_amount)}}</b> thru <b>{{getModeOfPayments(transaction.payment_details.mode_of_payment)}}</b>?</span>
           <span v-else>Do you want to proceed?</span>
         </v-card-text>
         <v-card-actions>
@@ -309,12 +309,6 @@ export default {
         return 0;
       }
       return total;
-    },
-    mode_description() {
-      var mode = this.mode_of_payments[
-        this.transaction.payment_details.mode_of_payment - 1
-      ];
-      return mode ? mode : {};
     }
   },
   methods: {
@@ -323,13 +317,6 @@ export default {
       this.transaction.transaction_details.application_type = this.case_details.application_type;
       this.transaction.transaction_details.application = this.case_details.case_type;
       this.transaction.transaction_details.case_no = this.case_details.case_no;
-      this.transaction.transaction_details.order_payment = {
-        fee: this.charges.fee,
-        lrf: this.charges.lrf,
-        surcharge: this.charges.surcharge,
-        interest: this.charges.interest,
-        total_amount: this.charges.total
-      };
       this.$store
         .dispatch("GET_CHECKLIST_BY_TASK", this.case_details.current_task)
         .then(result => {
@@ -365,14 +352,22 @@ export default {
     },
     submit_payment() {
       this.loading = true;
+      this.evaluated_case.status = 0;
       this.evaluated_case.case_type = this.case_details.case_type;
-      var transaction = {};
+
+      this.transaction.transaction_details.order_payment = {
+        fee: this.charges.fee,
+        lrf: this.charges.lrf,
+        surcharge: this.charges.surcharge,
+        interest: this.charges.interest,
+        total_amount: this.charges.total
+      };
+
       this.$store
         .dispatch("SAVE_TRANSACTION", this.transaction)
         .then(result => {
           console.log("result payments :", result);
-          transaction = result.transaction;
-          if (result.isFullyPaid) {
+          if (result.payment_status === 2) {
             return this.$store.dispatch("EVALUATE", this.evaluated_case);
           }
         })
@@ -450,6 +445,13 @@ export default {
           console.log("err claim: ", err);
           this.$notifyError(err);
         });
+    }
+  },
+  watch: {
+    show_confirmation(val) {
+      if (!val) {
+        this.is_unclaim = false;
+      }
     }
   }
 };

@@ -23,6 +23,7 @@ var actions = {
                             if (result.data.success) {
                                 inboxes = result.data.model;
                                 context.commit('SET_INBOX', inboxes)
+                                context.commit('SET_REVIEW_ACCESS', 1)
                                 resolve(inboxes);
                             } else {
                                 reject(result.data.errors)

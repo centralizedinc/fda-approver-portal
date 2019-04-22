@@ -113,6 +113,7 @@ var actions = {
     },
     SAVE_TRANSACTION(context, transaction) {
         return new Promise((resolve, reject) => {
+            console.log('transaction :', transaction);
             new PaymentAPI(context.rootState.user_session.token)
                 .saveTransaction(transaction)
                 .then((result) => {

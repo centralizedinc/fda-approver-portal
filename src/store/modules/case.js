@@ -13,7 +13,8 @@ const state = {
     cases: [],
     complied: [],
     overview: null,
-    review: false
+    review: false,
+    review_access: null
 }
 
 const mutations = {
@@ -41,7 +42,7 @@ const mutations = {
     CLOSE_REVIEW(state) {
         state.review = false
     },
-    CLEAR_CASE(state){
+    CLEAR_CASE(state) {
         state.case_details = {}
         state.form_details = {
             general_info: {},
@@ -51,6 +52,9 @@ const mutations = {
             },
             qualified: []
         }
+    },
+    SET_REVIEW_ACCESS(state, access) {
+        state.review_access = access
     }
 }
 
@@ -139,10 +143,30 @@ var actions = {
                 });
         })
     },
-    CLOSE_REVIEW_DATA(context){
+    CLOSE_REVIEW_DATA(context) {
         context.commit('CLOSE_REVIEW')
         context.commit('CLEAR_CASE')
         context.commit('CLEAR_PAYMENTS')
+    },
+    CHECK_REVIEW_ACCESS(context) {
+        if (context.rootState.user_session.token &&
+            context.state.case_details.case_no &&
+            context.state.case_details.review_access) {
+            new CaseAPI(context.rootState.user_session.token).checkReviewAccess(
+                    context.state.case_details.case_no, context.state.case_details.review_access)
+                .then((result) => {
+                    if (result.data.success) {
+                        console.log('result.data.model :', result.data.model);
+                        if (!result.data.model.valid) {
+                            context.commit('CLOSE_REVIEW_DATA')
+                        }
+                    } else {
+                        console.log('result.data :', result.data);
+                    }
+                }).catch((err) => {
+                    console.log('err :', err);
+                });
+        }
     }
 }
 

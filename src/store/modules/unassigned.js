@@ -24,6 +24,7 @@ var actions = {
                             if (result.data.success) {
                                 unassigns = result.data.model;
                                 context.commit('SET_UNASSIGNED', unassigns)
+                                context.commit('SET_REVIEW_ACCESS', 0)
                                 resolve(unassigns);
                             } else {
                                 reject(result.data.errors)

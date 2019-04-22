@@ -22,6 +22,7 @@ var actions = {
                         if(result.data.success){
                             participated = result.data.model;
                             context.commit('SET_PARTICIPATED', participated)
+                            context.commit('SET_REVIEW_ACCESS', 2)
                             resolve(participated)
                         } else {
                             reject(result.data.errors)

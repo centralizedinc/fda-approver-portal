@@ -541,7 +541,13 @@ export default {
       return this.charges.total - this.total_amount_paid;
     }
   },
+  created() {
+    // this.init();
+  },
   methods: {
+    init() {
+      this.$store.dispatch("CHECK_REVIEW_ACCESS")
+    },
     claim() {
       this.loading = true;
       this.$store

@@ -542,11 +542,11 @@ export default {
     }
   },
   created() {
-    // this.init();
+    this.init();
   },
   methods: {
     init() {
-      this.$store.dispatch("CHECK_REVIEW_ACCESS")
+      this.$store.dispatch("CHECK_REVIEW_ACCESS");
     },
     claim() {
       this.loading = true;

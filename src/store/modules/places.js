@@ -1,10 +1,14 @@
 import PlacesApi from '../../api/PlacesApi';
 
-const state = {
-    regions: [],
-    provinces: [],
-    city: []
+function initialState() {
+    return {
+        regions: [],
+        provinces: [],
+        city: []
+    }
 }
+
+const state = initialState()
 
 const mutations = {
     //SET REGION
@@ -18,6 +22,13 @@ const mutations = {
     //SET CITY
     SET_CITY(state, data) {
         state.city = data
+    },
+
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
     }
 }
 

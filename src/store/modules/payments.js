@@ -1,13 +1,16 @@
 import PaymentAPI from '../../api/PaymentApi';
 
-
-const state = {
-    credit_card: null,
-    cvv: null,
-    expiry: null,
-    fee: null,
-    history_transactions: []
+function initialState() {
+    return {
+        credit_card: null,
+        cvv: null,
+        expiry: null,
+        fee: null,
+        history_transactions: []
+    }
 }
+
+const state = initialState()
 
 const mutations = {
     CREDIT_CARD(state, form) {
@@ -31,6 +34,13 @@ const mutations = {
         state.expiry = null
         state.fee = null
         state.history_transactions = []
+    },
+
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
     }
 }
 
@@ -117,7 +127,7 @@ var actions = {
             new PaymentAPI(context.rootState.user_session.token)
                 .saveTransaction(transaction)
                 .then((result) => {
-                    if(result.data.success){
+                    if (result.data.success) {
                         context.commit('SET_HISTORY_TRANSACTION', result.data.model.transactions_history)
                         resolve(result.data.model)
                     } else {

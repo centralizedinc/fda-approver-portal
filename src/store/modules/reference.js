@@ -1,13 +1,17 @@
 import LicenseAPI from '@/api/LicenseAPI';
 import CoreAPI from '../../api/CoreAPI';
 
-const state = {
-    primary: null,
-    batch: null,
-    prints: null,
-    id_types: null,
-    designations: null
+function initialState() {
+    return {
+        primary: null,
+        batch: null,
+        prints: null,
+        id_types: null,
+        designations: null
+    }
 }
+
+const state = initialState()
 
 const mutations = {
     SET_PRIMARY(state, primary) {
@@ -24,6 +28,13 @@ const mutations = {
     },
     SET_DESIGNATION(state, designations) {
         state.designations = designations;
+    },
+
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
     }
 }
 

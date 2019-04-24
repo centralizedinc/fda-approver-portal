@@ -1,9 +1,13 @@
 import AccountAPI from '../../api/AccountAPI';
 
-const state = {
-    accounts_info: [],
-    admins_info: []
+function initialState() {
+    return {
+        accounts_info: [],
+        admins_info: []
+    }
 }
+
+const state = initialState()
 
 const mutations = {
     SET_ADMINS_INFO(state, accounts) {
@@ -11,6 +15,12 @@ const mutations = {
     },
     SET_ACCOUNTS_INFO(state, accounts) {
         state.accounts_info = accounts
+    },
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
     }
 }
 

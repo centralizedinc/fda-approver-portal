@@ -1,13 +1,25 @@
 import LicenseAPI from '@/api/LicenseAPI';
 import TaskAPI from '../../api/TaskAPI';
 
-const state = {
-    unassigned: []
+function initialState() {
+    return {
+        unassigned: []
+    }
 }
+
+const state = initialState()
 
 const mutations = {
     SET_UNASSIGNED(state, unassigned) {
         state.unassigned = unassigned;
+    },
+
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
+        console.log("clear unassigned");
     }
 }
 

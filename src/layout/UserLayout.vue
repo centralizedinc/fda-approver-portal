@@ -313,7 +313,7 @@ export default {
       }
     },
     logout() {
-      this.$store.commit("LOGOUT");
+      this.$store.dispatch("LOGOUT");
       this.$router.push("/");
     }
   },

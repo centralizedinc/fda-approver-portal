@@ -1,6 +1,10 @@
-const state = {
-    navigation: []
-};
+function initialState() {
+    return {
+        navigation: []
+    }
+}
+
+const state = initialState()
 
 const mutations = {
     DROP_BREADCRUMBS: function (state, payload) {
@@ -15,6 +19,13 @@ const mutations = {
     PICKUP_BREADCRUMBS: function (state, payload) {
         //remove all
         state.navigation = []
+    },
+
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
     }
 }
 

@@ -1,12 +1,24 @@
 import LicenseAPI from '@/api/LicenseAPI';
 
-const state = {
-    participated: []
+function initialState() {
+    return {
+        participated: []
+    }
 }
+
+const state = initialState()
 
 const mutations = {
     SET_PARTICIPATED(state, participated) {
         state.participated = participated;
+    },
+
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
+        console.log("clear participated");
     }
 }
 

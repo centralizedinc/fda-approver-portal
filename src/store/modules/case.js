@@ -1,22 +1,26 @@
 import CaseAPI from '../../api/CaseAPI';
 
-const state = {
-    case_details: {},
-    form_details: {
-        general_info: {},
-        estab_details: {},
-        auth_officer: {
-            mail_add: {}
+function initialState() {
+    return {
+        case_details: {},
+        form_details: {
+            general_info: {},
+            estab_details: {},
+            auth_officer: {
+                mail_add: {}
+            },
+            qualified: [],
+            address_list: []
         },
-        qualified: [],
-        address_list: []
-    },
-    cases: [],
-    complied: [],
-    overview: null,
-    review: false,
-    review_access: null
+        cases: [],
+        complied: [],
+        overview: null,
+        review: false,
+        review_access: null
+    }
 }
+
+const state = initialState()
 
 const mutations = {
     SET_CASES(state, cases) {
@@ -57,6 +61,13 @@ const mutations = {
     SET_REVIEW_ACCESS(state, access) {
         console.log('access :', access);
         state.review_access = access
+    },
+
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
     }
 }
 

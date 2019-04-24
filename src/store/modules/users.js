@@ -1,12 +1,23 @@
 import AccountApi from '../../api/AccountAPI';
 
-const state = {
-    users: {}
+function initialState() {
+    return {
+        users: {}
+    }
 }
+
+const state = initialState()
 
 const mutations = {
     USER(state, user) {
         state.users = user;
+    },
+
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
     }
 }
 

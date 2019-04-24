@@ -1,10 +1,14 @@
 import LicenseAPI from '../../api/LicenseAPI';
 import CertificateAPI from '../../api/CertificateAPI';
 
-const state = {
-    selected_case: {},
-    prev_module: ''
+function initialState() {
+    return {
+        selected_case: {},
+        prev_module: ''
+    }
 }
+
+const state = initialState()
 
 const mutations = {
     SET_CASE(state, {
@@ -17,6 +21,13 @@ const mutations = {
     CLEAR_CASE(state) {
         state.selected_case = {};
         state.prev_module = "";
+    },
+
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
     }
 }
 
@@ -29,9 +40,15 @@ var actions = {
                     new LicenseAPI(token).evaluate(evaluated_case)
                         .then(result => {
                             if (result.data.success) {
-                                context.dispatch("GET_UNASSIGNED", true, {root: true})
-                                context.dispatch("GET_INBOX", true, {root: true})
-                                context.dispatch("GET_PARTICIPATED", true, {root: true})
+                                context.dispatch("GET_UNASSIGNED", true, {
+                                    root: true
+                                })
+                                context.dispatch("GET_INBOX", true, {
+                                    root: true
+                                })
+                                context.dispatch("GET_PARTICIPATED", true, {
+                                    root: true
+                                })
                                 resolve(result.data.model);
                             } else {
                                 reject(result.data.errors);

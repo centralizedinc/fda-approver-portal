@@ -41,7 +41,7 @@
                 <v-icon color="primary">print</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
-                <v-list-tile-title class="body-1 font-weight-light">For Printing</v-list-tile-title>
+                <span class="body-1 font-weight-light">For Printing <v-chip small outline color="primary">{{prints_count}}</v-chip></span>
               </v-list-tile-content>
             </v-list-tile>
             <v-list-tile
@@ -53,7 +53,7 @@
                 <v-icon color="primary">history</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
-                <v-list-tile-title class="body-1 font-weight-light">Print History</v-list-tile-title>
+                <span class="body-1 font-weight-light">Print History <v-chip small outline color="primary">{{print_histories_count}}</v-chip></span>
               </v-list-tile-content>
             </v-list-tile>
           </template>
@@ -349,6 +349,16 @@ export default {
     unassigned_count() {
       return this.$store.state.unassigned.unassigned
         ? this.$store.state.unassigned.unassigned.length
+        : 0;
+    },
+    prints_count() {
+      return this.$store.state.unassigned.unassigned
+        ? this.$store.state.unassigned.unassigned.length
+        : 0;
+    },
+    print_histories_count() {
+      return this.$store.state.reference.prints
+        ? this.$store.state.reference.prints.length
         : 0;
     },
     userInitials() {

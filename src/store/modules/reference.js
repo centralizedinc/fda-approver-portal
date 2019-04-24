@@ -5,7 +5,7 @@ function initialState() {
     return {
         primary: null,
         batch: null,
-        prints: null,
+        prints: [],
         id_types: null,
         designations: null
     }
@@ -83,18 +83,20 @@ var actions = {
             })
         }
     },
-    GET_PRINTS(context) {
+    GET_PRINTS(context, refresh) {
         if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {
-                new CoreAPI(context.rootState.user_session.token).getPrints((err, prints) => {
-                    if (!err) {
-                        context.commit('SET_PRINTS', prints);
-                        resolve(prints)
-                    } else {
-                        console.log('GET PRINTS ERR :', err)
-                        reject(err)
-                    }
-                })
+                if (refresh || !context.state.prints || context.state.prints.length === 0) {
+                    new CoreAPI(context.rootState.user_session.token).getPrints((err, prints) => {
+                        if (!err) {
+                            context.commit('SET_PRINTS', prints);
+                            resolve(prints)
+                        } else {
+                            console.log('GET PRINTS ERR :', err)
+                            reject(err)
+                        }
+                    })
+                } else resolve(context.state.prints)
             })
         }
     },

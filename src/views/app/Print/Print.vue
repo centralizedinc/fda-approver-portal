@@ -2,16 +2,26 @@
   <v-layout row wrap>
     <v-flex xs12>
       <v-card>
+        <v-card-title>
+          <v-btn color="success" @click="init(true)">REFRESH 
+            <v-icon dark right>refresh</v-icon>
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-text-field
+            label="Search"
+            v-model="search">
+          </v-text-field>
+        </v-card-title>
         <v-data-table
           v-model="selected"
           :headers="headers"
           :items="models"
           :pagination.sync="pagination"
           select-all
+          :search="search"
           item-key="case_no"
           class="elevation-1"
-          :loading="loading"
-        >
+          :loading="loading">
           <template slot="headers" slot-scope="props">
             <tr>
               <th>
@@ -51,13 +61,39 @@
               <td class="text-xs-center">{{ formatDate(props.item.date_created) }}</td>
             </tr>
           </template>
+          <v-alert slot="no-results" :value="true" color="error" icon="warning">
+            Your search for "{{ search }}" found no results.
+          </v-alert>
         </v-data-table>
         <v-card-actions v-if="selected.length > 0">
-          <v-btn class="font-weight-light" color="success" block @click="print">Print</v-btn>
+          <v-btn class="font-weight-light" color="success" block @click="dialog=true" :loading="loading">Print</v-btn>
           <!-- <v-divider></v-divider>
           <v-btn color="info" block @click="download">Download</v-btn>-->
         </v-card-actions>
       </v-card>
+      <v-dialog
+          v-model="dialog"
+          max-width="300px"
+          persistent
+          transition="dialog-transition">
+          <v-card>
+              <v-toolbar
+                  height="80px"
+                  color="fdaGreen"
+                  dark class="headline"
+                  style="background: linear-gradient(45deg, #104B2A 0%, #b5c25a 100%)">
+                  Confirmation
+              </v-toolbar>
+              <v-card-text>
+                  Do you want to print the selected case(s)?
+              </v-card-text>
+              <v-card-actions>
+                <v-btn class="font-weight-light" color="secondary" outline @click="dialog = false" :disabled="loading">Cancel</v-btn>
+                <v-spacer></v-spacer>
+                <v-btn class="font-weight-light" color="success" @click="print" :loading="loading">Continue</v-btn>
+              </v-card-actions>
+          </v-card>
+      </v-dialog>
     </v-flex>
   </v-layout>
 </template>
@@ -66,6 +102,8 @@
 export default {
   data() {
     return {
+      dialog: false,
+      search: "",
       loading: false,
       pagination: {
         sortBy: "date_created"
@@ -92,23 +130,26 @@ export default {
           value: "date_created"
         }
       ],
-      models: [],
       selected: []
     };
   },
   created() {
     this.init();
   },
+  computed: {
+    models() {
+      return this.$store.state.unassigned.unassigned;
+    }
+  },
   methods: {
     //   @click="$emit('view', props.item)"  ?
-    init() {
+    init(refresh) {
       this.loading = true;
-      this.models = this.$store.state.unassigned.unassigned;
       this.$store
-        .dispatch("GET_UNASSIGNED")
+        .dispatch("GET_UNASSIGNED", refresh)
         .then(result => {
-          this.models = this.$store.state.unassigned.unassigned;
           this.loading = false;
+          this.$store.dispatch("GET_PRINTS", refresh);
         })
         .catch(err => {
           console.log("err init: ", err);
@@ -130,6 +171,7 @@ export default {
         //   .dispatch("GET_MANY_LICENSE_BY_CASE", selected_ids)
         .then(result => {
           var applications = [];
+          this.dialog = false;
           result.forEach(app => {
             app.general_info.primary_activity = this.getPrimaryActivity(
               app.general_info.primary_activity
@@ -139,10 +181,11 @@ export default {
             applications.push(app);
           });
           this.$print(applications, "LIC");
-          this.init();
+          this.init(true);
         })
         .catch(err => {
           console.log("err :", err);
+          this.dialog = false;
           this.loading = false;
         });
     },
@@ -176,7 +219,7 @@ export default {
     },
     toggleAll() {
       if (this.selected.length) this.selected = [];
-      else this.selected = this.models.slice();
+      else this.selected = this.models;
     },
     changeSort(column) {
       if (this.pagination.sortBy === column) {

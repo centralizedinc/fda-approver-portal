@@ -43,9 +43,7 @@ var actions = {
                         }).catch((err) => {
                             reject(err)
                         });
-                } else {
-                    resolve(context.state.unassigned)
-                }
+                } else resolve(context.state.unassigned)
             })
         }
     },

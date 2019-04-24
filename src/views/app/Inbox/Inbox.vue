@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import ApplicationTable from "@/components/ApplicationTable"
-import ApplicationSummary from "@/components/ApplicationSummary"
+import ApplicationTable from "@/components/ApplicationTable";
+import ApplicationSummary from "@/components/ApplicationSummary";
 
 export default {
   components: {
@@ -31,7 +31,7 @@ export default {
     this.init();
   },
   computed: {
-    inboxes(){
+    inboxes() {
       return this.$store.state.inbox.inboxes;
     }
   },
@@ -48,8 +48,9 @@ export default {
           this.loading = false;
         });
     },
-    viewApp(selected_case){
+    viewApp(selected_case) {
       this.$store.commit("SET_CASE", selected_case);
+      this.$store.commit("SET_REVIEW_ACCESS", 1);
       this.show_overview = true;
     }
   }

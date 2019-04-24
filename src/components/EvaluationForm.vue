@@ -25,20 +25,6 @@
               <v-flex xs11 offset-xs1 class="body-2" v-else>
                 <i>No Previous Transaction</i>
               </v-flex>
-              <v-layout row wrap>
-                <v-flex xs7 class="subheading font-weight-bold" ml-1 mr-1>
-                  Total Amount Paid: 
-                </v-flex>
-                <v-flex xs4 class="font-weight-bold" ml-1 mr-1>
-                  ₱ {{numberWithCommas(total_amount_paid)}}
-                </v-flex>
-                <v-flex xs7 class="subheading font-weight-bold" ml-1 mr-1>
-                  Remaining Balance: 
-                </v-flex>
-                <v-flex xs4 class="font-weight-bold" ml-1 mr-1>
-                  ₱ {{numberWithCommas(current_remaining_balance)}}
-                </v-flex>
-              </v-layout>
             </v-layout>
             <v-layout row wrap v-scroll:#activities-layout v-else>
               <v-flex xs12 
@@ -65,6 +51,23 @@
               </v-flex>
             </v-layout>
         </v-container>
+        <v-layout row wrap v-if="is_payment" pa-2>
+          <v-flex xs7 class="subheading font-weight-bold" ml-1 mr-1>
+            Total Amount Paid: 
+          </v-flex>
+          <v-flex xs4 class="font-weight-bold" ml-1 mr-1>
+            ₱ {{numberWithCommas(total_amount_paid)}}
+          </v-flex>
+          <v-flex xs7 class="subheading font-weight-bold" ml-1 mr-1>
+            Remaining Balance: 
+          </v-flex>
+          <v-flex xs4 class="font-weight-bold" ml-1 mr-1>
+            ₱ {{numberWithCommas(current_remaining_balance)}}
+          </v-flex>
+        </v-layout>
+        <v-layout row wrap>
+          <v-divider></v-divider>
+        </v-layout>
         <v-layout row wrap>
             <v-spacer></v-spacer>
             <v-btn color="info" @click="show_checklist=true">Show Checklist</v-btn>
@@ -374,17 +377,18 @@ export default {
         .then(result => {
           this.loading = false;
           this.show_confirmation = false;
-          this.$store.dispatch("CLOSE_REVIEW_DATA");
           var details = {
             case_no: this.case_details.case_no,
-            fee: this.charges.fee,
-            lrf: this.charges.lrf,
+            fee: this.formatCurrency(this.charges.fee),
+            lrf: this.formatCurrency(this.charges.lrf),
             penalty:
-              parseFloat(this.charges.surcharge) +
-              parseFloat(this.charges.interest),
-            total: this.charges.total,
-            amount: this.transaction.payment_details.total_amount,
-            remaining_balance: this.remaining_balance
+              this.formatCurrency(this.charges.surcharge) +
+              this.formatCurrency(this.charges.interest),
+            total: this.formatCurrency(this.charges.total),
+            amount: this.formatCurrency(
+              this.transaction.payment_details.total_amount
+            ),
+            remaining_balance: this.formatCurrency(this.remaining_balance)
           };
           this.$notify({
             message:
@@ -394,6 +398,9 @@ export default {
             color: "success"
           });
           this.$print(details, "RCPT");
+
+          this.$store.dispatch("CLOSE_REVIEW_DATA");
+          this.resetTransaction();
         })
         .catch(err => {
           this.loading = false;
@@ -445,6 +452,25 @@ export default {
           console.log("err claim: ", err);
           this.$notifyError(err);
         });
+    },
+    resetTransaction() {
+      this.transaction = {
+        payment_details: {
+          total_amount: null,
+          mode_of_payment: ""
+        },
+        transaction_details: {
+          application_type: "",
+          application: "",
+          case_no: "",
+          order_payment: {
+            fee: 0,
+            lrf: 0,
+            penalty: 0,
+            total_amount: 0
+          }
+        }
+      };
     }
   },
   watch: {

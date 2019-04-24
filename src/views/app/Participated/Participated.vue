@@ -47,6 +47,7 @@ export default {
     },
     viewApp(selected_case) {
       this.$store.commit("SET_CASE", selected_case);
+      this.$store.commit("SET_REVIEW_ACCESS", 2);
       this.show_overview = true;
     }
   }

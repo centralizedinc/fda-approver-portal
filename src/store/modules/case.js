@@ -8,7 +8,8 @@ const state = {
         auth_officer: {
             mail_add: {}
         },
-        qualified: []
+        qualified: [],
+        address_list: []
     },
     cases: [],
     complied: [],
@@ -54,6 +55,7 @@ const mutations = {
         }
     },
     SET_REVIEW_ACCESS(state, access) {
+        console.log('access :', access);
         state.review_access = access
     }
 }
@@ -116,6 +118,7 @@ var actions = {
         // temporary license only
         return new Promise((resolve, reject) => {
             var form = {}
+            console.log('license :', context.state.case_details.case_no);
             context.dispatch("GET_LICENSE_BY_CASE_NO",
                     context.state.case_details.case_no, {
                         root: true

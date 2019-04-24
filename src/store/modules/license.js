@@ -38,18 +38,19 @@ var actions = {
         if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {
                 new LicenseAPI(context.rootState.user_session.token)
-                .getLicenseByCaseNo(case_no)
-                .then((result) => {
-                    if(result.data.success){
-                        context.commit('SET_LICENSE', result.data.model)
-                        resolve(result.data.model);
-                    } else {
-                        reject(result.data.errors)
-                    }
-                }).catch((err) => {
-                    console.log('err :', err);  
-                    reject(err)
-                });
+                    .getLicenseByCaseNo(case_no)
+                    .then((result) => {
+                        console.log('result.data :', result.data);
+                        if (result.data.success) {
+                            context.commit('SET_LICENSE', result.data.model)
+                            resolve(result.data.model);
+                        } else {
+                            reject(result.data.errors)
+                        }
+                    }).catch((err) => {
+                        console.log('err :', err);
+                        reject(err)
+                    });
             })
         }
     },

@@ -14,22 +14,21 @@ var actions = {
     GET_PARTICIPATED(context, refresh) {
         if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {
-                if(refresh || !context.state.participated || context.state.participated.length === 0){
+                if (refresh || !context.state.participated || context.state.participated.length === 0) {
                     var participated = [];
                     new LicenseAPI(context.rootState.user_session.token)
-                    .getParticipated()
-                    .then((result) => {
-                        if(result.data.success){
-                            participated = result.data.model;
-                            context.commit('SET_PARTICIPATED', participated)
-                            context.commit('SET_REVIEW_ACCESS', 2)
-                            resolve(participated)
-                        } else {
-                            reject(result.data.errors)
-                        }
-                    }).catch((err) => {
-                        reject(err)
-                    });
+                        .getParticipated()
+                        .then((result) => {
+                            if (result.data.success) {
+                                participated = result.data.model;
+                                context.commit('SET_PARTICIPATED', participated)
+                                resolve(participated)
+                            } else {
+                                reject(result.data.errors)
+                            }
+                        }).catch((err) => {
+                            reject(err)
+                        });
                 } else {
                     resolve(context.state.participated)
                 }

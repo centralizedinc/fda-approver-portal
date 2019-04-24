@@ -444,7 +444,7 @@
                     </v-layout>
                 </v-card-text>
                 <v-divider></v-divider>
-                <v-card-actions v-if="!claimed">
+                <v-card-actions v-if="for_unassigned">
                     <v-btn 
                         color="primary" 
                         @click="show_confirmation=true" 
@@ -507,10 +507,10 @@ export default {
       return this.$store.state.case.review;
     },
     claimed() {
-      return (
-        this.case_details.current_assigned_user &&
-        this.case_details.current_assigned_user !== ""
-      );
+      return this.$store.state.case.review_access === 1;
+    },
+    for_unassigned() {
+      return this.$store.state.case.review_access === 0;
     },
     case_details() {
       return this.$store.state.case.case_details;

@@ -2,7 +2,9 @@ import CaseAPI from '../../api/CaseAPI';
 
 function initialState() {
     return {
-        case_details: {},
+        case_details: {
+            activities: []
+        },
         form_details: {
             general_info: {},
             estab_details: {},

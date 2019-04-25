@@ -211,6 +211,15 @@
                             <v-flex xs12>
                               <v-divider></v-divider>
                             </v-flex>
+                            <v-flex xs12 md6 pa-2>
+                        <address-map
+                        :city="item.city"
+                        :province="item.province"
+                        :region="item.region"
+                        :edit="true"
+                        @pin="setCoordinates"
+                        ></address-map>
+                    </v-flex>
                           </v-layout>
                         </v-card-text>
                       </v-card>
@@ -506,7 +515,8 @@ import pdf from "vue-pdf";
 export default {
   components: {
     EvaluationForm,
-    pdf
+    pdf,
+     AddressMap: () => import("@/components/AddressMap")
   },
   data() {
     return {

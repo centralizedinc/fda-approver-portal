@@ -148,28 +148,22 @@ export default {
           return activity ? activity : {}
         },
         getRegionName(id) {
-          for (var i = 0; i < this.$store.state.places.regions.length; i++) {
-            var region = this.$store.state.places.regions[i]
-            if (region._id === id) {
-              return region.name
-            }
-          }
+          var region = this.$store.state.places.regions.find(x => {
+            return x._id === id;
+          })
+          return region && region.name ? region.name : ""
         },
         getProvinceName(id) {
-          for (var i = 0; i < this.$store.state.places.provinces.length; i++) {
-            var province = this.$store.state.places.provinces[i]
-            if (province._id === id) {
-              return province.name
-            }
-          }
+          var province = this.$store.state.places.provinces.find(x => {
+            return x._id === id;
+          })
+          return province && province.name ? province.name : ""
         },
         getCityName(id) {
-          for (var i = 0; i < this.$store.state.places.city.length; i++) {
-            var city = this.$store.state.places.city[i]
-            if (city._id === id) {
-              return city.name
-            }
-          }
+          var city = this.$store.state.places.city.find(x => {
+            return x._id === id;
+          })
+          return city && city.name ? city.name : ""
         },
         getAdditionals(additionals) {
           if (!additionals) return ''
@@ -186,6 +180,10 @@ export default {
         getAppStatus(app) {
           var app_status = ["On Process", "Approved", "Compliance", "Denied", "Expired", "Waiting for Client Confirmation"]
           return app_status[app];
+        },
+        getEstablishmentType(type){
+         var address_types = ['Head Office','Branch','Warehouse','Plant']
+         return address_types[type];
         },
         getIdType(id) {
           var id_types = this.$store.state.reference.id_types;

@@ -279,11 +279,12 @@
                                                 <v-divider v-show="show_tab6"></v-divider>
                                                 <v-card-text v-show="show_tab6">
                                                     <v-layout row wrap v-for="(item, index) in form_details.address_list" :key="`b${index}`">
+                                                      <v-flex xs6>
                                                         <v-flex xs12>
                                                             <b>Address #{{index+1}}</b>
                                                         </v-flex>
                                                         <v-flex xs12>
-                                                            <b>Type:</b> {{item.type}}
+                                                            <b>Type:</b> {{getEstablishmentType(item.type)}}
                                                         </v-flex>
                                                         <v-flex xs12>
                                                             <b>Address:</b> {{item.address}}
@@ -309,6 +310,22 @@
                                                         <v-flex xs12>
                                                             <v-divider></v-divider>
                                                         </v-flex>
+                                                      </v-flex>
+                                                      <v-flex xs6>
+                                                        <v-flex xs12>
+                                                          <address-map
+                                                          :city="item.city"
+                                                          :province="item.province"
+                                                          :region="item.region"
+                                                          :lat="item.location.lat"
+                                                          :lng="item.location.lng"
+                                                          
+                                                          @pin="setCoordinates"
+                                                          ></address-map>
+                                                        </v-flex>
+                                                      </v-flex>  
+                                                        
+                                                        
                                                     </v-layout>
                                                 </v-card-text>
                                             </v-card>
@@ -402,7 +419,7 @@
                                         </v-flex>
 
                     <!-- Establishment Address -->
-                    <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
+                    <!-- <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
                       <v-card>
                         <v-card-title class="title-bg title white--text" dark>Establishment Address</v-card-title>
                         <v-divider></v-divider>
@@ -451,7 +468,7 @@
                             <v-flex xs12>
                               <v-divider></v-divider>
                             </v-flex>
-                            <v-flex xs12 md6 pa-2>
+                            <v-flex xs12>
                         <address-map
                         :city="item.city"
                         :province="item.province"
@@ -463,7 +480,7 @@
                           </v-layout>
                         </v-card-text>
                       </v-card>
-                    </v-flex>
+                    </v-flex> -->
 
                                         <!-- Qualified Personnel -->
                                         <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
@@ -624,12 +641,13 @@
 <script>
 import EvaluationForm from "./EvaluationForm";
 import pdf from "vue-pdf";
+import AddressMap from "./AddressMap";
 
 export default {
   components: {
     EvaluationForm,
     pdf,
-     AddressMap: () => import("@/components/AddressMap")
+    AddressMap
   },
   data() {
     return {
@@ -704,6 +722,7 @@ export default {
     init() {
       this.claimed;
       this.$store.dispatch("CHECK_REVIEW_ACCESS");
+
     },
     claim() {
       this.loading = true;
@@ -730,6 +749,12 @@ export default {
     close() {
       this.$store.commit("CLOSE_REVIEW");
     },
+     setCoordinates(coordinates){
+       console.log("goes here: " + JSON.stringify(coordinates))
+            this.form_details.address_list.location = coordinates;
+            // console.log("coordinates details: " + JSON.stringify(coordinates))
+            // coordinates = this.form_details.address_list.location
+        },
     show_tabs(is_all, except) {
       this.show_tab1 = is_all;
       this.show_tab2 = is_all;

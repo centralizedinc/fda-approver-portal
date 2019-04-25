@@ -74,4 +74,8 @@ export default class CaseAPI {
     getActivities() {
         return axios.get('lto-api/case/activities');
     }
+
+    checkReviewAccess(case_no, access){
+        return axios.get('lto-api/case/checkaccess/' + case_no + "/" + access)
+    }
 }

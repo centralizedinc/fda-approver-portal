@@ -1,13 +1,17 @@
 import LicenseAPI from '@/api/LicenseAPI';
 import CoreAPI from '../../api/CoreAPI';
 
-const state = {
-    primary: null,
-    batch: null,
-    prints: null,
-    id_types: null,
-    designations: null
+function initialState() {
+    return {
+        primary: null,
+        batch: null,
+        prints: [],
+        id_types: null,
+        designations: null
+    }
 }
+
+const state = initialState()
 
 const mutations = {
     SET_PRIMARY(state, primary) {
@@ -24,6 +28,13 @@ const mutations = {
     },
     SET_DESIGNATION(state, designations) {
         state.designations = designations;
+    },
+
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
     }
 }
 
@@ -72,18 +83,20 @@ var actions = {
             })
         }
     },
-    GET_PRINTS(context) {
+    GET_PRINTS(context, refresh) {
         if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {
-                new CoreAPI(context.rootState.user_session.token).getPrints((err, prints) => {
-                    if (!err) {
-                        context.commit('SET_PRINTS', prints);
-                        resolve(prints)
-                    } else {
-                        console.log('GET PRINTS ERR :', err)
-                        reject(err)
-                    }
-                })
+                if (refresh || !context.state.prints || context.state.prints.length === 0) {
+                    new CoreAPI(context.rootState.user_session.token).getPrints((err, prints) => {
+                        if (!err) {
+                            context.commit('SET_PRINTS', prints);
+                            resolve(prints)
+                        } else {
+                            console.log('GET PRINTS ERR :', err)
+                            reject(err)
+                        }
+                    })
+                } else resolve(context.state.prints)
             })
         }
     },

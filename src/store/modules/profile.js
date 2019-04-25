@@ -1,24 +1,33 @@
 import ProfileType from '../../api/ProfileAPI';
 
-const state = {
-    profile: {}
-
+function initialState() {
+    return {
+        profile: {}
+    }
 }
+
+const state = initialState()
 
 const mutations = {
 
     SET_PROFILE(state, data) {
         state.profile = data
-        
+
     },
-    
+
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
+    }
 }
 
 var actions = {
-//admin / approver
+    //admin / approver
     GET_PROFILE(context, profile_id) {
         return new Promise((resolve, reject) => {
-            new ProfileType(context.rootState.user_session.token).getProfilebyId(profile_id,(err, data) => {
+            new ProfileType(context.rootState.user_session.token).getProfilebyId(profile_id, (err, data) => {
                 if (err) {
                     reject(err)
                 } else {
@@ -41,7 +50,7 @@ var actions = {
 
     },
     EDIT_PROFILE(context, modified_profile) {
-        return  new ProfileType(context.rootState.user_session.token).editProfile(modified_profile);
+        return new ProfileType(context.rootState.user_session.token).editProfile(modified_profile);
 
     }
 

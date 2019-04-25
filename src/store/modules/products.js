@@ -1,14 +1,18 @@
 import ProductApi from '../../api/ProductApi';
 
-const state = {
-    productType: [],
-    primaryActivity: [],
-    secondaryActivity: [],
-    additional: [],
-    declared: [],
-    declaredCapital: [],
-    prod_line: []
+function initialState() {
+    return {
+        productType: [],
+        primaryActivity: [],
+        secondaryActivity: [],
+        additional: [],
+        declared: [],
+        declaredCapital: [],
+        prod_line: []
+    }
 }
+
+const state = initialState()
 
 const mutations = {
     SET_PRODUCT_TYPE(state, productType) {
@@ -32,7 +36,7 @@ const mutations = {
     SET_PROD_LINE(state, prod_line) {
         state.prod_line = prod_line;
     },
-    CLEAR_DATA(state) {
+    CLEAR_PRODUCTS(state) {
         state.productType = []
         state.primaryActivity = []
         state.secondaryActivity = []
@@ -40,6 +44,13 @@ const mutations = {
         state.declared = []
         state.declaredCapital = []
         state.prod_line = []
+    },
+
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
     }
 }
 

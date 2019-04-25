@@ -1,13 +1,25 @@
 import LicenseAPI from '@/api/LicenseAPI';
 import TaskAPI from '../../api/TaskAPI';
 
-const state = {
-    unassigned: []
+function initialState() {
+    return {
+        unassigned: []
+    }
 }
+
+const state = initialState()
 
 const mutations = {
     SET_UNASSIGNED(state, unassigned) {
         state.unassigned = unassigned;
+    },
+
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
+        console.log("clear unassigned");
     }
 }
 
@@ -31,9 +43,7 @@ var actions = {
                         }).catch((err) => {
                             reject(err)
                         });
-                } else {
-                    resolve(context.state.unassigned)
-                }
+                } else resolve(context.state.unassigned)
             })
         }
     },
@@ -52,6 +62,7 @@ var actions = {
                                     root: true
                                 })
                                 context.commit('SET_CASE', result.data.model)
+                                context.commit('SET_REVIEW_ACCESS', 1)
                                 resolve(result.data.model)
                             } else {
                                 reject(result.data.errors)
@@ -80,6 +91,7 @@ var actions = {
                                     root: true
                                 })
                                 context.commit('SET_CASE', result.data.model)
+                                context.commit('SET_REVIEW_ACCESS', 0)
                                 resolve(result.data.model)
                             } else {
                                 reject(result.data.errors)

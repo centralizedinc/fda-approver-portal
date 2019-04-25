@@ -1,7 +1,11 @@
-var state = {
-    notifications: [],
-    id: 0,
+function initialState() {
+    return {
+        notifications: [],
+        id: 0,
+    }
 }
+
+var state = initialState
 
 var mutations = {
     ADD_NOTIFICATION: (state, payload) => {
@@ -22,6 +26,13 @@ var mutations = {
     },
     REMOVE_NOTIFICATION: (state, payload) => {
         state.notifications = [];
+    },
+
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
     }
 }
 

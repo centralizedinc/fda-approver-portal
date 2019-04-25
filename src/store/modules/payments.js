@@ -1,13 +1,16 @@
 import PaymentAPI from '../../api/PaymentApi';
 
-
-const state = {
-    credit_card: null,
-    cvv: null,
-    expiry: null,
-    fee: null,
-    history_transactions: []
+function initialState() {
+    return {
+        credit_card: null,
+        cvv: null,
+        expiry: null,
+        fee: null,
+        history_transactions: []
+    }
 }
+
+const state = initialState()
 
 const mutations = {
     CREDIT_CARD(state, form) {
@@ -23,13 +26,21 @@ const mutations = {
         state.fee = charges
     },
     SET_HISTORY_TRANSACTION(state, transaction) {
-        state.history_transaction = transaction
+        state.history_transactions = transaction
     },
-    CLEAR_DATA(state) {
+    CLEAR_PAYMENTS(state) {
         state.credit_card = null
         state.cvv = null
         state.expiry = null
         state.fee = null
+        state.history_transactions = []
+    },
+
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
     }
 }
 
@@ -111,18 +122,31 @@ var actions = {
         })
     },
     SAVE_TRANSACTION(context, transaction) {
-        console.log("payments save transaction store: " + JSON.stringify(transaction))
-        return new PaymentAPI(context.rootState.user_session.token).saveTransaction(transaction)
+        return new Promise((resolve, reject) => {
+            console.log('transaction :', transaction);
+            new PaymentAPI(context.rootState.user_session.token)
+                .saveTransaction(transaction)
+                .then((result) => {
+                    if (result.data.success) {
+                        context.commit('SET_HISTORY_TRANSACTION', result.data.model.transactions_history)
+                        resolve(result.data.model)
+                    } else {
+                        reject(result.data.errors)
+                    }
+                }).catch((err) => {
+                    reject(err)
+                });
+        })
     },
     GET_COMPUTED_FEES(context, data) {
         return new Promise((resolve, reject) => {
-            console.log("get computed fees: " + JSON.stringify(data))
+            console.log('request :', data);
             new PaymentAPI(context.rootState.user_session.token).computePayments(data)
                 .then((result) => {
-                    console.log('#####result : ' + JSON.stringify(result.data))
+                    console.log('result transactions :', result.data)
                     if (result.data.success) {
                         context.commit('FEES', result.data.model.fees)
-                        context.commit('SET_HISTORY_TRANSACTION', result.data.model.transaction)
+                        context.commit('SET_HISTORY_TRANSACTION', result.data.model.transactions)
                         resolve(result.data.model)
                     } else {
                         reject(result.data.errors)

@@ -1,9 +1,13 @@
 import TaskAPI from '@/api/TaskAPI';
 
-const state = {
-    license_tasks: [],
-    certificate_tasks: []
+function initialState() {
+    return {
+        license_tasks: [],
+        certificate_tasks: []
+    }
 }
+
+const state = initialState()
 
 const mutations = {
     SET_LICENSE_TASKS(state, tasks) {
@@ -17,6 +21,13 @@ const mutations = {
     },
     CLEAR_CERTIFICATE_TASKS(state, tasks) {
         state.certificate_tasks = [];
+    },
+
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
     }
 }
 

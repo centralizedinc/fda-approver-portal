@@ -309,68 +309,76 @@
                       </v-card>
                     </v-flex>
 
-                    <!-- Qualified Personnel -->
-                    <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
-                      <v-card>
-                        <v-card-title class="title-bg title white--text" dark>Qualified Personnel</v-card-title>
-                        <v-divider></v-divider>
-                        <v-card-text>
-                          <v-layout
-                            row
-                            wrap
-                            v-for="(item, index) in form_details.qualified"
-                            :key="`c${index}`"
-                          >
-                            <v-flex xs12>
-                              <b>Personnel #{{index+1}}</b>
-                            </v-flex>
-                            <v-flex xs12>
-                              <b>Last Name:</b>
-                              {{item.lastname}}
-                            </v-flex>
-                            <v-flex xs12>
-                              <b>First Name:</b>
-                              {{item.firstname}}
-                            </v-flex>
-                            <v-flex xs12>
-                              <b>Middle Name:</b>
-                              {{item.middlename}}
-                            </v-flex>
-                            <v-flex xs12>
-                              <b>Birthday:</b>
-                              {{item.birthday}}
-                            </v-flex>
-                            <v-flex xs12>
-                              <b>Designation:</b>
-                              {{getDesignation(item.designation).name}}
-                            </v-flex>
-                            <v-flex xs12>
-                              <b>Email:</b>
-                              {{item.email}}
-                            </v-flex>
-                            <v-flex xs12>
-                              <b>TIN:</b>
-                              {{item.tin}}
-                            </v-flex>
-                            <v-flex xs12>
-                              <b>ID Type:</b>
-                              {{getIdType(item.id_type).name}}
-                            </v-flex>
-                            <v-flex xs12>
-                              <b>ID No.:</b>
-                              {{item.id_no}}
-                            </v-flex>
-                            <v-flex xs12>
-                              <b>ID Expiration:</b>
-                              {{item.id_expiry}}
-                            </v-flex>
-                            <v-flex xs12>
-                              <v-divider></v-divider>
-                            </v-flex>
-                          </v-layout>
-                        </v-card-text>
-                      </v-card>
-                    </v-flex>
+                                        <!-- Payments Summary -->
+                                        <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
+                                            <v-card>
+                                                <v-card-title class="title-bg title white--text" dark>
+                                                    Payments Summary
+                                                </v-card-title>
+                                                <v-divider></v-divider>
+                                                <v-card-text>
+                                                    <v-layout row wrap>
+                                                        <v-flex xs12 class="body-2">
+                                                            Payment Status: <v-chip class="body-2 font-weight-bold" style="float: right" label color="fdaYellow" text-color="black">{{getPaymentStatus(case_details.payment_status)}}</v-chip>
+                                                        </v-flex>
+                                                        <v-flex xs12 v-if="case_details.payment_status">
+                                                            Date of Payment: <span style="float: right">{{formatDate(case_details.payment_date)}}</span>
+                                                        </v-flex>
+                                                        <v-flex xs12>
+                                                            <v-divider></v-divider>
+                                                        </v-flex>
+                                                        <v-flex xs12>
+                                                            Application Fee: <span style="float: right">₱ {{numberWithCommas(charges.fee)}}</span>
+                                                        </v-flex>
+                                                        <v-flex xs12>
+                                                            No. of year(s) applied: <span style="float: right">{{charges.yearsApplied}} years</span>
+                                                        </v-flex>
+                                                        <v-flex xs12>
+                                                            Surcharge: <span style="float: right">₱ {{numberWithCommas(charges.surcharge)}}</span>
+                                                        </v-flex>
+                                                        <v-flex xs12>
+                                                            Legal Research Fund(LRF): <span style="float: right">₱ {{numberWithCommas(charges.lrf)}}</span>
+                                                        </v-flex>
+                                                        <v-flex xs12>
+                                                            <v-divider></v-divider>
+                                                        </v-flex>
+                                                        <v-flex xs12 class="body-2">
+                                                            Total Payment: <span style="float: right">₱ {{numberWithCommas(charges.total)}}</span>
+                                                        </v-flex>
+                                                        <template v-if="history_transactions && history_transactions.length > 0">
+                                                            <v-flex xs12>
+                                                                <v-divider></v-divider>
+                                                            </v-flex>
+                                                            <v-flex xs12 class="body-2">
+                                                                Transaction history
+                                                            </v-flex>
+                                                            <v-flex xs12 v-for="(item, index) in history_transactions" :key="`e${index}`">
+                                                                <span class="body-1">{{getModeOfPayments(item.payment_details.mode_of_payment)}}</span> - 
+                                                                <i class="caption">
+                                                                    {{
+                                                                        formatDate(item.date_created, {
+                                                                            month: "2-digit", 
+                                                                            day: "2-digit",
+                                                                            year: "2-digit"
+                                                                        })
+                                                                    }}
+                                                                </i> 
+                                                                <span class="body-1" style="float: right">₱ {{numberWithCommas(item.payment_details.total_amount)}}</span>
+                                                            </v-flex>
+                                                            <v-flex xs12 class="body-2">
+                                                                Total Amount Paid: <span style="float: right">₱ {{numberWithCommas(total_amount_paid)}}</span>
+                                                            </v-flex>
+                                                            <v-flex xs12>
+                                                                <v-divider></v-divider>
+                                                            </v-flex>
+                                                            <v-flex xs12 class="body-2">
+                                                                Total Remaining Balance: <span style="float: right">₱ {{numberWithCommas(current_remaining_balance)}}</span>
+                                                            </v-flex>
+                                                        </template>
+                                                    </v-layout>
+                                                </v-card-text>
+                                            </v-card>
+                                        </v-flex>
 
                     <!-- Payments Summary -->
                     <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
@@ -436,114 +444,59 @@
                       </v-card>
                     </v-flex>
 
-                    <!-- Documents -->
-                    <v-flex v-bind="{ [`xs${claimed?12:8}`]: true }">
-                      <v-card>
-                        <v-card-title class="title-bg title white--text" dark>Documents</v-card-title>
-                        <v-divider></v-divider>
-                        <v-card-text>
-                          <v-layout row wrap>
-                            <!-- {{form_details.uploaded_files}} -->
-                            <v-flex
-                              v-bind="{ [`xs${claimed?12:4}`]: true }"
-                              v-for="(item, index) in form_details.uploaded_files"
-                              :key="`d${index}`"
-                              pa-2
-                            >
-                              <v-card max-width="200">
-                                <v-toolbar
-                                  dark
-                                  color="fdaGreen"
-                                  style="background: linear-gradient(45deg, #104B2A 0%, #b5c25a 100%)"
-                                >
-                                  <span class="text-truncate">{{item.originalname}}</span>
-                                </v-toolbar>
-                                <v-card-text>
-                                  <v-layout row wrap align-center justify-center ma-0>
-                                    <v-img
-                                      v-if="item.mimetype !== 'application/pdf'"
-                                      :src="item.location"
-                                      class="grey lighten-2"
-                                      max-height="200"
-                                      max-width="100"
-                                      contain
-                                    >
-                                      <v-layout
-                                        slot="placeholder"
-                                        fill-height
-                                        align-center
-                                        justify-center
-                                        ma-0
-                                      >
-                                        <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
-                                      </v-layout>
-                                    </v-img>
-                                    <div v-else>
-                                      <pdf :src="item.location"></pdf>
-                                    </div>
-                                  </v-layout>
-                                </v-card-text>
-                              </v-card>
+                                    </v-layout>
+                                </v-container>
                             </v-flex>
-                          </v-layout>
-                        </v-card-text>
-                      </v-card>
-                    </v-flex>
-                  </v-layout>
-                </v-container>
-              </v-flex>
-            </v-scroll-x-transition>
-            <v-scroll-x-reverse-transition>
-              <v-flex xs7 ml-5 v-if="claimed">
-                <evaluation-form></evaluation-form>
-              </v-flex>
-            </v-scroll-x-reverse-transition>
-          </v-layout>
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions v-if="!claimed">
-          <v-btn color="primary" @click="show_confirmation=true" :loading="loading" block>CLAIM</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog
-      v-model="show_confirmation"
-      max-width="300px"
-      height="300px"
-      persistent
-      transition="dialog-transition"
-    >
-      <v-card>
-        <v-toolbar
-          height="80px"
-          color="fdaGreen"
-          dark
-          class="headline"
-          style="background: linear-gradient(45deg, #104B2A 0%, #b5c25a 100%)"
-        >Confirmation</v-toolbar>
-        <v-card-text>
-          Do you want to claim an application with case no.:
-          <b>{{case_details.case_no}}</b> ?
-        </v-card-text>
-        <v-card-actions>
-          <v-btn
-            class="font-weight-light"
-            color="error"
-            flat
-            :disabled="loading"
-            @click="show_confirmation=false"
-          >Cancel</v-btn>
-          <v-spacer></v-spacer>
-          <v-btn
-            class="font-weight-light"
-            color="success"
-            :loading="loading"
-            @click="claim"
-          >Continue</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </div>
+                        </v-scroll-x-transition>
+                        <v-scroll-x-reverse-transition>
+                            <v-flex xs7 ml-5 v-if="claimed">
+                                <evaluation-form></evaluation-form>
+                            </v-flex>
+                        </v-scroll-x-reverse-transition>
+                    </v-layout>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions v-if="for_unassigned">
+                    <v-btn 
+                        color="primary" 
+                        @click="show_confirmation=true" 
+                        :loading="loading" 
+                        block>
+                        CLAIM
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog
+            v-model="show_confirmation"
+            max-width="300px"
+            height="300px"
+            persistent
+            transition="dialog-transition">
+            <v-card>
+                <v-toolbar
+                    height="80px"
+                    color="fdaGreen"
+                    dark class="headline"
+                    style="background: linear-gradient(45deg, #104B2A 0%, #b5c25a 100%)">
+                    Confirmation
+                </v-toolbar>
+                <v-card-text>
+                    Do you want to claim an application with case no.: <b>{{case_details.case_no}}</b> ?
+                </v-card-text>
+                <v-card-actions>
+                <v-btn
+                    class="font-weight-light"
+                    color="error"
+                    flat :disabled="loading"
+                    @click="show_confirmation=false"
+                >Cancel</v-btn>
+                <v-spacer></v-spacer>
+                <v-btn class="font-weight-light" color="success" :loading="loading" @click="claim">Continue</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+    </div>
 </template>
 
 <script>
@@ -558,8 +511,7 @@ export default {
   data() {
     return {
       loading: false,
-      show_confirmation: false,
-      paymentStatus: ["UNPAID", "PARTIAL", "PAID"]
+      show_confirmation: false
     };
   },
   computed: {
@@ -567,10 +519,10 @@ export default {
       return this.$store.state.case.review;
     },
     claimed() {
-      return (
-        this.case_details.current_assigned_user &&
-        this.case_details.current_assigned_user !== ""
-      );
+      return this.$store.state.case.review_access === 1;
+    },
+    for_unassigned() {
+      return this.$store.state.case.review_access === 0;
     },
     case_details() {
       return this.$store.state.case.case_details;
@@ -580,6 +532,25 @@ export default {
     },
     charges() {
       return this.$store.state.payments.fee || {};
+    },
+    history_transactions() {
+      var history = this.$store.state.payments.history_transactions;
+      if (!history) return [];
+      var hist_trans = [];
+      history.forEach(hist => {
+        if (hist.payment_details.status !== 0) hist_trans.push(hist);
+      });
+      return hist_trans;
+    },
+    total_amount_paid() {
+      var total = 0;
+      this.history_transactions.forEach(trans => {
+        total += trans.payment_details.total_amount;
+      });
+      return total;
+    },
+    current_remaining_balance() {
+      return this.charges.total - this.total_amount_paid;
     }
   },
   created() {
@@ -587,31 +558,7 @@ export default {
   },
   methods: {
     init() {
-      console.log("Details :", {
-        details: {
-          productType: this.form_details.general_info.product_type,
-          primaryActivity: this.form_details.general_info.primary_activity,
-          declaredCapital: this.form_details.general_info.declared_capital,
-          appType: this.form_details.application_type
-        },
-        case_no: this.case_details.case_no
-      });
-      this.$store
-        .dispatch("GET_COMPUTED_FEES", {
-          details: {
-            productType: this.form_details.general_info.product_type,
-            primaryActivity: this.form_details.general_info.primary_activity,
-            declaredCapital: this.form_details.general_info.declared_capital,
-            appType: this.form_details.application_type
-          },
-          case_no: this.case_details.case_no
-        })
-        .then(result => {
-          console.log("result :", result);
-        })
-        .catch(err => {
-          console.log("err :", err);
-        });
+      this.$store.dispatch("CHECK_REVIEW_ACCESS");
     },
     claim() {
       this.loading = true;

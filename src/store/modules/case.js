@@ -1,20 +1,26 @@
 import CaseAPI from '../../api/CaseAPI';
 
-const state = {
-    case_details: {},
-    form_details: {
-        general_info: {},
-        estab_details: {},
-        auth_officer: {
-            mail_add: {}
+function initialState() {
+    return {
+        case_details: {},
+        form_details: {
+            general_info: {},
+            estab_details: {},
+            auth_officer: {
+                mail_add: {}
+            },
+            qualified: [],
+            address_list: []
         },
-        qualified: []
-    },
-    cases: [],
-    complied: [],
-    overview: null,
-    review: false
+        cases: [],
+        complied: [],
+        overview: null,
+        review: false,
+        review_access: null
+    }
 }
+
+const state = initialState()
 
 const mutations = {
     SET_CASES(state, cases) {
@@ -22,9 +28,6 @@ const mutations = {
     },
     SET_COMPLY(state, cases) {
         state.complied = cases;
-    },
-    CLEAR_DATA(state) {
-        state.cases = [];
     },
     SET_CASE(state, case_details) {
         state.case_details = case_details
@@ -43,6 +46,28 @@ const mutations = {
     },
     CLOSE_REVIEW(state) {
         state.review = false
+    },
+    CLEAR_CASE(state) {
+        state.case_details = {}
+        state.form_details = {
+            general_info: {},
+            estab_details: {},
+            auth_officer: {
+                mail_add: {}
+            },
+            qualified: []
+        }
+    },
+    SET_REVIEW_ACCESS(state, access) {
+        console.log('access :', access);
+        state.review_access = access
+    },
+
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
     }
 }
 
@@ -103,19 +128,59 @@ var actions = {
     SHOW_REVIEW(context) {
         // temporary license only
         return new Promise((resolve, reject) => {
+            var form = {}
+            console.log('license :', context.state.case_details.case_no);
             context.dispatch("GET_LICENSE_BY_CASE_NO",
                     context.state.case_details.case_no, {
                         root: true
                     })
                 .then(license => {
+                    form.license = license;
                     context.commit('SET_FORM', license);
+                    return context.dispatch("GET_COMPUTED_FEES", {
+                        details: {
+                            productType: license.general_info.product_type,
+                            primaryActivity: license.general_info.primary_activity,
+                            declaredCapital: license.general_info.declared_capital,
+                            appType: license.application_type
+                        },
+                        case_no: context.state.case_details.case_no
+                    });
+                })
+                .then(payments => {
+                    form.payments = payments;
                     context.commit('SHOW_REVIEW')
-                    resolve(license);
+                    resolve(form);
                 })
                 .catch(err => {
                     reject(err)
                 });
         })
+    },
+    CLOSE_REVIEW_DATA(context) {
+        context.commit('CLOSE_REVIEW')
+        context.commit('CLEAR_CASE')
+        context.commit('CLEAR_PAYMENTS')
+    },
+    CHECK_REVIEW_ACCESS(context) {
+        if (context.rootState.user_session.token &&
+            context.state.case_details.case_no &&
+            context.state.case_details.review_access) {
+            new CaseAPI(context.rootState.user_session.token).checkReviewAccess(
+                    context.state.case_details.case_no, context.state.case_details.review_access)
+                .then((result) => {
+                    if (result.data.success) {
+                        console.log('result.data.model :', result.data.model);
+                        if (!result.data.model.valid) {
+                            context.commit('CLOSE_REVIEW_DATA')
+                        }
+                    } else {
+                        console.log('result.data :', result.data);
+                    }
+                }).catch((err) => {
+                    console.log('err :', err);
+                });
+        }
     }
 }
 

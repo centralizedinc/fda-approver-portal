@@ -48,8 +48,9 @@ export default {
           this.loading = false;
         });
     },
-    viewApp(app) {
-      this.$store.commit("SET_CASE", app);
+    viewApp(selected_case) {
+      this.$store.commit("SET_CASE", selected_case);
+      this.$store.commit("SET_REVIEW_ACCESS", 0);
       this.show_overview = true;
     }
   }

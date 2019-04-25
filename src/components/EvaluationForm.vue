@@ -14,11 +14,11 @@
               <v-flex xs12 v-if="history_transactions && history_transactions.length > 0">
                 <v-layout row wrap>
                   <template v-for="(item, index) in history_transactions">
-                    <v-flex xs5 class="subheading" mt-1 mb-1 :key="index">
+                    <v-flex xs7 class="subheading" ma-1 :key="`c${index}`">
+                      <span class="font-weight-bold">{{getModeOfPayments(item.payment_details.mode_of_payment)}}</span> - 
                       <i>{{formatDate(item.date_created)}}</i>
                     </v-flex>
-                    <v-flex xs4 :key="index">₱ {{numberWithCommas(item.payment_details.total_amount)}}</v-flex>
-                    <v-flex xs3 :key="index"></v-flex>
+                    <v-flex xs4 :key="`d${index}`" ma-1 class="font-weight-bold">₱ {{numberWithCommas(item.payment_details.total_amount)}}</v-flex>
                   </template>
                 </v-layout>
               </v-flex>
@@ -51,13 +51,22 @@
               </v-flex>
             </v-layout>
         </v-container>
-        <v-layout row wrap class="subheading" pa-2>
-          <v-flex xs12>
-            Total Amount Paid: ₱ {{numberWithCommas(total_amount_paid)}}
+        <v-layout row wrap v-if="is_payment" pa-2>
+          <v-flex xs7 class="subheading font-weight-bold" ml-1 mr-1>
+            Total Amount Paid: 
           </v-flex>
-          <v-flex xs12>
-            Remaining Balance: ₱ {{numberWithCommas(current_remaining_balance)}}
+          <v-flex xs4 class="font-weight-bold" ml-1 mr-1>
+            ₱ {{numberWithCommas(total_amount_paid)}}
           </v-flex>
+          <v-flex xs7 class="subheading font-weight-bold" ml-1 mr-1>
+            Remaining Balance: 
+          </v-flex>
+          <v-flex xs4 class="font-weight-bold" ml-1 mr-1>
+            ₱ {{numberWithCommas(current_remaining_balance)}}
+          </v-flex>
+        </v-layout>
+        <v-layout row wrap>
+          <v-divider></v-divider>
         </v-layout>
         <v-layout row wrap>
             <v-spacer></v-spacer>
@@ -184,7 +193,7 @@
         </v-toolbar>
         <v-card-text>
           <span v-if="is_unclaim">Do you want to unclaim an application with case no.: <b>{{case_details.case_no}}</b> ?</span>
-          <span v-else-if="is_payment">Do you want to proceed with an amount of <b>₱ {{numberWithCommas(transaction.payment_details.total_amount)}}</b> thru <b>{{mode_description.description}}</b>?</span>
+          <span v-else-if="is_payment">Do you want to proceed with an amount of <b>₱ {{numberWithCommas(transaction.payment_details.total_amount)}}</b> thru <b>{{getModeOfPayments(transaction.payment_details.mode_of_payment)}}</b>?</span>
           <span v-else>Do you want to proceed?</span>
         </v-card-text>
         <v-card-actions>
@@ -271,10 +280,16 @@ export default {
         this.case_details.case_type,
         this.case_details.current_task
       );
-      return task.start_process && !this.case_details.is_paid;
+      return task.start_process && this.case_details.payment_status !== 2;
     },
     history_transactions() {
-      return this.$store.state.payments.history_transactions;
+      var history = this.$store.state.payments.history_transactions;
+      if (!history) return [];
+      var hist_trans = [];
+      history.forEach(hist => {
+        if (hist.payment_details.status !== 0) hist_trans.push(hist);
+      });
+      return hist_trans;
     },
     charges() {
       return this.$store.state.payments.fee || {};
@@ -297,12 +312,6 @@ export default {
         return 0;
       }
       return total;
-    },
-    mode_description() {
-      var mode = this.mode_of_payments[
-        this.transaction.payment_details.mode_of_payment - 1
-      ];
-      return mode ? mode : {};
     }
   },
   methods: {
@@ -346,17 +355,22 @@ export default {
     },
     submit_payment() {
       this.loading = true;
+      this.evaluated_case.status = 0;
       this.evaluated_case.case_type = this.case_details.case_type;
-      console.log("this.evaluated_case payment:", this.evaluated_case);
-      console.log("this.transaction data: " + JSON.stringify(this.transaction))
-      var transaction = {};
+
+      this.transaction.transaction_details.order_payment = {
+        fee: this.charges.fee,
+        lrf: this.charges.lrf,
+        surcharge: this.charges.surcharge,
+        interest: this.charges.interest,
+        total_amount: this.charges.total
+      };
+
       this.$store
         .dispatch("SAVE_TRANSACTION", this.transaction)
         .then(result => {
-          console.log("result.data.model :", result.data.model);
-          transaction = result.data.model.transaction;
-          if (result.data.model.isFullyPaid) {
-            console.log("before evaluation: " + JSON.stringify(this.evaluated_case))
+          console.log("result payments :", result);
+          if (result.payment_status === 2) {
             return this.$store.dispatch("EVALUATE", this.evaluated_case);
           }
         })
@@ -364,17 +378,18 @@ export default {
           console.log("evaluate data form form: " + JSON.stringify(result))
           this.loading = false;
           this.show_confirmation = false;
-
           var details = {
             case_no: this.case_details.case_no,
-            fee: this.charges.fee,
-            lrf: this.charges.lrf,
+            fee: this.formatCurrency(this.charges.fee),
+            lrf: this.formatCurrency(this.charges.lrf),
             penalty:
-              parseFloat(this.charges.surcharge) +
-              parseFloat(this.charges.interest),
-            total: this.charges.total,
-            amount: this.transaction.payment_details.total_amount,
-            remaining_balance: this.remaining_balance
+              this.formatCurrency(this.charges.surcharge) +
+              this.formatCurrency(this.charges.interest),
+            total: this.formatCurrency(this.charges.total),
+            amount: this.formatCurrency(
+              this.transaction.payment_details.total_amount
+            ),
+            remaining_balance: this.formatCurrency(this.remaining_balance)
           };
           this.$notify({
             message:
@@ -384,6 +399,9 @@ export default {
             color: "success"
           });
           this.$print(details, "RCPT");
+
+          this.$store.dispatch("CLOSE_REVIEW_DATA");
+          this.resetTransaction();
         })
         .catch(err => {
           this.loading = false;
@@ -399,6 +417,7 @@ export default {
         .then(result => {
           this.loading = false;
           this.show_confirmation = false;
+          this.$store.dispatch("CLOSE_REVIEW_DATA");
           this.$notify({
             message:
               "Successfully evaluate an application with case no.: " +
@@ -434,6 +453,32 @@ export default {
           console.log("err claim: ", err);
           this.$notifyError(err);
         });
+    },
+    resetTransaction() {
+      this.transaction = {
+        payment_details: {
+          total_amount: null,
+          mode_of_payment: ""
+        },
+        transaction_details: {
+          application_type: "",
+          application: "",
+          case_no: "",
+          order_payment: {
+            fee: 0,
+            lrf: 0,
+            penalty: 0,
+            total_amount: 0
+          }
+        }
+      };
+    }
+  },
+  watch: {
+    show_confirmation(val) {
+      if (!val) {
+        this.is_unclaim = false;
+      }
     }
   }
 };

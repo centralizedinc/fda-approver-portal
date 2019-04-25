@@ -23,7 +23,7 @@
           <td>{{ getAppType(props.item.application_type) }}</td>
           <td>{{ getTask(props.item.case_type, props.item.current_task).name }}</td>
           <td>{{ displayAssignedUser(props.item.current_assigned_user) }}</td>
-          <td :class="props.item.is_paid ? 'paid': 'unpaid'">{{ props.item.is_paid ? "Paid" : "Unpaid" }}</td>
+          <td :class="status_color[props.item.payment_status]">{{getPaymentStatus(props.item.payment_status)}}</td>
           <td>{{ props.item.remarks }}</td>
         </tr>
       </template>
@@ -82,7 +82,8 @@ export default {
           text: "Remarks",
           value: "remarks"
         }
-      ]
+      ],
+      status_color: ["unpaid", "partial", "paid"]
     };
   },
   methods: {
@@ -101,6 +102,10 @@ export default {
 
 .paid {
   color: blue;
+}
+
+.partial {
+  color: maroon;
 }
 
 .unpaid {

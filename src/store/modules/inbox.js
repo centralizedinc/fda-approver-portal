@@ -1,13 +1,25 @@
 import LicenseAPI from '@/api/LicenseAPI';
 
-const state = {
-    inboxes: []
+function initialState() {
+    return {
+        inboxes: []
+    }
 }
+
+const state = initialState()
 
 const mutations = {
     SET_INBOX(state, inboxes) {
         // state.inboxes = state.inboxes.concat(inboxes);
         state.inboxes = inboxes;
+    },
+
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
+        console.log("clear inbox");
     }
 }
 

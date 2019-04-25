@@ -1,10 +1,14 @@
 import AuthAPI from '@/api/AuthAPI';
 import PasswordApi from '../../api/PasswordAPI'
 
-const state = {
-    token: null,
-    account: {}
+function initialState() {
+    return {
+        token: null,
+        account: {}
+    }
 }
+
+const state = initialState()
 
 const mutations = {
     LOGIN(state, account) {
@@ -16,10 +20,17 @@ const mutations = {
         state.account = {}
     },
     SET_AVATAR(state, avatar) {
-        if(!state.account.avatar){
+        if (!state.account.avatar) {
             state.account.avatar = {};
         }
         state.account.avatar.location = avatar;
+    },
+
+    RESET(state) {
+        const s = initialState()
+        Object.keys(s).forEach(key => {
+            state[key] = s[key]
+        })
     }
 }
 
@@ -68,8 +79,9 @@ var actions = {
             })
         })
     },
-    
-    LOGOUT(context){
+
+    LOGOUT(context) {
+        context.commit('RESET')
         context.commit('LOGOUT')
     },
 

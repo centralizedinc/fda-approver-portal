@@ -71,10 +71,12 @@ export default class PaymentAPI {
     }
 
     saveTransaction(transaction) {
+        console.log("save transaction api: " + JSON.stringify(transaction))
         return axios.post('payments/transactions', transaction)
     }
 
     computePayments(data, cb) {
+        console.log("data compute payments: ")
         return axios.post('payments/rates/compute/case_no/' + data.case_no, data.details)
     }
 

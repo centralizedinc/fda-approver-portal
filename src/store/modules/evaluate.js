@@ -29,11 +29,11 @@ var actions = {
                     new LicenseAPI(token).evaluate(evaluated_case)
                         .then(result => {
                             if (result.data.success) {
-                                context.commit("CLEAR_CASE", {}, {root: true})
+                                context.commit("CLEAR_CASE")
                                 context.dispatch("GET_UNASSIGNED", true, {root: true})
                                 context.dispatch("GET_INBOX", true, {root: true})
                                 context.dispatch("GET_PARTICIPATED", true, {root: true})
-                                context.commit("CLOSE_REVIEW", {}, {root: true});
+                                context.commit("CLOSE_REVIEW");
                                 resolve(result.data.model);
                             } else {
                                 reject(result.data.errors);

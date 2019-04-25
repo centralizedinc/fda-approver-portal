@@ -1,460 +1,549 @@
 <template>
-    <div>
-        <v-dialog
-            v-model="show"
-            scrollable max-width="" 
-            persistent :overlay="false"
-            transition="dialog-transition">
-            <v-card>
-                <v-toolbar class="title-bg headline white--text" dark>
-                    <span class="headline font-weight-light">Case No.: {{case_details.case_no}} ({{getAppType(case_details.application_type)}})</span>
-                    <!-- <v-btn color="primary">accept & submit</v-btn> -->
-                    <v-spacer></v-spacer>
-                    <!-- <v-btn outline color="primary" @click="close()">Cancel</v-btn> -->
-                    
-                    <v-btn flat icon color="primary" @click="close()">
-                        <v-icon>close</v-icon>
-                    </v-btn>
-                </v-toolbar>
-                <v-card-text>
-                    <v-layout row wrap>
-                        <v-scroll-x-transition>
-                            <v-flex v-bind="{ [`xs${claimed?4:12}`]: true }">
-                                <v-container 
-                                    grid-list-md 
-                                    id="summary-layout" 
-                                    :style="claimed?'max-height: 500px':''" 
-                                    class="scroll-y">
-                                    <v-layout row wrap v-scroll:#summary-layout>
-                                        <!-- General Information -->
-                                        <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
-                                            <v-card>
-                                                <v-card-title class="title-bg title white--text" dark>
-                                                    General Information
-                                                </v-card-title>
-                                                <v-divider></v-divider>
-                                                <v-card-text>
-                                                    <v-layout row wrap>
-                                                        <v-flex xs12>
-                                                            <b>Product Type:</b> {{getProduct(form_details.general_info.product_type).name}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Primary Activity:</b> {{getPrimaryActivity(form_details.general_info.primary_activity).name}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Additional Activities:</b> {{getAdditionals(form_details.general_info.addtl_activity)}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Declared Capital:</b> {{getDeclared(form_details.general_info.declared_capital).name}}
-                                                        </v-flex>
-                                                    </v-layout>
-                                                </v-card-text>
-                                            </v-card>
-                                        </v-flex>
+  <div>
+    <v-dialog
+      v-model="show"
+      scrollable
+      max-width
+      persistent
+      :overlay="false"
+      transition="dialog-transition"
+    >
+      <v-card>
+        <v-toolbar class="title-bg headline white--text" dark>
+          <span
+            class="headline font-weight-light"
+          >Case No.: {{case_details.case_no}} ({{getAppType(case_details.application_type)}})</span>
+          <!-- <v-btn color="primary">accept & submit</v-btn> -->
+          <v-spacer></v-spacer>
+          <!-- <v-btn outline color="primary" @click="close()">Cancel</v-btn> -->
 
-                                        <!-- Establishment Information -->
-                                        <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
-                                            <v-card>
-                                                <v-card-title class="title-bg title white--text" dark>
-                                                    Establishment Information
-                                                </v-card-title>
-                                                <v-divider></v-divider>
-                                                <v-card-text>
-                                                    <v-layout row wrap>
-                                                        <v-flex xs12>
-                                                            <b>Name of Establishment:</b> {{form_details.estab_details.establishment_name}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Establishment Owner:</b> {{form_details.estab_details.establishment_owner}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>TIN:</b> {{form_details.estab_details.tin}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Email:</b> {{form_details.estab_details.email}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Landline:</b> {{form_details.estab_details.landline}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Fax:</b> {{form_details.estab_details.fax}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Mobile:</b> {{form_details.estab_details.mobile}}
-                                                        </v-flex>
-                                                    </v-layout>
-                                                </v-card-text>
-                                            </v-card>
-                                        </v-flex>
-
-                                        <!-- Product Line -->
-                                        <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
-                                            <v-card>
-                                                <v-card-title class="title-bg title white--text" dark>
-                                                    Product Line
-                                                </v-card-title>
-                                                <v-divider></v-divider>
-                                                <v-card-text>
-                                                    <v-layout row wrap v-for="(item, index) in form_details.estab_details.products" :key="`a${index}`">
-                                                        <v-flex xs12 class="body-2">
-                                                            <b>Product #{{index+1}}</b>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Product Line:</b> {{getProductLine(item.prod_line).name}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Remarks:</b> {{item.remarks}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                    </v-layout>
-                                                </v-card-text>
-                                            </v-card>
-                                        </v-flex>
-
-                                        <!-- Establishment Address -->
-                                        <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
-                                            <v-card>
-                                                <v-card-title class="title-bg title white--text" dark>
-                                                    Establishment Address
-                                                </v-card-title>
-                                                <v-divider></v-divider>
-                                                <v-card-text>
-                                                    <v-layout row wrap v-for="(item, index) in form_details.address_list" :key="`b${index}`">
-                                                        <v-flex xs12>
-                                                            <b>Address #{{index+1}}</b>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Type:</b> {{item.type}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Address:</b> {{item.address}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Region:</b> {{getRegionName(item.region)}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Province:</b> {{getProvinceName(item.province)}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>City:</b> {{getCityName(item.city)}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Zip Code:</b> {{item.zipcode}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Latitude:</b> {{item.location.lat}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Longitude:</b> {{item.location.lng}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                    </v-layout>
-                                                </v-card-text>
-                                            </v-card>
-                                        </v-flex>
-
-                                        <!-- Authorized Officer -->
-                                        <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
-                                            <v-card>
-                                                <v-card-title class="title-bg title white--text" dark>
-                                                    Authorized Officer
-                                                </v-card-title>
-                                                <v-divider></v-divider>
-                                                <v-card-text>
-                                                    <v-layout row wrap>
-                                                        <v-flex xs12>
-                                                            <b>Last Name:</b> {{form_details.auth_officer.lastname}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>First Name:</b> {{form_details.auth_officer.firstname}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Designation:</b> {{getDesignation(form_details.auth_officer.designation).name}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Email:</b> {{form_details.auth_officer.email}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>ID Type:</b> {{getIdType(form_details.auth_officer.id_type).name}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>ID Number:</b> {{form_details.auth_officer.id_no}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>ID Expiry:</b> {{form_details.auth_officer.id_expiry}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Address:</b> {{form_details.auth_officer.mail_add.address}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>City:</b> {{getCityName(form_details.auth_officer.mail_add.city)}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Province:</b> {{getProvinceName(form_details.auth_officer.mail_add.province)}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Region:</b> {{getRegionName(form_details.auth_officer.mail_add.region)}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Zip Code:</b> {{form_details.auth_officer.mail_add.zipcode}}
-                                                        </v-flex>
-                                                    </v-layout>
-                                                </v-card-text>
-                                            </v-card>
-                                        </v-flex>
-
-
-                                        <!-- Qualified Personnel -->
-                                        <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
-                                            <v-card>
-                                                <v-card-title class="title-bg title white--text" dark>
-                                                    Qualified Personnel
-                                                </v-card-title>
-                                                <v-divider></v-divider>
-                                                <v-card-text>
-                                                    <v-layout row wrap v-for="(item, index) in form_details.qualified" :key="`c${index}`">
-                                                        <v-flex xs12>
-                                                            <b>Personnel #{{index+1}}</b>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Last Name:</b> {{item.lastname}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>First Name:</b> {{item.firstname}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Middle Name:</b> {{item.middlename}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Birthday:</b> {{item.birthday}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Designation:</b> {{getDesignation(item.designation).name}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>Email:</b> {{item.email}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>TIN:</b> {{item.tin}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>ID Type:</b> {{getIdType(item.id_type).name}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>ID No.:</b> {{item.id_no}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <b>ID Expiration:</b> {{item.id_expiry}}
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                    </v-layout>
-                                                </v-card-text>
-                                            </v-card>
-                                        </v-flex>
-
-                                        <!-- Payments Summary -->
-                                        <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
-                                            <v-card>
-                                                <v-card-title class="title-bg title white--text" dark>
-                                                    Payments Summary
-                                                </v-card-title>
-                                                <v-divider></v-divider>
-                                                <v-card-text>
-                                                    <v-layout row wrap>
-                                                        <v-flex xs12 class="body-2">
-                                                            Payment Status: <v-chip class="body-2 font-weight-bold" style="float: right" label color="fdaYellow" text-color="black">{{paymentStatus[case_details.payment_status]}}</v-chip>
-                                                        </v-flex>
-                                                        <v-flex xs12 v-if="case_details.payment_status">
-                                                            Date of Payment: <span style="float: right">{{formatDate(case_details.payment_date)}}</span>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            Application Fee: <span style="float: right">₱ {{numberWithCommas(charges.fee)}}</span>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            No. of year(s) applied: <span style="float: right">{{charges.yearsApplied}} years</span>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            Surcharge: <span style="float: right">₱ {{numberWithCommas(charges.surcharge)}}</span>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            Legal Research Fund(LRF): <span style="float: right">₱ {{numberWithCommas(charges.lrf)}}</span>
-                                                        </v-flex>
-                                                        <v-flex xs12>
-                                                            <v-divider></v-divider>
-                                                        </v-flex>
-                                                        <v-flex xs12 class="body-2">
-                                                            Total Payment: <span style="float: right">₱ {{numberWithCommas(charges.total)}}</span>
-                                                        </v-flex>
-                                                    </v-layout>
-                                                </v-card-text>
-                                            </v-card>
-                                        </v-flex>
-
-                                        <!-- Documents -->
-                                        <v-flex v-bind="{ [`xs${claimed?12:8}`]: true }">
-                                            <v-card>
-                                                <v-card-title class="title-bg title white--text" dark>
-                                                    Documents
-                                                </v-card-title>
-                                                <v-divider></v-divider>
-                                                <v-card-text>
-                                                    <v-layout row wrap>
-                                                        <!-- {{form_details.uploaded_files}} -->
-                                                        <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }"
-                                                            v-for="(item, index) in form_details.uploaded_files" 
-                                                            :key="`d${index}`" pa-2>
-                                                            <v-card max-width="200">
-                                                                <v-toolbar dark color="fdaGreen"
-                                                                    style="background: linear-gradient(45deg, #104B2A 0%, #b5c25a 100%)">
-                                                                    <span class="text-truncate">{{item.originalname}}</span>
-                                                                </v-toolbar>
-                                                                <v-card-text>
-                                                                    <v-layout row wrap align-center justify-center ma-0>
-                                                                        <v-img
-                                                                            v-if="item.mimetype !== 'application/pdf'"
-                                                                            :src="item.location"
-                                                                            class="grey lighten-2"
-                                                                            max-height="200"
-                                                                            max-width="100"
-                                                                            contain>
-                                                                            <v-layout slot="placeholder" fill-height align-center justify-center ma-0>
-                                                                                <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
-                                                                            </v-layout>
-                                                                        </v-img>
-                                                                        <div v-else>
-                                                                            <pdf :src="item.location"></pdf>
-                                                                        </div>
-                                                                    </v-layout>
-                                                                </v-card-text>
-                                                            </v-card>
-                                                        </v-flex>
-                                                    </v-layout>
-                                                </v-card-text>
-                                            </v-card>
-                                        </v-flex>
-
-                                    </v-layout>
-                                </v-container>
+          <v-btn flat icon color="primary" @click="close()">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-card-text>
+          <v-layout row wrap>
+            <v-scroll-x-transition>
+              <v-flex v-bind="{ [`xs${claimed?4:12}`]: true }">
+                <v-container
+                  grid-list-md
+                  id="summary-layout"
+                  :style="claimed?'max-height: 500px':''"
+                  class="scroll-y"
+                >
+                  <v-layout row wrap v-scroll:#summary-layout>
+                    <!-- General Information -->
+                    <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
+                      <v-card>
+                        <v-card-title class="title-bg title white--text" dark>General Information</v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text>
+                          <v-layout row wrap>
+                            <v-flex xs12>
+                              <b>Product Type:</b>
+                              {{getProduct(form_details.general_info.product_type).name}}
                             </v-flex>
-                        </v-scroll-x-transition>
-                        <v-scroll-x-reverse-transition>
-                            <v-flex xs7 ml-5 v-if="claimed">
-                                <evaluation-form></evaluation-form>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
                             </v-flex>
-                        </v-scroll-x-reverse-transition>
-                    </v-layout>
-                </v-card-text>
-                <v-divider></v-divider>
-                <v-card-actions v-if="!claimed">
-                    <v-btn 
-                        color="primary" 
-                        @click="show_confirmation=true" 
-                        :loading="loading" 
-                        block>
-                        CLAIM
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-        <v-dialog
-            v-model="show_confirmation"
-            max-width="300px"
-            height="300px"
-            persistent
-            transition="dialog-transition">
-            <v-card>
-                <v-toolbar
-                    height="80px"
-                    color="fdaGreen"
-                    dark class="headline"
-                    style="background: linear-gradient(45deg, #104B2A 0%, #b5c25a 100%)">
-                    Confirmation
-                </v-toolbar>
-                <v-card-text>
-                    Do you want to claim an application with case no.: <b>{{case_details.case_no}}</b> ?
-                </v-card-text>
-                <v-card-actions>
-                <v-btn
-                    class="font-weight-light"
-                    color="error"
-                    flat :disabled="loading"
-                    @click="show_confirmation=false"
-                >Cancel</v-btn>
-                <v-spacer></v-spacer>
-                <v-btn class="font-weight-light" color="success" :loading="loading" @click="claim">Continue</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-    </div>
+                            <v-flex xs12>
+                              <b>Primary Activity:</b>
+                              {{getPrimaryActivity(form_details.general_info.primary_activity).name}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Additional Activities:</b>
+                              {{getAdditionals(form_details.general_info.addtl_activity)}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Declared Capital:</b>
+                              {{getDeclared(form_details.general_info.declared_capital).name}}
+                            </v-flex>
+                          </v-layout>
+                        </v-card-text>
+                      </v-card>
+                    </v-flex>
+
+                    <!-- Establishment Information -->
+                    <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
+                      <v-card>
+                        <v-card-title
+                          class="title-bg title white--text"
+                          dark
+                        >Establishment Information</v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text>
+                          <v-layout row wrap>
+                            <v-flex xs12>
+                              <b>Name of Establishment:</b>
+                              {{form_details.estab_details.establishment_name}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Establishment Owner:</b>
+                              {{form_details.estab_details.establishment_owner}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>TIN:</b>
+                              {{form_details.estab_details.tin}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Email:</b>
+                              {{form_details.estab_details.email}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Landline:</b>
+                              {{form_details.estab_details.landline}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Fax:</b>
+                              {{form_details.estab_details.fax}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Mobile:</b>
+                              {{form_details.estab_details.mobile}}
+                            </v-flex>
+                          </v-layout>
+                        </v-card-text>
+                      </v-card>
+                    </v-flex>
+
+                    <!-- Product Line -->
+                    <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
+                      <v-card>
+                        <v-card-title class="title-bg title white--text" dark>Product Line</v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text>
+                          <v-layout
+                            row
+                            wrap
+                            v-for="(item, index) in form_details.estab_details.products"
+                            :key="`a${index}`"
+                          >
+                            <v-flex xs12 class="body-2">
+                              <b>Product #{{index+1}}</b>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Product Line:</b>
+                              {{getProductLine(item.prod_line).name}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Remarks:</b>
+                              {{item.remarks}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                          </v-layout>
+                        </v-card-text>
+                      </v-card>
+                    </v-flex>
+
+                    <!-- Establishment Address -->
+                    <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
+                      <v-card>
+                        <v-card-title class="title-bg title white--text" dark>Establishment Address</v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text>
+                          <v-layout
+                            row
+                            wrap
+                            v-for="(item, index) in form_details.address_list"
+                            :key="`b${index}`"
+                          >
+                            <v-flex xs12>
+                              <b>Address #{{index+1}}</b>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Type:</b>
+                              {{item.type}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Address:</b>
+                              {{item.address}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Region:</b>
+                              {{getRegionName(item.region)}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Province:</b>
+                              {{getProvinceName(item.province)}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>City:</b>
+                              {{getCityName(item.city)}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Zip Code:</b>
+                              {{item.zipcode}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Latitude:</b>
+                              {{item.location.lat}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Longitude:</b>
+                              {{item.location.lng}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                          </v-layout>
+                        </v-card-text>
+                      </v-card>
+                    </v-flex>
+
+                    <!-- Authorized Officer -->
+                    <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
+                      <v-card>
+                        <v-card-title class="title-bg title white--text" dark>Authorized Officer</v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text>
+                          <v-layout row wrap>
+                            <v-flex xs12>
+                              <b>Last Name:</b>
+                              {{form_details.auth_officer.lastname}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>First Name:</b>
+                              {{form_details.auth_officer.firstname}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Designation:</b>
+                              {{getDesignation(form_details.auth_officer.designation).name}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Email:</b>
+                              {{form_details.auth_officer.email}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>ID Type:</b>
+                              {{getIdType(form_details.auth_officer.id_type).name}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>ID Number:</b>
+                              {{form_details.auth_officer.id_no}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>ID Expiry:</b>
+                              {{form_details.auth_officer.id_expiry}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Address:</b>
+                              {{form_details.auth_officer.mail_add.address}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>City:</b>
+                              {{getCityName(form_details.auth_officer.mail_add.city)}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Province:</b>
+                              {{getProvinceName(form_details.auth_officer.mail_add.province)}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Region:</b>
+                              {{getRegionName(form_details.auth_officer.mail_add.region)}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Zip Code:</b>
+                              {{form_details.auth_officer.mail_add.zipcode}}
+                            </v-flex>
+                          </v-layout>
+                        </v-card-text>
+                      </v-card>
+                    </v-flex>
+
+                    <!-- Qualified Personnel -->
+                    <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
+                      <v-card>
+                        <v-card-title class="title-bg title white--text" dark>Qualified Personnel</v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text>
+                          <v-layout
+                            row
+                            wrap
+                            v-for="(item, index) in form_details.qualified"
+                            :key="`c${index}`"
+                          >
+                            <v-flex xs12>
+                              <b>Personnel #{{index+1}}</b>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Last Name:</b>
+                              {{item.lastname}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>First Name:</b>
+                              {{item.firstname}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Middle Name:</b>
+                              {{item.middlename}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Birthday:</b>
+                              {{item.birthday}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Designation:</b>
+                              {{getDesignation(item.designation).name}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Email:</b>
+                              {{item.email}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>TIN:</b>
+                              {{item.tin}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>ID Type:</b>
+                              {{getIdType(item.id_type).name}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>ID No.:</b>
+                              {{item.id_no}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>ID Expiration:</b>
+                              {{item.id_expiry}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                          </v-layout>
+                        </v-card-text>
+                      </v-card>
+                    </v-flex>
+
+                    <!-- Payments Summary -->
+                    <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
+                      <v-card>
+                        <v-card-title class="title-bg title white--text" dark>Payments Summary</v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text>
+                          <v-layout row wrap>
+                            <v-flex xs12 class="body-2">
+                              Payment Status:
+                              <v-chip
+                                class="body-2 font-weight-bold"
+                                style="float: right"
+                                label
+                                color="fdaYellow"
+                                text-color="black"
+                              >{{paymentStatus[case_details.payment_status]}}</v-chip>
+                            </v-flex>
+                            <v-flex xs12 v-if="case_details.payment_status">
+                              Date of Payment:
+                              <span
+                                style="float: right"
+                              >{{formatDate(case_details.payment_date)}}</span>
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                              Application Fee:
+                              <span
+                                style="float: right"
+                              >₱ {{numberWithCommas(charges.fee)}}</span>
+                            </v-flex>
+                            <v-flex xs12>
+                              No. of year(s) applied:
+                              <span
+                                style="float: right"
+                              >{{charges.yearsApplied}} years</span>
+                            </v-flex>
+                            <v-flex xs12>
+                              Surcharge:
+                              <span
+                                style="float: right"
+                              >₱ {{numberWithCommas(charges.surcharge)}}</span>
+                            </v-flex>
+                            <v-flex xs12>
+                              Legal Research Fund(LRF):
+                              <span
+                                style="float: right"
+                              >₱ {{numberWithCommas(charges.lrf)}}</span>
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12 class="body-2">
+                              Total Payment:
+                              <span
+                                style="float: right"
+                              >₱ {{numberWithCommas(charges.total)}}</span>
+                            </v-flex>
+                          </v-layout>
+                        </v-card-text>
+                      </v-card>
+                    </v-flex>
+
+                    <!-- Documents -->
+                    <v-flex v-bind="{ [`xs${claimed?12:8}`]: true }">
+                      <v-card>
+                        <v-card-title class="title-bg title white--text" dark>Documents</v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text>
+                          <v-layout row wrap>
+                            <!-- {{form_details.uploaded_files}} -->
+                            <v-flex
+                              v-bind="{ [`xs${claimed?12:4}`]: true }"
+                              v-for="(item, index) in form_details.uploaded_files"
+                              :key="`d${index}`"
+                              pa-2
+                            >
+                              <v-card max-width="200">
+                                <v-toolbar
+                                  dark
+                                  color="fdaGreen"
+                                  style="background: linear-gradient(45deg, #104B2A 0%, #b5c25a 100%)"
+                                >
+                                  <span class="text-truncate">{{item.originalname}}</span>
+                                </v-toolbar>
+                                <v-card-text>
+                                  <v-layout row wrap align-center justify-center ma-0>
+                                    <v-img
+                                      v-if="item.mimetype !== 'application/pdf'"
+                                      :src="item.location"
+                                      class="grey lighten-2"
+                                      max-height="200"
+                                      max-width="100"
+                                      contain
+                                    >
+                                      <v-layout
+                                        slot="placeholder"
+                                        fill-height
+                                        align-center
+                                        justify-center
+                                        ma-0
+                                      >
+                                        <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                                      </v-layout>
+                                    </v-img>
+                                    <div v-else>
+                                      <pdf :src="item.location"></pdf>
+                                    </div>
+                                  </v-layout>
+                                </v-card-text>
+                              </v-card>
+                            </v-flex>
+                          </v-layout>
+                        </v-card-text>
+                      </v-card>
+                    </v-flex>
+                  </v-layout>
+                </v-container>
+              </v-flex>
+            </v-scroll-x-transition>
+            <v-scroll-x-reverse-transition>
+              <v-flex xs7 ml-5 v-if="claimed">
+                <evaluation-form></evaluation-form>
+              </v-flex>
+            </v-scroll-x-reverse-transition>
+          </v-layout>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions v-if="!claimed">
+          <v-btn color="primary" @click="show_confirmation=true" :loading="loading" block>CLAIM</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog
+      v-model="show_confirmation"
+      max-width="300px"
+      height="300px"
+      persistent
+      transition="dialog-transition"
+    >
+      <v-card>
+        <v-toolbar
+          height="80px"
+          color="fdaGreen"
+          dark
+          class="headline"
+          style="background: linear-gradient(45deg, #104B2A 0%, #b5c25a 100%)"
+        >Confirmation</v-toolbar>
+        <v-card-text>
+          Do you want to claim an application with case no.:
+          <b>{{case_details.case_no}}</b> ?
+        </v-card-text>
+        <v-card-actions>
+          <v-btn
+            class="font-weight-light"
+            color="error"
+            flat
+            :disabled="loading"
+            @click="show_confirmation=false"
+          >Cancel</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            class="font-weight-light"
+            color="success"
+            :loading="loading"
+            @click="claim"
+          >Continue</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script>
@@ -498,7 +587,7 @@ export default {
   },
   methods: {
     init() {
-      this.$store.dispatch("GET_COMPUTED_FEES", {
+      console.log("Details :", {
         details: {
           productType: this.form_details.general_info.product_type,
           primaryActivity: this.form_details.general_info.primary_activity,
@@ -507,6 +596,22 @@ export default {
         },
         case_no: this.case_details.case_no
       });
+      this.$store
+        .dispatch("GET_COMPUTED_FEES", {
+          details: {
+            productType: this.form_details.general_info.product_type,
+            primaryActivity: this.form_details.general_info.primary_activity,
+            declaredCapital: this.form_details.general_info.declared_capital,
+            appType: this.form_details.application_type
+          },
+          case_no: this.case_details.case_no
+        })
+        .then(result => {
+          console.log("result :", result);
+        })
+        .catch(err => {
+          console.log("err :", err);
+        });
     },
     claim() {
       this.loading = true;

@@ -111,13 +111,15 @@ var actions = {
         })
     },
     SAVE_TRANSACTION(context, transaction) {
+        console.log("payments save transaction store: " + JSON.stringify(transaction))
         return new PaymentAPI(context.rootState.user_session.token).saveTransaction(transaction)
     },
     GET_COMPUTED_FEES(context, data) {
         return new Promise((resolve, reject) => {
+            console.log("get computed fees: " + JSON.stringify(data))
             new PaymentAPI(context.rootState.user_session.token).computePayments(data)
                 .then((result) => {
-                    console.log('result :', result.data)
+                    console.log('#####result : ' + JSON.stringify(result.data))
                     if (result.data.success) {
                         context.commit('FEES', result.data.model.fees)
                         context.commit('SET_HISTORY_TRANSACTION', result.data.model.transaction)

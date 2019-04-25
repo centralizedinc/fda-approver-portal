@@ -236,7 +236,7 @@ export default {
       ],
       transaction: {
         payment_details: {
-          total_amount: null,
+          total_amount: 0,
           mode_of_payment: ""
         },
         transaction_details: {
@@ -348,6 +348,7 @@ export default {
       this.loading = true;
       this.evaluated_case.case_type = this.case_details.case_type;
       console.log("this.evaluated_case payment:", this.evaluated_case);
+      console.log("this.transaction data: " + JSON.stringify(this.transaction))
       var transaction = {};
       this.$store
         .dispatch("SAVE_TRANSACTION", this.transaction)
@@ -355,10 +356,12 @@ export default {
           console.log("result.data.model :", result.data.model);
           transaction = result.data.model.transaction;
           if (result.data.model.isFullyPaid) {
+            console.log("before evaluation: " + JSON.stringify(this.evaluated_case))
             return this.$store.dispatch("EVALUATE", this.evaluated_case);
           }
         })
         .then(result => {
+          console.log("evaluate data form form: " + JSON.stringify(result))
           this.loading = false;
           this.show_confirmation = false;
 

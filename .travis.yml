@@ -1,7 +1,7 @@
 sudo: false
 language: node_js
 node_js:
-  - 'node'
+  - "lts/*"
 deploy:
   provider: heroku
   api_key:
@@ -12,7 +12,7 @@ deploy:
 notifications:
   email:
     - abalita@centralizedinc.com
-    - markjhonpaul.quijom@gmail.com 
+    - markjhonpaul.quijom@gmail.com
     - blitzkris24@gmail.com
     - godofuri76@gmail.com
     - fquiocho@centralizedinc.com

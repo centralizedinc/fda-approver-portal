@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-text>
-        <v-layout row wrap class="title" mb-2>
+        <!-- <v-layout row wrap class="title" mb-2>
           {{is_payment?"Transaction History":"Activities"}}
         </v-layout>
         <v-container 
@@ -67,14 +67,14 @@
         </v-layout>
         <v-layout row wrap>
           <v-divider></v-divider>
-        </v-layout>
-        <v-layout row wrap>
+        </v-layout> -->
+        <v-layout row wrap mb-2>
             <v-spacer></v-spacer>
             <v-btn color="info" @click="show_checklist=true">Show Checklist</v-btn>
         </v-layout>
         <v-layout row wrap>
             <template v-if="is_payment">
-              <v-flex xs5>
+              <v-flex xs12>
                 <v-autocomplete
                   :items="mode_of_payments"
                   item-text="description"
@@ -85,7 +85,7 @@
                 ></v-autocomplete>
               </v-flex>
 
-              <v-flex xs6 offset-xs1>
+              <v-flex xs12>
                 <v-text-field
                   name="amount"
                   label="Amount"
@@ -381,9 +381,10 @@ export default {
             case_no: this.case_details.case_no,
             fee: this.formatCurrency(this.charges.fee),
             lrf: this.formatCurrency(this.charges.lrf),
-            penalty:
-              this.formatCurrency(this.charges.surcharge) +
-              this.formatCurrency(this.charges.interest),
+            penalty: this.formatCurrency(
+              parseFloat(this.charges.surcharge) +
+                parseFloat(this.charges.interest)
+            ),
             total: this.formatCurrency(this.charges.total),
             amount: this.formatCurrency(
               this.transaction.payment_details.total_amount

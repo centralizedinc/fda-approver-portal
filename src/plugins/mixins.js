@@ -212,6 +212,9 @@ export default {
           ]
           return mode_of_payments[mode]
         },
+        getPaymentStatusColor(status) {
+          return ["red", "#9F4242", "blue"][status];
+        },
         logout() {
           this.$store.dispatch("LOGOUT");
           this.$router.push("/");

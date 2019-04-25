@@ -1,73 +1,6 @@
 <template>
   <v-card>
     <v-card-text>
-        <!-- <v-layout row wrap class="title" mb-2>
-          {{is_payment?"Transaction History":"Activities"}}
-        </v-layout>
-        <v-container 
-            elevation-1
-            grid-list-lg 
-            id="activities-layout" 
-            class="scroll-y"
-            style="max-height: 200px" >
-            <v-layout row wrap v-scroll:#activities-layout v-if="is_payment">
-              <v-flex xs12 v-if="history_transactions && history_transactions.length > 0">
-                <v-layout row wrap>
-                  <template v-for="(item, index) in history_transactions">
-                    <v-flex xs7 class="subheading" ma-1 :key="`c${index}`">
-                      <span class="font-weight-bold">{{getModeOfPayments(item.payment_details.mode_of_payment)}}</span> - 
-                      <i>{{formatDate(item.date_created)}}</i>
-                    </v-flex>
-                    <v-flex xs4 :key="`d${index}`" ma-1 class="font-weight-bold">₱ {{numberWithCommas(item.payment_details.total_amount)}}</v-flex>
-                  </template>
-                </v-layout>
-              </v-flex>
-              <v-flex xs11 offset-xs1 class="body-2" v-else>
-                <i>No Previous Transaction</i>
-              </v-flex>
-            </v-layout>
-            <v-layout row wrap v-scroll:#activities-layout v-else>
-              <v-flex xs12 
-                v-if="case_details.activities && case_details.activities.length > 0"
-                v-for="(item, index) in case_details.activities" 
-                :key="`a${index}`">
-                <span class="subheading" ma-1>
-                    {{
-                        getAdminUser(item.assigned_user).last_name ||
-                        (getClientUser(item.assigned_user).last_name ? 'Client' : "")
-                    }}/{{
-                        getTask(case_details.case_type, item.task_id).name
-                    }} ({{
-                        getActivityStatus(item.status)
-                    }}) - <i>{{
-                        formatDate(item.date_completed, {month: '2-digit', day: '2-digit', year: '2-digit'})
-                    }}</i>
-                </span>
-                <p class="body-1" style="text-indent: 50px;" ma-1>{{item.remarks}}</p>
-                <v-divider></v-divider>
-              </v-flex>
-              <v-flex xs12 v-else class="subheading">
-                <i>No Activities</i>
-              </v-flex>
-            </v-layout>
-        </v-container>
-        <v-layout row wrap v-if="is_payment" pa-2>
-          <v-flex xs7 class="subheading font-weight-bold" ml-1 mr-1>
-            Total Amount Paid: 
-          </v-flex>
-          <v-flex xs4 class="font-weight-bold" ml-1 mr-1>
-            ₱ {{numberWithCommas(total_amount_paid)}}
-          </v-flex>
-          <v-flex xs7 class="subheading font-weight-bold" ml-1 mr-1>
-            Remaining Balance: 
-          </v-flex>
-          <v-flex xs4 class="font-weight-bold" ml-1 mr-1>
-            ₱ {{numberWithCommas(current_remaining_balance)}}
-          </v-flex>
-        </v-layout>
-        <v-layout row wrap>
-          <v-divider></v-divider>
-        </v-layout> -->
         <v-layout row wrap mb-2>
             <v-spacer></v-spacer>
             <v-btn color="info" @click="show_checklist=true">Show Checklist</v-btn>
@@ -105,17 +38,48 @@
     </v-card-text>
     <v-divider></v-divider>
     <v-card-actions>
-      <v-btn color="success" v-if="is_payment" @click="show_confirmation=true" :disabled="loading">Submit Payment</v-btn>
-      <template v-else>
-        <v-btn color="success" @click="decision(0)" :disabled="loading">APPROVE</v-btn>
-        <v-btn color="error" @click="decision(2)" :disabled="loading">DISAPPROVE</v-btn>
+      <template v-if="is_payment">
+        <v-btn color="success" @click="show_confirmation=true" :disabled="loading">Submit Payment</v-btn>
+        <v-btn color="warning" @click="decision(3)" :disabled="loading">UNCLAIM</v-btn>
       </template>
-      <v-btn
-        class="font-weight-light"
-        color="info" :disabled="loading"
-        v-if="recommended_tasks.length > 0"
-        @click="show_recommend=true">RECOMMEND</v-btn>
-      <v-btn color="warning" @click="decision(3)" :disabled="loading">UNCLAIM</v-btn>
+      
+      <template v-else>
+        <v-speed-dial v-model="fab" direction="right" open-on-hover transition="slide-x-transition" block>
+          <template v-slot:activator>
+            <v-btn slot="activator" v-model="fab" fab flat icon outline color="primary">
+              <v-icon>send</v-icon>
+            </v-btn>
+          </template>
+          <v-tooltip top class="pa-1">
+              <v-btn slot="activator" flat fab icon outline color="success" @click="decision(0)" :disabled="loading">
+                <v-icon>thumb_up</v-icon>
+              </v-btn>
+              APPROVE
+          </v-tooltip>
+          <v-tooltip top class="pa-1">
+            <v-btn slot="activator" flat fab icon outline color="error" @click="decision(2)" :disabled="loading">
+              <v-icon>thumb_down</v-icon>
+            </v-btn>
+            DISAPPROVE
+          </v-tooltip>
+          <v-tooltip top class="pa-1">
+              <v-btn slot="activator" flat fab icon
+                class="font-weight-light" outline
+                color="info" :disabled="loading"
+                v-if="recommended_tasks.length > 0"
+                @click="show_recommend=true">
+                <v-icon>share</v-icon>
+              </v-btn>
+              RECOMMEND
+          </v-tooltip>
+          <v-tooltip top class="pa-1">
+            <v-btn slot="activator" flat fab icon outline color="#9F4242" @click="decision(3)" :disabled="loading">
+              <v-icon>remove_circle</v-icon>
+            </v-btn>
+            UNCLAIM
+          </v-tooltip>
+        </v-speed-dial>
+      </template>
     </v-card-actions>
     <v-dialog
         v-model="show_checklist" 
@@ -217,6 +181,7 @@
 export default {
   data() {
     return {
+      fab: false,
       evaluated_case: {
         case_id: "",
         status: null,
@@ -365,7 +330,8 @@ export default {
         interest: this.charges.interest,
         total_amount: this.charges.total
       };
-
+      console.log("this.evaluated_case :", this.evaluated_case);
+      console.log("this.transaction :", this.transaction);
       this.$store
         .dispatch("SAVE_TRANSACTION", this.transaction)
         .then(result => {
@@ -400,6 +366,10 @@ export default {
             color: "success"
           });
           this.$print(details, "RCPT");
+
+          this.$store.dispatch("GET_UNASSIGNED", true);
+          this.$store.dispatch("GET_INBOX", true);
+          this.$store.dispatch("GET_PARTICIPATED", true);
 
           this.$store.dispatch("CLOSE_REVIEW_DATA");
           this.resetTransaction();
@@ -456,6 +426,13 @@ export default {
         });
     },
     resetTransaction() {
+      this.evaluated_case = {
+        case_id: "",
+        status: null,
+        recommend_to: "",
+        checklist: [],
+        remarks: ""
+      };
       this.transaction = {
         payment_details: {
           total_amount: null,

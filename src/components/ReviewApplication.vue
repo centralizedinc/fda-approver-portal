@@ -28,7 +28,7 @@
                                     <v-layout row wrap v-scroll:#summary-layout>
                                         
                                         <!-- Activities -->
-                                        <v-flex v-bind="{ [`xs${claimed?12:5}`]: true }">
+                                        <v-flex v-bind="{ [`xs${claimed?12:6}`]: true }">
                                             <v-card>
                                                 <v-card-title class="title-bg title white--text" dark>
                                                     Activities
@@ -39,34 +39,43 @@
                                                 </v-card-title>
                                                 <v-divider v-show="show_tab1"></v-divider>
                                                 <v-card-text v-show="show_tab1">
+                                                    
+                                                    <v-flex xs12 v-if="!case_details.activities || case_details.activities.length <= 0" class="subheading">
+                                                        <i>No Activities</i>
+                                                    </v-flex>
                                                     <v-flex xs12 
-                                                        v-if="case_details.activities && case_details.activities.length > 0"
+                                                        v-else
                                                         v-for="(item, index) in case_details.activities" 
                                                         :key="`a${index}`">
                                                         <span class="subheading" ma-1>
-                                                            {{
+                                                            <span class="font-weight-bold">{{
                                                                 getAdminUser(item.assigned_user).last_name ||
-                                                                (getClientUser(item.assigned_user).last_name ? 'Client' : "")
+                                                                (getClientUser(item.assigned_user).name.last ? 'Client' : "")
                                                             }}/{{
                                                                 getTask(case_details.case_type, item.task_id).name
                                                             }} ({{
                                                                 getActivityStatus(item.status)
-                                                            }}) - <i>{{
+                                                            }})</span> - <i>{{
                                                                 formatDate(item.date_completed, {month: '2-digit', day: '2-digit', year: '2-digit'})
                                                             }}</i>
                                                         </span>
-                                                        <p class="body-1" style="text-indent: 50px;" ma-1>{{item.remarks}}</p>
+                                                        <p class="body-1" style="text-indent: 50px;">{{item.remarks}}</p>
+                                                        <p style="text-indent: 50px;" v-if="item.files && item.files.length > 0">
+                                                            <span class="body-2">Attachment(s): </span>
+                                                            <span class="body-1">
+                                                                <template v-for="(file, i) in item.files">
+                                                                    <a :href="file.location" :key="`f${i}`">{{file.originalname}}</a> / 
+                                                                </template>
+                                                            </span>
+                                                        </p>
                                                         <v-divider></v-divider>
-                                                    </v-flex>
-                                                    <v-flex xs12 v-else class="subheading">
-                                                        <i>No Activities</i>
                                                     </v-flex>
                                                 </v-card-text>
                                             </v-card>
                                         </v-flex>
 
                                         <!-- Payments Summary -->
-                                        <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
+                                        <v-flex v-bind="{ [`xs${claimed?12:6}`]: true }">
                                             <v-card>
                                                 <v-card-title class="title-bg title white--text" dark>
                                                     Payments Summary
@@ -79,10 +88,10 @@
                                                 <v-card-text v-show="show_tab2">
                                                     <v-layout row wrap>
                                                         <v-flex xs12 class="body-2">
-                                                            Payment Status: <v-chip class="body-2 font-weight-bold" style="float: right" label color="fdaYellow" text-color="black">{{getPaymentStatus(case_details.payment_status)}}</v-chip>
+                                                            Payment Status: <v-chip class="body-2 font-weight-bold" style="float: right" label :color="getPaymentStatusColor(case_details.payment_status)" text-color="white">{{getPaymentStatus(case_details.payment_status)}}</v-chip>
                                                         </v-flex>
                                                         <v-flex xs12 v-if="case_details.payment_status">
-                                                            Date of Payment: <span style="float: right">{{formatDate(case_details.payment_date)}}</span>
+                                                            Date of Last Payment: <span style="float: right">{{formatDate(case_details.payment_date)}}</span>
                                                         </v-flex>
                                                         <v-flex xs12>
                                                             <v-divider></v-divider>
@@ -537,10 +546,10 @@
                                         </v-flex>
 
                                         <!-- Documents -->
-                                        <v-flex v-bind="{ [`xs${claimed?12:8}`]: true }">
+                                        <v-flex xs12>
                                             <v-card>
                                                 <v-card-title class="title-bg title white--text" dark>
-                                                    Documents
+                                                    Uploaded Documents
                                                     <v-spacer></v-spacer>
                                                     <v-btn @click="show_tab9=!show_tab9" flat icon>
                                                         <v-icon>{{show_tab9?'expand_less':'expand_more'}}</v-icon>
@@ -550,10 +559,10 @@
                                                 <v-card-text v-show="show_tab9">
                                                     <v-layout row wrap>
                                                         <!-- {{form_details.uploaded_files}} -->
-                                                        <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }"
+                                                        <v-flex v-bind="{ [`xs${claimed?6:3}`]: true }"
                                                             v-for="(item, index) in form_details.uploaded_files" 
                                                             :key="`d${index}`" pa-2>
-                                                            <v-card max-width="200">
+                                                            <v-card max-width="200" @click="viewFile(item.location)" style="cursor:zoom-in">
                                                                 <v-toolbar dark color="fdaGreen"
                                                                     style="background: linear-gradient(45deg, #104B2A 0%, #b5c25a 100%)">
                                                                     <span class="text-truncate">{{item.originalname}}</span>
@@ -601,7 +610,7 @@
                         @click="show_confirmation=true" 
                         :loading="loading" 
                         block>
-                        CLAIM
+                        CLAIM <v-icon>bookmark</v-icon>
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -720,7 +729,10 @@ export default {
   },
   methods: {
     init() {
-      this.claimed;
+      if (this.claimed) {
+        if (this.is_payment) this.show_tabs(false, "show_tab2");
+        else this.show_tabs(false, "show_tab1");
+      } else this.show_tabs(true);
       this.$store.dispatch("CHECK_REVIEW_ACCESS");
 
     },
@@ -768,6 +780,9 @@ export default {
       this.show_tab10 = is_all;
 
       if (except) this[except] = !is_all;
+    },
+    viewFile(url) {
+      window.open(url, "_blank");
     }
   }
 };

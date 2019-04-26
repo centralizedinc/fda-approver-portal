@@ -95,6 +95,7 @@ export default new Router({
       children: [{
           path: '',
           name: 'Dashboard',
+          beforeEnter: dropBreadcrumbs,
           component: () =>
             import('@/views/app/UserPortfolio.vue')
         },

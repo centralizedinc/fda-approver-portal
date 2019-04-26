@@ -210,7 +210,7 @@ export default {
       ],
       transaction: {
         payment_details: {
-          total_amount: null,
+          total_amount: 0,
           mode_of_payment: ""
         },
         transaction_details: {

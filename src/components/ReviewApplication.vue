@@ -298,11 +298,12 @@
                                                 <v-divider v-show="show_tab6"></v-divider>
                                                 <v-card-text v-show="show_tab6">
                                                     <v-layout row wrap v-for="(item, index) in form_details.address_list" :key="`b${index}`">
+                                                      <v-flex xs6>
                                                         <v-flex xs12>
                                                             <b>Address #{{index+1}}</b>
                                                         </v-flex>
                                                         <v-flex xs12>
-                                                            <b>Type:</b> {{item.type}}
+                                                            <b>Type:</b> {{getEstablishmentType(item.type)}}
                                                         </v-flex>
                                                         <v-flex xs12>
                                                             <b>Address:</b> {{item.address}}
@@ -328,6 +329,22 @@
                                                         <v-flex xs12>
                                                             <v-divider></v-divider>
                                                         </v-flex>
+                                                      </v-flex>
+                                                      <v-flex xs6>
+                                                        <v-flex xs12>
+                                                          <address-map
+                                                          :city="item.city"
+                                                          :province="item.province"
+                                                          :region="item.region"
+                                                          :lat="item.location.lat"
+                                                          :lng="item.location.lng"
+                                                          
+                                                          @pin="setCoordinates"
+                                                          ></address-map>
+                                                        </v-flex>
+                                                      </v-flex>  
+                                                        
+                                                        
                                                     </v-layout>
                                                 </v-card-text>
                                             </v-card>
@@ -420,6 +437,69 @@
                                             </v-card>
                                         </v-flex>
 
+                    <!-- Establishment Address -->
+                    <!-- <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
+                      <v-card>
+                        <v-card-title class="title-bg title white--text" dark>Establishment Address</v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text>
+                          <v-layout
+                            row
+                            wrap
+                            v-for="(item, index) in form_details.address_list"
+                            :key="`b${index}`"
+                          >
+                            <v-flex xs12>
+                              <b>Address #{{index+1}}</b>
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Type:</b>
+                              {{item.type}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Address:</b>
+                              {{item.address}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Region:</b>
+                              {{getRegionName(item.region)}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Province:</b>
+                              {{getProvinceName(item.province)}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>City:</b>
+                              {{getCityName(item.city)}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Zip Code:</b>
+                              {{item.zipcode}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Latitude:</b>
+                              {{item.location.lat}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <b>Longitude:</b>
+                              {{item.location.lng}}
+                            </v-flex>
+                            <v-flex xs12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex xs12>
+                        <address-map
+                        :city="item.city"
+                        :province="item.province"
+                        :region="item.region"
+                        :edit="true"
+                        @pin="setCoordinates"
+                        ></address-map>
+                    </v-flex>
+                          </v-layout>
+                        </v-card-text>
+                      </v-card>
+                    </v-flex> -->
 
                                         <!-- Qualified Personnel -->
                                         <v-flex v-bind="{ [`xs${claimed?12:4}`]: true }">
@@ -603,11 +683,13 @@
 <script>
 import EvaluationForm from "./EvaluationForm";
 import pdf from "vue-pdf";
+import AddressMap from "./AddressMap";
 
 export default {
   components: {
     EvaluationForm,
-    pdf
+    pdf,
+    AddressMap
   },
   data() {
     return {
@@ -687,6 +769,7 @@ export default {
         else this.show_tabs(false, "show_tab1");
       } else this.show_tabs(true);
       this.$store.dispatch("CHECK_REVIEW_ACCESS");
+
     },
     claim() {
       this.loading = true;
@@ -713,6 +796,12 @@ export default {
     close() {
       this.$store.commit("CLOSE_REVIEW");
     },
+     setCoordinates(coordinates){
+       console.log("goes here: " + JSON.stringify(coordinates))
+            this.form_details.address_list.location = coordinates;
+            // console.log("coordinates details: " + JSON.stringify(coordinates))
+            // coordinates = this.form_details.address_list.location
+        },
     show_tabs(is_all, except) {
       this.show_tab1 = is_all;
       this.show_tab2 = is_all;

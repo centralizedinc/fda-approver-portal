@@ -60,11 +60,21 @@
                                                             }}</i>
                                                         </span>
                                                         <p class="body-1" style="text-indent: 50px;">{{item.remarks}}</p>
-                                                        <p style="text-indent: 50px;" v-if="item.files && item.files.length > 0">
-                                                            <span class="body-2">Attachment(s): </span>
+                                                        <p v-if="item.files && item.files.length > 0">
+                                                            <span class="body-2" style="margin-left: 50px;">Attachment(s): </span>
                                                             <span class="body-1">
                                                                 <template v-for="(file, i) in item.files">
-                                                                    <a :href="file.location" :key="`f${i}`">{{file.originalname}}</a> / 
+                                                                    <v-menu offset-y top open-on-hover :key="`f${i}`" @>
+                                                                        <a slot="activator" :href="file.location">{{file.originalname}}</a>
+                                                                        <v-card tile class="d-flex" width="250px" @click="viewFile(file.location)" style="cursor:zoom-in">
+                                                                            <pdf
+                                                                                v-show="file.loaded"
+                                                                                @loaded="file.loaded=true"
+                                                                                :src="'https://cors-anywhere.herokuapp.com/' + file.location"
+                                                                            ></pdf>
+                                                                            <v-progress-circular v-show="!file.loaded" indeterminate color="primary"></v-progress-circular>
+                                                                        </v-card>
+                                                                    </v-menu> /
                                                                 </template>
                                                             </span>
                                                         </p>
@@ -483,28 +493,51 @@
                                                             v-for="(item, index) in form_details.uploaded_files" 
                                                             :key="`d${index}`" pa-2>
                                                             <v-card max-width="200" @click="viewFile(item.location)" style="cursor:zoom-in">
-                                                                <v-toolbar dark color="fdaGreen"
-                                                                    style="background: linear-gradient(45deg, #104B2A 0%, #b5c25a 100%)">
-                                                                    <span class="text-truncate">{{item.originalname}}</span>
-                                                                </v-toolbar>
-                                                                <v-card-text>
-                                                                    <v-layout row wrap align-center justify-center ma-0>
-                                                                        <v-img
-                                                                            v-if="item.mimetype !== 'application/pdf'"
-                                                                            :src="item.location"
-                                                                            class="grey lighten-2"
-                                                                            max-height="200"
-                                                                            max-width="100"
-                                                                            contain>
-                                                                            <v-layout slot="placeholder" fill-height align-center justify-center ma-0>
-                                                                                <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
-                                                                            </v-layout>
-                                                                        </v-img>
-                                                                        <div v-else>
-                                                                            <pdf :src="item.location"></pdf>
-                                                                        </div>
-                                                                    </v-layout>
-                                                                </v-card-text>
+                                                                <v-tooltip top>
+                                                                    <pdf
+                                                                        slot="activator"
+                                                                        v-show="load_uploaded"
+                                                                        @loaded="load_uploaded=true"
+                                                                        :src="'https://cors-anywhere.herokuapp.com/' + item.location"
+                                                                    ></pdf>
+                                                                    {{item.originalname}}
+                                                                </v-tooltip>
+                                                                <v-progress-circular v-show="!load_uploaded" indeterminate color="primary"></v-progress-circular>
+                                                            </v-card>
+                                                        </v-flex>
+                                                    </v-layout>
+                                                </v-card-text>
+                                            </v-card>
+                                        </v-flex>
+
+                                        <!-- Output Documents -->
+                                        <v-flex xs12>
+                                            <v-card>
+                                                <v-card-title class="title-bg title white--text" dark>
+                                                    Output Documents
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn @click="show_tab10=!show_tab10" flat icon>
+                                                        <v-icon>{{show_tab10?'expand_less':'expand_more'}}</v-icon>
+                                                    </v-btn>
+                                                </v-card-title>
+                                                <v-divider v-show="show_tab10"></v-divider>
+                                                <v-card-text v-show="show_tab10">
+                                                    <v-layout row wrap>
+                                                        <!-- {{form_details.uploaded_files}} -->
+                                                        <v-flex v-bind="{ [`xs${claimed?6:3}`]: true }"
+                                                            v-for="(item, index) in form_details.output_files" 
+                                                            :key="`d${index}`" pa-2 d-flex>
+                                                            <v-card max-width="200" @click="viewFile(item.location)" style="cursor:zoom-in" class="d-flex">
+                                                                <v-tooltip top>
+                                                                    <pdf
+                                                                        slot="activator"
+                                                                        v-show="load_output"
+                                                                        @loaded="load_output=true"
+                                                                        :src="'https://cors-anywhere.herokuapp.com/' + item.location"
+                                                                    ></pdf>
+                                                                    {{item.originalname}}
+                                                                </v-tooltip>
+                                                                <v-progress-circular v-show="!load_output" indeterminate color="primary"></v-progress-circular>
                                                             </v-card>
                                                         </v-flex>
                                                     </v-layout>
@@ -589,7 +622,9 @@ export default {
       show_tab9: false, //Compliance Documents
       show_tab10: false, //Activities
       loading: false,
-      show_confirmation: false
+      show_confirmation: false,
+      load_uploaded: false,
+      load_output: false
     };
   },
   computed: {

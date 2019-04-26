@@ -224,7 +224,9 @@ export default {
             total_amount: 0
           }
         }
-      }
+      },
+      payment_status: null,
+      final_decision: null
     };
   },
   created() {
@@ -233,6 +235,9 @@ export default {
   computed: {
     case_details() {
       return this.$store.state.case.case_details;
+    },
+    form_details() {
+      return this.$store.state.case.form_details;
     },
     checklist() {
       return this.$store.state.license.checklist;
@@ -281,10 +286,8 @@ export default {
   },
   methods: {
     init() {
-      this.evaluated_case.case_id = this.case_details._id;
-      this.transaction.transaction_details.application_type = this.case_details.application_type;
-      this.transaction.transaction_details.application = this.case_details.case_type;
-      this.transaction.transaction_details.case_no = this.case_details.case_no;
+      this.payment_status = null;
+      this.final_decision = null;
       this.$store
         .dispatch("GET_CHECKLIST_BY_TASK", this.case_details.current_task)
         .then(result => {
@@ -322,6 +325,10 @@ export default {
       this.loading = true;
       this.evaluated_case.status = 0;
       this.evaluated_case.case_type = this.case_details.case_type;
+      this.evaluated_case.case_id = this.case_details._id;
+      this.transaction.transaction_details.application_type = this.case_details.application_type;
+      this.transaction.transaction_details.application = this.case_details.case_type;
+      this.transaction.transaction_details.case_no = this.case_details.case_no;
 
       this.transaction.transaction_details.order_payment = {
         fee: this.charges.fee,
@@ -330,19 +337,14 @@ export default {
         interest: this.charges.interest,
         total_amount: this.charges.total
       };
-      console.log("this.evaluated_case :", this.evaluated_case);
-      console.log("this.transaction :", this.transaction);
+      var receipt_name = `fda-receipt-${Date.now()}.pdf`;
       this.$store
         .dispatch("SAVE_TRANSACTION", this.transaction)
         .then(result => {
-          console.log("result payments :", result);
-          if (result.payment_status === 2) {
-            return this.$store.dispatch("EVALUATE", this.evaluated_case);
-          }
-        })
-        .then(result => {
-          this.loading = false;
-          this.show_confirmation = false;
+          // Downloading receipt
+          console.log("payment transaction :", result);
+          this.payment_status = result.payment_status;
+
           var details = {
             case_no: this.case_details.case_no,
             fee: this.formatCurrency(this.charges.fee),
@@ -357,6 +359,105 @@ export default {
             ),
             remaining_balance: this.formatCurrency(this.remaining_balance)
           };
+          this.$download(details, "RCPT", receipt_name);
+
+          return this.$upload(details, "RCPT");
+        })
+        .then(blob => {
+          // Upload receipt to AWS
+          var file = new File([blob], receipt_name, {
+            type: "application/pdf",
+            lastModified: Date.now()
+          });
+          var fd = new FormData();
+          fd.append("file", file);
+          return this.$store.dispatch("GENERATED_DOCUMENTS", {
+            license: this.form_details,
+            formData: fd
+          });
+        })
+        .then(result => {
+          // Save receipt to Application
+          console.log("this.payment_status :", this.payment_status);
+          if (this.payment_status && this.payment_status === 2) {
+            console.log("this.evaluated_case :", this.evaluated_case);
+            return this.$store.dispatch("EVALUATE", this.evaluated_case);
+          }
+        })
+        .then(result => {
+          // Evaluate
+          console.log("evaluate :", result);
+          this.final_decision = result ? result.decision : null;
+          if (this.final_decision) {
+            if (this.final_decision === 1) {
+              // Approved
+              var app = this.deepCopy(this.form_details);
+              app.general_info.primary_activity = this.getPrimary(
+                app.general_info.primary_activity
+              );
+              app.application_type = this.getAppType(app.application_type);
+              app.license_expiry = this.formatDate(app.license_expiry);
+
+              app.officeAddress = app.address_list.find(x => {
+                return x.type === 0;
+              });
+              if (!app.officeAddress) {
+                app.officeAddress = {
+                  address: ""
+                };
+              }
+              return this.$upload(app, "LIC");
+            } else if (this.final_decision === 3) {
+              // Disapproved
+              var address = "";
+
+              this.form_details.address_list.forEach(elem => {
+                if (elem.type === 0) {
+                  address = elem.address;
+                }
+              });
+
+              var details = {
+                date_created: this.formatDate(new Date()),
+                name: `${
+                  this.getClientUser(this.case_details.client).name.first
+                } ${this.getClientUser(this.case_details.client).name.last}`,
+                establishment_name: this.form_details.estab_details
+                  .establishment_name,
+                establishment_address: address,
+                application_type:
+                  this.getAppType(this.form_details.application_type) +
+                  " Application",
+                case_no: this.case_details.case_no,
+                reasons: this.evaluated_case.remarks
+              };
+              return this.$upload(details, "DENIED_LIC");
+            }
+          }
+        })
+        .then(blob => {
+          // Upload app certificate or denied letter to AWS
+          if (this.final_decision) {
+            var file_name =
+              this.final_decision === 1
+                ? "Application Certificate.pdf"
+                : this.final_decision === 3 ? "Letter of Disapproval.pdf" : "";
+            var file = new File([blob], file_name, {
+              type: "application/pdf",
+              lastModified: Date.now()
+            });
+            var fd = new FormData();
+            fd.append("file", file);
+            return this.$store.dispatch("GENERATED_DOCUMENTS", {
+              license: this.form_details,
+              formData: fd
+            });
+          }
+        })
+        .then(result => {
+          // Save app certificate or denied letter to Application
+          this.loading = false;
+          this.show_confirmation = false;
           this.$notify({
             message:
               "Successfully transaction of an application with case no.: " +
@@ -364,8 +465,6 @@ export default {
             icon: "check_circle",
             color: "success"
           });
-          this.$print(details, "RCPT");
-
           this.$store.dispatch("GET_UNASSIGNED", true);
           this.$store.dispatch("GET_INBOX", true);
           this.$store.dispatch("GET_PARTICIPATED", true);
@@ -381,13 +480,84 @@ export default {
     submit() {
       this.loading = true;
       this.evaluated_case.case_type = this.case_details.case_type;
-      console.log("this.evaluated_case :", this.evaluated_case);
+      this.evaluated_case.case_id = this.case_details._id;
       this.$store
         .dispatch("EVALUATE", this.evaluated_case)
         .then(result => {
+          // Evaluate
+          console.log("evaluate :", result);
+          this.final_decision = result ? result.decision : null;
+          if (this.final_decision) {
+            if (this.final_decision === 1) {
+              // Approved
+              var app = this.deepCopy(this.form_details);
+              app.general_info.primary_activity = this.getPrimary(
+                app.general_info.primary_activity
+              );
+              app.application_type = this.getAppType(app.application_type);
+              app.license_expiry = this.formatDate(app.license_expiry);
+
+              app.officeAddress = app.address_list.find(x => {
+                return x.type === 0;
+              });
+              if (!app.officeAddress) {
+                app.officeAddress = {
+                  address: ""
+                };
+              }
+              return this.$upload(app, "LIC");
+            } else if (this.final_decision === 3) {
+              // Disapproved
+              var address = "";
+
+              this.form_details.address_list.forEach(elem => {
+                if (elem.type === 0) {
+                  address = elem.address;
+                }
+              });
+
+              var details = {
+                date_created: this.formatDate(new Date()),
+                name: `${
+                  this.getClientUser(this.case_details.client).name.first
+                } ${this.getClientUser(this.case_details.client).name.last}`,
+                establishment_name: this.form_details.estab_details
+                  .establishment_name,
+                establishment_address: address,
+                application_type:
+                  this.getAppType(this.form_details.application_type) +
+                  " Application",
+                case_no: this.case_details.case_no,
+                reasons: this.evaluated_case.remarks
+              };
+              return this.$upload(details, "DENIED_LIC");
+            }
+          }
+        })
+        .then(blob => {
+          // Upload app certificate or denied letter to AWS
+          if (this.final_decision) {
+            var file_name =
+              this.final_decision === 1
+                ? "Application Certificate.pdf"
+                : this.final_decision === 3 ? "Letter of Disapproval.pdf" : "";
+            var file = new File([blob], file_name, {
+              type: "application/pdf",
+              lastModified: Date.now()
+            });
+            var fd = new FormData();
+            fd.append("file", file);
+            console.log("this.form_details :", this.form_details);
+            return this.$store.dispatch("GENERATED_DOCUMENTS", {
+              license: this.form_details,
+              formData: fd
+            });
+          }
+        })
+        .then(result => {
+          // Save app certificate or denied letter to Application
           this.loading = false;
           this.show_confirmation = false;
-          this.$store.dispatch("CLOSE_REVIEW_DATA");
           this.$notify({
             message:
               "Successfully evaluate an application with case no.: " +
@@ -395,7 +565,12 @@ export default {
             icon: "check_circle",
             color: "success"
           });
-          // this.$router.go(-1);
+          this.$store.dispatch("GET_UNASSIGNED", true);
+          this.$store.dispatch("GET_INBOX", true);
+          this.$store.dispatch("GET_PARTICIPATED", true);
+
+          this.$store.dispatch("CLOSE_REVIEW_DATA");
+          this.resetTransaction();
         })
         .catch(err => {
           this.loading = false;

@@ -217,6 +217,9 @@ export default {
         getPaymentStatusColor(status) {
           return ["red", "#9F4242", "blue"][status];
         },
+        deepCopy(obj) {
+          return JSON.parse(JSON.stringify(obj));
+        },
         logout() {
           this.$store.dispatch("LOGOUT");
           this.$router.push("/");

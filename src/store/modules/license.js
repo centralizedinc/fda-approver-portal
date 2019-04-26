@@ -1,4 +1,4 @@
-import LicenseAPI from '@/api/LicenseAPI';
+import LicenseAPI from '../../api/LicenseAPI';
 
 function initialState() {
     return {
@@ -108,6 +108,13 @@ var actions = {
                 })
             })
         }
+    },
+
+    GENERATED_DOCUMENTS(context, data) {
+        return new LicenseAPI(context.rootState.user_session.token).addDocuments(
+            data.license,
+            data.formData
+        );
     }
 }
 

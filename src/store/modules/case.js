@@ -160,6 +160,7 @@ var actions = {
         })
     },
     CLOSE_REVIEW_DATA(context) {
+        console.log('clearing data');
         context.commit('CLOSE_REVIEW')
         context.commit('CLEAR_CASE')
         context.commit('CLEAR_PAYMENTS')
@@ -174,7 +175,9 @@ var actions = {
                     if (result.data.success) {
                         console.log('result.data.model :', result.data.model);
                         if (!result.data.model.valid) {
-                            context.commit('CLOSE_REVIEW_DATA')
+                            context.dispatch('CLOSE_REVIEW_DATA', {}, {
+                                root: true
+                            })
                         }
                     } else {
                         console.log('result.data :', result.data);

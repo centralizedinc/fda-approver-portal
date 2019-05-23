@@ -1,4 +1,4 @@
-import TaskAPI from '@/api/TaskAPI';
+import TaskAPI from '../../api/TaskAPI';
 
 function initialState() {
     return {
@@ -35,14 +35,21 @@ var actions = {
     GET_TASKS(context) {
         if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {
-                new TaskAPI(context.rootState.user_session.token).getTasksLicense(function (err, tasks) {
-                    if (!err) {
-                        context.commit('SET_LICENSE_TASKS', tasks)
-                        resolve(tasks);
-                    } else {
-                        reject(err);
-                    }
-                })
+                var TaskApi = new TaskAPI(context.rootState.user_session.token);
+                TaskApi.getTasksLicense()
+                    .then((result) => {
+                        console.log('tasks :', result.data.model);
+                        context.commit('SET_LICENSE_TASKS', result.data.model)
+                        resolve()
+                        // return TaskApi.getTasksCertificate()
+                    })
+                    // .then((tasks) => {
+                    //     context.commit('SET_CERTIFICATE_TASKS', tasks)
+                    //     resolve()
+                    // })
+                    .catch((err) => {
+                        reject(err)
+                    });
             });
         }
     },

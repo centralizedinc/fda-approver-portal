@@ -1,4 +1,5 @@
 import LicenseAPI from '@/api/LicenseAPI';
+import CertificateAPI from '../../api/CertificateAPI';
 
 function initialState() {
     return {
@@ -36,10 +37,21 @@ var actions = {
                                 inboxes = result.data.model;
                                 context.commit('SET_INBOX', inboxes)
                                 resolve(inboxes);
+                                // return new CertificateAPI(context.rootState.user_session.token).getInbox()
                             } else {
                                 reject(result.data.errors)
                             }
-                        }).catch((err) => {
+                        })
+                        // .then((result) => {
+                        //     if (result.data.success) {
+                        //         inboxes = inboxes.concat(result.data.model);
+                        //         context.commit('SET_INBOX', inboxes)
+                        //         resolve(inboxes);
+                        //     } else {
+                        //         reject(result.data.errors)
+                        //     }
+                        // })
+                        .catch((err) => {
                             reject(err)
                         });
                 } else {

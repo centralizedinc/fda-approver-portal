@@ -1,5 +1,6 @@
-import LicenseAPI from '@/api/LicenseAPI';
+import LicenseAPI from '../../api/LicenseAPI';
 import TaskAPI from '../../api/TaskAPI';
+import CertificateAPI from '../../api/CertificateAPI';
 
 function initialState() {
     return {
@@ -37,10 +38,21 @@ var actions = {
                                 unassigns = result.data.model;
                                 context.commit('SET_UNASSIGNED', unassigns)
                                 resolve(unassigns);
+                                // return new CertificateAPI(token).getUnassigned()
                             } else {
                                 reject(result.data.errors)
                             }
-                        }).catch((err) => {
+                        })
+                        // .then((result) => {
+                        //     if (result.data.success) {
+                        //         unassigns = unassigns.concat(result.data.model)
+                        //         context.commit('SET_UNASSIGNED', unassigns)
+                        //         resolve(unassigns);
+                        //     } else {
+                        //         reject(result.data.errors)
+                        //     }
+                        // })
+                        .catch((err) => {
                             reject(err)
                         });
                 } else resolve(context.state.unassigned)
@@ -51,8 +63,9 @@ var actions = {
         if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {
                 var token = context.rootState.user_session.token;
-                var APIClass = app.case_type === 0 ? new LicenseAPI(token) : null
-                // app.case_type === 1 ? new CertificateAPI(token) : null
+                var APIClass = app.case_type === 0 ?
+                    new LicenseAPI(token) : app.case_type === 1 ?
+                    new CertificateAPI(token) : null
                 if (APIClass) {
                     APIClass.claim(app.case_no)
                         .then((result) => {
@@ -80,8 +93,9 @@ var actions = {
         if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {
                 var token = context.rootState.user_session.token;
-                var APIClass = app.case_type === 0 ? new LicenseAPI(token) : null
-                // app.case_type === 1 ? new CertificateAPI(token) : null
+                var APIClass = app.case_type === 0 ?
+                    new LicenseAPI(token) : app.case_type === 1 ?
+                    new CertificateAPI(token) : null
                 if (APIClass) {
                     APIClass.unclaim(app.case_no)
                         .then((result) => {

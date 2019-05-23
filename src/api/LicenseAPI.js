@@ -83,9 +83,11 @@ export default class LicenseAPI {
                 .then(result => {
                     console.log(JSON.stringify(result))
                     var files = result.data.model
-                    license.output_files = license.output_files.concat(files)
+                    var output_files = license.output_files.concat(files)
                     if (result.data.success) {
-                        return axios.post('lto-api/' + license._id, license)
+                        return axios.post('lto-api/' + license._id, {
+                            output_files
+                        })
                     } else {
                         reject()
                         return

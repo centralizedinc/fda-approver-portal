@@ -8,15 +8,15 @@ export default class CertificateAPI {
         axios.defaults.headers.common['access_token'] = token;
     }
 
-    getInbox(cb) {
+    getInbox() {
         return axios.get('certificate/case/inbox')
     }
 
-    getParticipated(cb) {
+    getParticipated() {
         return axios.get('certificate/case/participated')
     }
 
-    getUnassigned(cb) {
+    getUnassigned() {
         return axios.get('certificate/case/unassigned')
     }
 

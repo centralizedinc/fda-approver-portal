@@ -48,7 +48,7 @@ var actions = {
                         .catch(err => {
                             reject(err)
                         })
-                } else if (evaluated_case.case_type === 0) {
+                } else if (evaluated_case.case_type === 1) {
                     new CertificateAPI(token).evaluate(evaluated_case)
                         .then(result => {
                             if (result.data.success) {

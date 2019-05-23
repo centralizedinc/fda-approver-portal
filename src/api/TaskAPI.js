@@ -8,15 +8,12 @@ export default class TaskAPI {
         axios.defaults.headers.common['access_token'] = token;
     }
 
-    getTasksLicense(cb) {
-        axios.get("/lto-api/task")
-            .then(result => {
-                cb(result.data.errors, result.data.model)
-            })
-            .catch(err => {
-                console.log('err license tasks: ' + err)
-                cb(err)
-            });
+    getTasksLicense() {
+        return axios.get("/lto-api/task")
+    }
+
+    getTasksCertificate() {
+        return axios.get("/certificate/task")
     }
 
     isForPrintingLicense(cb) {

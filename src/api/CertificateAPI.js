@@ -9,27 +9,27 @@ export default class CertificateAPI {
     }
 
     getInbox(cb) {
-        return axios.get('cpr-api/case/inbox')
+        return axios.get('certificate/case/inbox')
     }
 
     getParticipated(cb) {
-        return axios.get('cpr-api/case/participated')
+        return axios.get('certificate/case/participated')
     }
 
     getUnassigned(cb) {
-        return axios.get('cpr-api/case/unassigned')
+        return axios.get('certificate/case/unassigned')
     }
 
     claim(case_no) {
-        return axios.get('cpr-api/case/claim/' + case_no)
+        return axios.get('certificate/case/claim/' + case_no)
     }
 
     unclaim(case_no) {
-        return axios.get('cpr-api/case/unclaim/' + case_no)
+        return axios.get('certificate/case/unclaim/' + case_no)
     }
 
     evaluate(params) {
-        return axios.post('cpr-api/case/evaluate', params)
+        return axios.post('certificate/case/evaluate', params)
     }
 
 }

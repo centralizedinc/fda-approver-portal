@@ -79,10 +79,12 @@ var actions = {
             })
         }
     },
-    GET_CHECKLIST_BY_TASK(context, task_id) {
-        if (context.rootState.user_session.token) {
+    GET_CHECKLIST_BY_TASK(context) {
+        if (context.rootState.user_session.token &&
+            context.rootState.case.case_details === 0) {
             return new Promise((resolve, reject) => {
-                new LicenseAPI(context.rootState.user_session.token).getChecklistByTask(task_id, (err, checklist) => {
+                new LicenseAPI(context.rootState.user_session.token)
+                .getChecklistByTask(context.rootState.case.case_details.current_task, (err, checklist) => {
                     if (!err) {
                         context.commit('SET_CHECKLIST', checklist)
                         resolve(checklist)
@@ -94,10 +96,12 @@ var actions = {
             })
         }
     },
-    GET_RECOMMENDED_TASKS(context, task_id) {
-        if (context.rootState.user_session.token) {
+    GET_RECOMMENDED_TASKS(context) {
+        if (context.rootState.user_session.token &&
+            context.rootState.case.case_details.case_type === 0) {
             return new Promise((resolve, reject) => {
-                new LicenseAPI(context.rootState.user_session.token).getRecommendedTasks(task_id, (err, recommended_tasks) => {
+                new LicenseAPI(context.rootState.user_session.token)
+                .getRecommendedTasks(context.rootState.case.case_details.current_task, (err, recommended_tasks) => {
                     if (!err) {
                         context.commit('SET_RECOMMENDED_TASKS', recommended_tasks)
                         resolve(recommended_tasks)
@@ -110,12 +114,12 @@ var actions = {
         }
     },
 
-    GENERATED_DOCUMENTS(context, data) {
-        return new LicenseAPI(context.rootState.user_session.token).addDocuments(
-            data.license,
-            data.formData
-        );
-    }
+    // GENERATED_DOCUMENTS(context, data) {
+    //     return new LicenseAPI(context.rootState.user_session.token).addDocuments(
+    //         data.license,
+    //         data.formData
+    //     );
+    // }
 }
 
 export default {

@@ -5,15 +5,7 @@ function initialState() {
         case_details: {
             activities: []
         },
-        form_details: {
-            general_info: {},
-            estab_details: {},
-            auth_officer: {
-                mail_add: {}
-            },
-            qualified: [],
-            address_list: []
-        },
+        form_details: {},
         cases: [],
         complied: [],
         overview: null,
@@ -34,7 +26,33 @@ const mutations = {
     SET_CASE(state, case_details) {
         state.case_details = case_details
     },
-    SET_FORM(state, form_details) {
+    SET_FORM_LICENSE(state, form_details) {
+        if (!form_details.general_info) form_details.general_info = {}
+        if (!form_details.estab_details) form_details.estab_details = {}
+        if (!form_details.auth_officer) {
+            form_details.auth_officer = {
+                mail_add: {}
+            }
+        } else if(!form_details.auth_officer.mail_add) form_details.auth_officer.mail_add = {}
+        if (!form_details.qualified) form_details.qualified = []
+        if (!form_details.address_list) form_details.address_list = []
+        if (!form_details.uploaded_files) form_details.uploaded_files = []
+        if (!form_details.output_files) form_details.output_files = []
+        state.form_details = form_details
+    },
+    SET_FORM_CERTIFICATE(state, form_details) {
+        if (!form_details.general_info) form_details.general_info = {}
+        if (!form_details.claims) form_details.claims = []
+        if (!form_details.documentary) form_details.documentary = []
+        if (!form_details.establisment_info) form_details.establisment_info = []
+        if (!form_details.food_product) form_details.food_product = []
+        if (!form_details.for_ammendment) form_details.for_ammendment = []
+        if (!form_details.ingredients) form_details.ingredients = []
+        if (!form_details.nutrition_info) form_details.nutrition_info = []
+        if (!form_details.product_specification) form_details.product_specification = []
+        if (!form_details.shelf) form_details.shelf = []
+        if (!form_details.uploaded_files) form_details.uploaded_files = []
+        if (!form_details.output_files) form_details.output_files = []
         state.form_details = form_details
     },
     SHOW_OVERVIEW(state) {
@@ -128,35 +146,55 @@ var actions = {
         }
     },
     SHOW_REVIEW(context) {
-        // temporary license only
         return new Promise((resolve, reject) => {
-            var form = {}
-            console.log('license :', context.state.case_details.case_no);
-            context.dispatch("GET_LICENSE_BY_CASE_NO",
-                    context.state.case_details.case_no, {
-                        root: true
+            console.log('application :', context.state.case_details.case_type, context.state.case_details.case_no);
+            if (context.state.case_details.case_type === 0) { //For License
+                context.dispatch("GET_LICENSE_BY_CASE_NO",
+                        context.state.case_details.case_no, {
+                            root: true
+                        })
+                    .then(license => {
+                        context.commit('SET_FORM_LICENSE', license);
+                        return context.dispatch("GET_COMPUTED_FEES", {
+                            details: {
+                                productType: license.general_info.product_type,
+                                primaryActivity: license.general_info.primary_activity,
+                                declaredCapital: license.general_info.declared_capital,
+                                appType: license.application_type
+                            },
+                            case_no: context.state.case_details.case_no
+                        });
                     })
-                .then(license => {
-                    form.license = license;
-                    context.commit('SET_FORM', license);
-                    return context.dispatch("GET_COMPUTED_FEES", {
-                        details: {
-                            productType: license.general_info.product_type,
-                            primaryActivity: license.general_info.primary_activity,
-                            declaredCapital: license.general_info.declared_capital,
-                            appType: license.application_type
-                        },
-                        case_no: context.state.case_details.case_no
+                    .then(payments => {
+                        context.commit('SHOW_REVIEW')
+                        resolve();
+                    })
+                    .catch(err => {
+                        reject(err)
                     });
-                })
-                .then(payments => {
-                    form.payments = payments;
-                    context.commit('SHOW_REVIEW')
-                    resolve(form);
-                })
-                .catch(err => {
-                    reject(err)
-                });
+            } else if (context.state.case_details.case_type === 1) { //For Certificate
+                context.dispatch("GET_CERTIFICATE_BY_CASE_NO",
+                        context.state.case_details.case_no, {
+                            root: true
+                        })
+                    .then(certificate => {
+                        context.commit('SET_FORM_CERTIFICATE', certificate);
+                        return context.dispatch("GET_COMPUTED_FEES", {
+                            details: {
+                                description: "Test Payment"
+                            },
+                            case_no: context.state.case_details.case_no
+                        });
+                    })
+                    .then(payments => {
+                        // form.payments = payments;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                        context.commit('SHOW_REVIEW')
+                        resolve();
+                    })
+                    .catch(err => {
+                        reject(err)
+                    });
+            }
         })
     },
     CLOSE_REVIEW_DATA(context) {

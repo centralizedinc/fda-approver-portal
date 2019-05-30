@@ -65,6 +65,20 @@ var actions = {
                 }
             })
         }
+    },
+
+    GENERATED_DOCUMENTS(context, data) {
+        if (data.case_type === 0) {
+            return new LicenseAPI(context.rootState.user_session.token).addDocuments(
+                data.details,
+                data.formData
+            );
+        } else if(data.case_type === 1) {
+            return new CertificateAPI(context.rootState.user_session.token).addDocuments(
+                data.details,
+                data.formData
+            );
+        }
     }
 }
 

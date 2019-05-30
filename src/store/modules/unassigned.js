@@ -36,22 +36,23 @@ var actions = {
                         .then((result) => {
                             if (result.data.success) {
                                 unassigns = result.data.model;
-                                context.commit('SET_UNASSIGNED', unassigns)
-                                resolve(unassigns);
-                                // return new CertificateAPI(token).getUnassigned()
+                                // context.commit('SET_UNASSIGNED', unassigns)
+                                // resolve(unassigns);
+                                return new CertificateAPI(token).getUnassigned()
                             } else {
                                 reject(result.data.errors)
                             }
                         })
-                        // .then((result) => {
-                        //     if (result.data.success) {
-                        //         unassigns = unassigns.concat(result.data.model)
-                        //         context.commit('SET_UNASSIGNED', unassigns)
-                        //         resolve(unassigns);
-                        //     } else {
-                        //         reject(result.data.errors)
-                        //     }
-                        // })
+                        .then((result) => {
+                            if (result.data.success) {
+                                console.log('certificate unassigned :', result.data.model);
+                                unassigns = unassigns.concat(result.data.model)
+                                context.commit('SET_UNASSIGNED', unassigns)
+                                resolve(unassigns);
+                            } else {
+                                reject(result.data.errors)
+                            }
+                        })
                         .catch((err) => {
                             reject(err)
                         });

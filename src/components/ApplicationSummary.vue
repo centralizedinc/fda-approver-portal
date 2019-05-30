@@ -29,7 +29,7 @@
                             Application Type:
                         </v-flex>
                         <v-flex xs12 class="subheading font-weight-bold" pa-1>
-                            {{getAppType(case_details.application_type)}}
+                            {{getAppType(case_details.application_type, case_details.case_type)}}
                         </v-flex>
                         <v-flex xs12>
                             <v-divider></v-divider>

@@ -16,7 +16,7 @@
           <template slot="items" slot-scope="props">
             <td class="text-xs-center">Batch #{{ props.item.batch_count }}</td>
             <td class="text-xs-center">{{ props.item.case_no }}</td>
-            <td class="text-xs-center">{{ getAppType(props.item.case_type) }}</td>
+            <td class="text-xs-center">{{ getCaseType(props.item.case_type) }}</td>
             <td class="text-xs-center">{{ print_type[props.item.type] }}</td>
             <td class="text-xs-center">{{ props.item.doc_no }}</td>
             <td class="text-xs-center">{{ props.item.created_by }}</td>
@@ -151,7 +151,7 @@ export default {
             app.general_info.primary_activity
           ).name;
           app.license_expiry = this.formatDate(app.license_expiry);
-          app.application_type = this.getAppType(app.application_type);
+          app.application_type = this.getAppType(app.application_type, this.selected.case_type);
           this.$print(app, "LIC");
           this.init(true);
           this.cancel();

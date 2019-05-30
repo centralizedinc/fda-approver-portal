@@ -7,9 +7,12 @@ export default {
           var applications = ["License", "Certificate"];
           return applications[type] ? applications[type] : 'N/A'
         },
-        getAppType(type) {
-          var app_type = ["Initial", "Variation", "Renewal"];
-          return app_type[type] ? app_type[type] : "N/A"
+        getAppType(type, app) {
+          var app_type = [
+            ["Initial", "Variation", "Renewal"], // For License
+            ["Initial", "Amendment", "Renewal", "Reapplication"]  // For Certificate
+          ];
+          return app_type[app] ? app_type[app][type] ? app_type[app][type] : "N/A" : "N/A"
         },
         getPrimaryActivity(primary_id) {
           var primaries = this.$store.state.reference.primary;

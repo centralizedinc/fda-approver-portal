@@ -56,7 +56,7 @@
               </td>
               <td class="text-xs-center">{{ props.item.case_no }}</td>
               <td class="text-xs-center">{{ getCaseType(props.item.case_type) }}</td>
-              <td class="text-xs-center">{{ getAppType(props.item.application_type) }}</td>
+              <td class="text-xs-center">{{ getAppType(props.item.application_type, props.item.case_type) }}</td>
               <td class="text-xs-center">{{ getPrimaryActivity(props.item.primary_activity).name }}</td>
               <td class="text-xs-center">{{ formatDate(props.item.date_created) }}</td>
             </tr>
@@ -134,6 +134,7 @@ export default {
     };
   },
   created() {
+    // Print temporarily for License only
     this.init();
   },
   computed: {
@@ -177,8 +178,10 @@ export default {
               app.general_info.primary_activity
             ).name;
             app.license_expiry = this.formatDate(app.license_expiry);
-            app.application_type = this.getAppType(app.application_type);
+            app.application_type = this.getAppType(app.application_type, 0);
             applications.push(app);
+            // set app type by license by default
+            //
           });
           this.$print(applications, "LIC");
           this.init(true);

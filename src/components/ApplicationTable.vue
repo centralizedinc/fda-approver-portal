@@ -20,7 +20,7 @@
         <tr @click="$emit('view', props.item)" class="data-item">
           <td>{{ props.item.case_no }}</td>
           <td>{{ getCaseType(props.item.case_type) }}</td>
-          <td>{{ getAppType(props.item.application_type) }}</td>
+          <td>{{ getAppType(props.item.application_type, props.item.case_type) }}</td>
           <td>{{ getTask(props.item.case_type, props.item.current_task).name }}</td>
           <td>{{ displayAssignedUser(props.item.current_assigned_user) }}</td>
           <td :style="`color: ${getPaymentStatusColor(props.item.payment_status)}`">{{getPaymentStatus(props.item.payment_status)}}</td>

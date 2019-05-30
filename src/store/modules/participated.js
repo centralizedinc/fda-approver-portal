@@ -34,22 +34,22 @@ var actions = {
                         .then((result) => {
                             if (result.data.success) {
                                 participated = result.data.model;
-                                context.commit('SET_PARTICIPATED', participated)
-                                resolve(participated)
-                                // return new CertificateAPI(context.rootState.user_session.token).getParticipated()
+                                // context.commit('SET_PARTICIPATED', participated)
+                                // resolve(participated)
+                                return new CertificateAPI(context.rootState.user_session.token).getParticipated()
                             } else {
                                 reject(result.data.errors)
                             }
                         })
-                        // .then((result) => {
-                        //     if (result.data.success) {
-                        //         participated = participated.concat(result.data.model);
-                        //         context.commit('SET_PARTICIPATED', participated)
-                        //         resolve(participated)
-                        //     } else {
-                        //         reject(result.data.errors)
-                        //     }
-                        // })
+                        .then((result) => {
+                            if (result.data.success) {
+                                participated = participated.concat(result.data.model);
+                                context.commit('SET_PARTICIPATED', participated)
+                                resolve(participated)
+                            } else {
+                                reject(result.data.errors)
+                            }
+                        })
                         .catch((err) => {
                             reject(err)
                         });

@@ -40,13 +40,13 @@ var actions = {
                     .then((result) => {
                         console.log('tasks :', result.data.model);
                         context.commit('SET_LICENSE_TASKS', result.data.model)
-                        resolve()
-                        // return TaskApi.getTasksCertificate()
+                        // resolve()
+                        return TaskApi.getTasksCertificate()
                     })
-                    // .then((tasks) => {
-                    //     context.commit('SET_CERTIFICATE_TASKS', tasks)
-                    //     resolve()
-                    // })
+                    .then((result) => {
+                        context.commit('SET_CERTIFICATE_TASKS', result.data.model)
+                        resolve()
+                    })
                     .catch((err) => {
                         reject(err)
                     });

@@ -35,22 +35,22 @@ var actions = {
                         .then((result) => {
                             if (result.data.success) {
                                 inboxes = result.data.model;
-                                context.commit('SET_INBOX', inboxes)
-                                resolve(inboxes);
-                                // return new CertificateAPI(context.rootState.user_session.token).getInbox()
+                                // context.commit('SET_INBOX', inboxes)
+                                // resolve(inboxes);
+                                return new CertificateAPI(context.rootState.user_session.token).getInbox()
                             } else {
                                 reject(result.data.errors)
                             }
                         })
-                        // .then((result) => {
-                        //     if (result.data.success) {
-                        //         inboxes = inboxes.concat(result.data.model);
-                        //         context.commit('SET_INBOX', inboxes)
-                        //         resolve(inboxes);
-                        //     } else {
-                        //         reject(result.data.errors)
-                        //     }
-                        // })
+                        .then((result) => {
+                            if (result.data.success) {
+                                inboxes = inboxes.concat(result.data.model);
+                                context.commit('SET_INBOX', inboxes)
+                                resolve(inboxes);
+                            } else {
+                                reject(result.data.errors)
+                            }
+                        })
                         .catch((err) => {
                             reject(err)
                         });

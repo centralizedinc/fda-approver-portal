@@ -13,7 +13,7 @@ export default class TaskAPI {
     }
 
     getTasksCertificate() {
-        return axios.get("/certificate/task")
+        return axios.get("/certificates/task")
     }
 
     isForPrintingLicense(cb) {

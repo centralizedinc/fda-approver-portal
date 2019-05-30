@@ -5,7 +5,7 @@ function initialState() {
         credit_card: null,
         cvv: null,
         expiry: null,
-        fee: null,
+        fee: {},
         history_transactions: []
     }
 }

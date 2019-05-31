@@ -36,8 +36,8 @@ export default class CertificateAPI {
         return axios.get('certificates/case_no/' + case_no)
     }
 
-    getCertificatesByCaseNos(case_nos) {
-        return axios.post('certificates/cases', case_nos)
+    getCertificatesByCaseNos(data) {
+        return axios.post('certificates/cases', data)
     }
 
     getChecklistByTask(task_id) {

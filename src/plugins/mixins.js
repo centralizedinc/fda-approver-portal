@@ -88,18 +88,7 @@ export default {
           if (!x || isNaN(x)) return "0.00"
           return parseFloat(x).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
         },
-        // getProduct(product_id) {
-        //   if (this.$store.state.products.productType) {
-        //     var product = null;
-        //     product = this.$store.state.products.productType.find(x => {
-        //       return x._id === product_id
-        //     })
-        //     return product ? product.name : ''
-        //   } else {
-        //     return ''
-        //   }
-        // },
-        formatDate: (date, type) => {
+        formatDate(date, type) {
           if (!date) {
             return "";
           }
@@ -118,14 +107,7 @@ export default {
           var newDT = date.getFullYear() + "-" + month + "-" + date.getDate();
           return newDT
         },
-        // formatDates(dt){
-        //   var date = new Date(dt);
-        //   var month = date.getMonth() + 1;
-        //   var year = date.getFullYear();
-        //   var newDT = {month: month, year: year}
-        //   return newDT
-        // },
-        formatCurrency: amount => {
+        formatCurrency(amount) {
           if (!amount || isNaN(amount)) return "0.00"
           return parseFloat(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
         },
@@ -224,6 +206,21 @@ export default {
         logout() {
           this.$store.dispatch("LOGOUT");
           this.$router.push("/");
+        },
+
+
+        //  Generating PDF 
+        /**
+         * 
+         * @param {Number} action, 0 ~ PRINT, 1 ~ DOWNLOAD, 2 ~ UPLOAD
+         * @param {String} type
+         * @param {Array} apps
+         */
+        generatePDF(action, type, apps){
+          var _apps = Array.isArray(apps) ? apps : [apps];
+          function processApprovedLicense(params) {
+            
+          }
         }
       }
     });

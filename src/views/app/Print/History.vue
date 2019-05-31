@@ -145,14 +145,26 @@ export default {
       this.$store
         .dispatch("RE_PRINT", this.selected)
         .then(result => {
-          this.cancel();
-          var app = result;
-          app.general_info.primary_activity = this.getPrimaryActivity(
-            app.general_info.primary_activity
-          ).name;
-          app.license_expiry = this.formatDate(app.license_expiry);
-          app.application_type = this.getAppType(app.application_type, this.selected.case_type);
-          this.$print(app, "LIC");
+          console.log("this.selected :", this.selected);
+          console.log("result :", result);
+          var case_app = ["license", "certificate"][this.selected.case_type];
+          if (this.selected.case_type === 0 && result[0][case_app].status === 1)
+            this.processApprovedLicense(result[0]);
+          else if (
+            this.selected.case_type === 0 &&
+            result[0][case_app].status === 3
+          )
+            this.processDeniedLicense(result[0]);
+          else if (
+            this.selected.case_type === 1 &&
+            result[0][case_app].status === 1
+          )
+            this.processApprovedCertificate(result[0]);
+          else if (
+            this.selected.case_type === 1 &&
+            result[0][case_app].status === 3
+          )
+            this.processDeniedCertificate(result[0]);
           this.init(true);
           this.cancel();
         })
@@ -160,6 +172,69 @@ export default {
           console.log("getting prints err :", err);
           this.cancel();
         });
+    },
+    processApprovedLicense(data) {
+      var app = data.license
+      app.general_info.primary_activity = this.getPrimaryActivity(
+        app.general_info.primary_activity
+      ).name;
+      app.license_expiry = this.formatDate(app.license_expiry);
+      app.application_type = this.getAppType(app.application_type, 0);
+
+      this.$print(app, "LIC");
+    },
+    processDeniedLicense(data) {
+      var address = "";
+      var app = data.license
+      if (app.address_list)
+        app.address_list.forEach(elem => {
+          if (elem.type === 0) {
+            address = elem.address;
+          }
+        });
+
+      var details = {
+        date_created: this.formatDate(data.date),
+        name: `${this.getClientUser(data.case_details.client).name.first} ${
+          this.getClientUser(data.case_details.client).name.last
+        }`,
+        establishment_name: app.estab_details.establishment_name,
+        establishment_address: address,
+        application_type:
+          this.getAppType(app.application_type, data.case_details.case_type) +
+          " Application",
+        case_no: data.case_details.case_no,
+        reasons: data.reason
+      };
+      this.$print(details, "DENIED_LIC");
+    },
+    processApprovedCertificate(data) {
+      var app = data.certificate
+      app.address_list = [];
+      app.general_info = {};
+      app.estab_details = {};
+
+      this.$print(app, "LIC");
+    },
+    processDeniedCertificate(data) {
+      var app = data.certificate
+      var details = {
+        date_created: this.formatDate(data.date),
+        name: `${this.getClientUser(data.case_details.client).name.first} ${
+          this.getClientUser(data.case_details.client).name.last
+        }`,
+        establishment_name: "",
+        establishment_address: "",
+        application_type:
+          this.getAppType(
+            app.general_info.application_type,
+            data.case_details.case_type
+          ) + " Application",
+        case_no: data.case_details.case_no,
+        reasons: data.reason
+      };
+
+      this.$print(details, "DENIED_LIC");
     }
   }
 };

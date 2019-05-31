@@ -65,17 +65,15 @@ var actions = {
             })
         }
     },
-    GET_MANY_LICENSE_BY_CASE(context, cases_id) {
+    GET_MANY_LICENSE_BY_CASE(context, data) {
         if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {
-                new LicenseAPI(context.rootState.user_session.token).getManyLicensesByCase(cases_id, (err, licenses) => {
-                    if (!err) {
-                        resolve(licenses)
-                    } else {
-                        console.log('err :', err);
-                        reject(err)
-                    }
-                })
+                new LicenseAPI(context.rootState.user_session.token)
+                    .getManyLicensesByCase(data)
+                    .then((result) => {
+                        if (result.data.success) resolve(result.data.model);
+                        else reject(result.data.errors)
+                    }).catch((err) => reject(err))
             })
         }
     },
@@ -84,15 +82,15 @@ var actions = {
             context.rootState.case.case_details === 0) {
             return new Promise((resolve, reject) => {
                 new LicenseAPI(context.rootState.user_session.token)
-                .getChecklistByTask(context.rootState.case.case_details.current_task, (err, checklist) => {
-                    if (!err) {
-                        context.commit('SET_CHECKLIST', checklist)
-                        resolve(checklist)
-                    } else {
-                        console.log(JSON.stringify(err))
-                        reject(err)
-                    }
-                })
+                    .getChecklistByTask(context.rootState.case.case_details.current_task, (err, checklist) => {
+                        if (!err) {
+                            context.commit('SET_CHECKLIST', checklist)
+                            resolve(checklist)
+                        } else {
+                            console.log(JSON.stringify(err))
+                            reject(err)
+                        }
+                    })
             })
         }
     },
@@ -101,15 +99,15 @@ var actions = {
             context.rootState.case.case_details.case_type === 0) {
             return new Promise((resolve, reject) => {
                 new LicenseAPI(context.rootState.user_session.token)
-                .getRecommendedTasks(context.rootState.case.case_details.current_task, (err, recommended_tasks) => {
-                    if (!err) {
-                        context.commit('SET_RECOMMENDED_TASKS', recommended_tasks)
-                        resolve(recommended_tasks)
-                    } else {
-                        console.log(JSON.stringify(err))
-                        reject(err)
-                    }
-                })
+                    .getRecommendedTasks(context.rootState.case.case_details.current_task, (err, recommended_tasks) => {
+                        if (!err) {
+                            context.commit('SET_RECOMMENDED_TASKS', recommended_tasks)
+                            resolve(recommended_tasks)
+                        } else {
+                            console.log(JSON.stringify(err))
+                            reject(err)
+                        }
+                    })
             })
         }
     },

@@ -90,6 +90,14 @@ export default {
             });
           }
         });
+      } else {
+        this.loading = false;
+        this.$notify({
+          message:
+            "Invalid Credentials. Please check your Username and Password.",
+          color: "error",
+          icon: "error_outline"
+        });
       }
     },
     validate() {

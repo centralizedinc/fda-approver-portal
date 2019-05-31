@@ -50,11 +50,11 @@ var actions = {
             })
         }
     },
-    GET_MANY_CERTIFICATE_BY_CASE(context, case_nos) {
+    GET_MANY_CERTIFICATE_BY_CASE(context, data) {
         if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {
                 new CertificateAPI(context.rootState.user_session.token)
-                    .getCertificatesByCaseNos(case_nos)
+                    .getCertificatesByCaseNos(data)
                     .then((result) => {
                         if (result.data.success) resolve(result.data.model);
                         else reject(result.data.errors)

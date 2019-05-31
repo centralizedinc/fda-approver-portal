@@ -72,14 +72,15 @@ var actions = {
     ADD_BATCH(context, batch) {
         if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {
-                new CoreAPI(context.rootState.user_session.token).addBatch(batch, (err, batch) => {
-                    if (!err) {
-                        resolve(batch)
-                    } else {
-                        console.log('GET BATCH ERR :', err)
-                        reject(err)
-                    }
-                })
+                new CoreAPI(context.rootState.user_session.token)
+                    .addBatch(batch, (err, batch) => {
+                        if (!err) {
+                            resolve(batch)
+                        } else {
+                            console.log('GET BATCH ERR :', err)
+                            reject(err)
+                        }
+                    })
             })
         }
     },

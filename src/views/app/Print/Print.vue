@@ -57,6 +57,7 @@
               <td class="text-xs-center">{{ props.item.case_no }}</td>
               <td class="text-xs-center">{{ getCaseType(props.item.case_type) }}</td>
               <td class="text-xs-center">{{ getAppType(props.item.application_type, props.item.case_type) }}</td>
+              <td class="text-xs-center">{{ getAppStatus(props.item.status) }}</td>
               <td class="text-xs-center">{{ getPrimaryActivity(props.item.primary_activity).name }}</td>
               <td class="text-xs-center">{{ formatDate(props.item.date_created) }}</td>
             </tr>
@@ -67,8 +68,6 @@
         </v-data-table>
         <v-card-actions v-if="selected.length > 0">
           <v-btn class="font-weight-light" color="success" block @click="dialog=true" :loading="loading">Print</v-btn>
-          <!-- <v-divider></v-divider>
-          <v-btn color="info" block @click="download">Download</v-btn>-->
         </v-card-actions>
       </v-card>
       <v-dialog
@@ -122,6 +121,10 @@ export default {
           value: "application_type"
         },
         {
+          text: "Status",
+          value: "status"
+        },
+        {
           text: "Primary Activity",
           value: "primary_activity"
         },
@@ -150,7 +153,7 @@ export default {
         .dispatch("GET_UNASSIGNED", refresh)
         .then(result => {
           this.loading = false;
-          this.$store.dispatch("GET_PRINTS", refresh);
+          // this.$store.dispatch("GET_PRINTS", refresh);
         })
         .catch(err => {
           console.log("err init: ", err);
@@ -159,66 +162,202 @@ export default {
     },
     print() {
       this.loading = true;
+      var selected_licenses = [];
+      var selected_certificates = [];
       this.$store
         .dispatch("ADD_BATCH", this.selected)
         .then(result => {
-          var selected_ids = [];
           this.selected.forEach(element => {
-            selected_ids.push(element._id);
+            if (element.case_type === 0)
+              selected_licenses.push(element.case_no);
+            else if (element.case_type === 1)
+              selected_certificates.push(element.case_no);
           });
-          return this.$store.dispatch("GET_MANY_LICENSE_BY_CASE", selected_ids);
+          if (selected_licenses.length)
+            return this.$store.dispatch("GET_MANY_LICENSE_BY_CASE", selected_licenses);
+          else if (selected_certificates.length)
+            return this.$store.dispatch("GET_MANY_CERTIFICATE_BY_CASE", selected_certificates);
+          else {
+            this.dialog = false;
+            this.loading = false;
+            this.init(true);
+          }
         })
-        // this.$store
-        //   .dispatch("GET_MANY_LICENSE_BY_CASE", selected_ids)
-        .then(result => {
-          var applications = [];
+        .then(results => {
+          if (selected_licenses.length) {
+            this.processApplication(results, 0, 0);
+            return this.$store.dispatch("GET_MANY_CERTIFICATE_BY_CASE", selected_certificates);
+          } else if (selected_certificates.length) {
+            this.processApplication(results, 1, 0);
+            this.dialog = false;
+            this.loading = false;
+            this.init(true);
+          } else {
+            this.dialog = false;
+            this.loading = false;
+            this.init(true);
+          }
+        })
+        .then(results => {
+          this.processApplication(results, 1, 0);
           this.dialog = false;
-          result.forEach(app => {
-            app.general_info.primary_activity = this.getPrimaryActivity(
-              app.general_info.primary_activity
-            ).name;
-            app.license_expiry = this.formatDate(app.license_expiry);
-            app.application_type = this.getAppType(app.application_type, 0);
-            applications.push(app);
-            // set app type by license by default
-            //
-          });
-          this.$print(applications, "LIC");
+          this.loading = false;
           this.init(true);
         })
         .catch(err => {
           console.log("err :", err);
           this.dialog = false;
           this.loading = false;
+          this.init(true);
         });
     },
-    download() {
-      this.loading = true;
-      var selected_ids = [];
-      this.selected.forEach(element => {
-        selected_ids.push(element._id);
+    processApprovedLicense(results, type) {
+      if (!results) return null;
+      var applications = [];
+      // this.dialog = false;
+      results.forEach(data => {
+        var app = data.license;
+        app.general_info.primary_activity = this.getPrimaryActivity(
+          app.general_info.primary_activity
+        ).name;
+        app.license_expiry = this.formatDate(app.license_expiry);
+        app.application_type = this.getAppType(app.application_type, 0);
+        applications.push(app);
+        // set app type by license by default
+        //
       });
-      this.$store
-        .dispatch("GET_MANY_LICENSE_BY_CASE", selected_ids)
-        .then(result => {
-          var applications = [];
-          result.forEach(app => {
-            app.general_info.primary_activity = this.getPrimaryActivity(
-              app.general_info.primary_activity
-            ).name;
-            app.license_expiry = this.formatDate(app.license_expiry);
-            app.application_type = this.getAppType(app.application_type);
-            applications.push(app);
-          });
-          return this.$download(result, "LIC");
-        })
-        .then(result => {
-          this.loading = false;
-        })
-        .catch(err => {
-          console.log("err :", err);
-          this.loading = false;
+      if (type === 0) return this.$print(applications, "LIC");
+      else if (type === 1) return this.$download(applications, "LIC");
+      else return null;
+      // this.init(true);
+    },
+    processDeniedLicense(results, type) {
+      if (!results) return null;
+      var applications = [];
+      results.forEach(data => {
+        var app = data.license;
+        var address = "";
+        app.address_list.forEach(elem => {
+          if (elem.type === 0) {
+            address = elem.address;
+          }
         });
+
+        applications.push({
+          date_created: this.formatDate(data.date),
+          name: `${this.getClientUser(data.case_details.client).name.first} ${
+            this.getClientUser(data.case_details.client).name.last
+          }`,
+          establishment_name: app.estab_details.establishment_name,
+          establishment_address: address,
+          application_type:
+            this.getAppType(app.application_type, data.case_details.case_type) +
+            " Application",
+          case_no: data.case_details.case_no,
+          reasons: data.reason
+        });
+      });
+      if (type === 0) return this.$print(applications, "DENIED_LIC");
+      else if (type === 1) return this.$download(applications, "DENIED_LIC");
+      else return null;
+    },
+    processApplication(applications, case_type, type) {
+      var approved_application = [];
+      var denied_application = [];
+      var case_app = ["license", "certificate"][case_type];
+      applications.forEach(application => {
+        console.log("application :", application);
+        if (application[case_app].status === 1)
+          approved_application.push(application);
+        else if (application[case_app].status === 3)
+          denied_application.push(application);
+      });
+      console.log("approved_application.length :", approved_application.length);
+      console.log("denied_application.length :", denied_application.length);
+      if (case_type === 0 && approved_application.length)
+        this.processApprovedLicense(approved_application, type);
+      if (case_type === 0 && denied_application.length)
+        this.processDeniedLicense(denied_application, type);
+      if (case_type === 1 && approved_application.length)
+        this.processApprovedCertificate(approved_application, type);
+      if (case_type === 1 && denied_application.length)
+        this.processDeniedCertificate(denied_application, type);
+      // var approved_action =
+      //   case_type === 0
+      //     ? this.processApprovedLicense(approved_application, type)
+      //     : case_type === 1
+      //       ? this.processApprovedCertificate(approved_application, type)
+      //       : null;
+      // var denied_action =
+      //   case_type === 0
+      //     ? this.processDeniedLicense(denied_application, type)
+      //     : case_type === 1
+      //       ? this.processDeniedCertificate(denied_application, type)
+      //       : null;
+      // console.log("approved_action :", approved_action);
+      // console.log("denied_action :", denied_action);
+      // if (approved_action) {
+      //   approved_action
+      //     .then(result => {
+      //       if (denied_action) return denied_action;
+      //       else resolve();
+      //     })
+      //     .then(result => {
+      //       console.log('last action');
+      //       resolve();
+      //     })
+      //     .catch(err => {
+      //       reject(err);
+      //     });
+      // } else if (denied_action) {
+      //   denied_action
+      //     .then(result => {
+      //       resolve();
+      //     })
+      //     .catch(err => {
+      //       reject();
+      //     });
+      // } else resolve();
+    },
+    processApprovedCertificate(results, type) {
+      if (!results) return null;
+      var applications = [];
+      results.forEach(data => {
+        var app = data.certificate;
+        app.address_list = [];
+        app.general_info = {};
+        app.estab_details = {};
+        applications.push(app);
+      });
+      if (type === 0) return this.$print(applications, "LIC");
+      else if (type === 1) return this.$download(applications, "LIC");
+      else return null;
+    },
+    processDeniedCertificate(results, type) {
+      if (!results) return null;
+      var applications = [];
+      results.forEach(data => {
+        var app = data.certificate;
+        applications.push({
+          date_created: this.formatDate(data.date),
+          name: `${this.getClientUser(data.case_details.client).name.first} ${
+            this.getClientUser(data.case_details.client).name.last
+          }`,
+          establishment_name: "",
+          establishment_address: "",
+          application_type:
+            this.getAppType(
+              app.general_info.application_type,
+              data.case_details.case_type
+            ) + " Application",
+          case_no: data.case_details.case_no,
+          reasons: data.reason
+        });
+      });
+      console.log("applications :", applications);
+      if (type === 0) return this.$print(applications, "DENIED_LIC");
+      else if (type === 1) return this.$download(applications, "DENIED_LIC");
+      else return null;
     },
     toggleAll() {
       if (this.selected.length) this.selected = [];

@@ -29,12 +29,8 @@ export default class LicenseAPI {
         return axios.get('/lto-api/case_no/' + case_no)
     }
 
-    getManyLicensesByCase(cases_id, cb) {
-        axios.post('/lto-api/cases', cases_id).then((result) => {
-            cb(result.data.errors, result.data.model)
-        }).catch(err => {
-            cb(err)
-        })
+    getManyLicensesByCase(data) {
+        return axios.post('/lto-api/cases', data)
     }
 
     getChecklistByTask(task_id, cb) {

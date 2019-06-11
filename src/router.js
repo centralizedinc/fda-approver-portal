@@ -132,12 +132,6 @@ export default new Router({
           component: () =>
             import('@/views/app/Unassigned/Unassigned.vue')
         }, {
-          path: 'evaluation',
-          name: 'Evaluation',
-          beforeEnter: notForPrinting && dropBreadcrumbs,
-          component: () =>
-            import('@/views/app/Evaluation/EvaluationForm.vue')
-        }, {
           path: 'profile',
           name: 'Profile Management',
           beforeEnter: dropBreadcrumbs,

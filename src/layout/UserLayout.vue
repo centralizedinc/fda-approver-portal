@@ -47,7 +47,7 @@
             <v-list-tile
               @click="goTo('/app/print/history')"
               class="ma-1"
-              :style="activeRoute('Batch')"
+              :style="activeRoute('Print History')"
             >
               <v-list-tile-action>
                 <v-icon color="primary">history</v-icon>

@@ -25,39 +25,13 @@ const mutations = {
 }
 
 var actions = {
-    GET_ADMINS_INFO(context) {
-        if (context.rootState.user_session.token) {
-            return new Promise((resolve, reject) => {
-                new AccountAPI(context.rootState.user_session.token)
-                    .getAdminsInfo()
-                    .then((result) => {
-                        if (result.data.success) {
-                            context.commit('SET_ADMINS_INFO', result.data.model)
-                        }
-                        resolve(result.data)
-                    }).catch((err) => {
-                        console.log('#GET_ADMINS_INFO err :', err);
-                        reject(err)
-                    });
-            })
-        }
+    GET_ADMINS_INFO(context, id) {
+        return new AccountAPI(context.rootState.user_session.token)
+            .getAdminsInfo(id)
     },
-    GET_ACCOUNTS_INFO(context) {
-        if (context.rootState.user_session.token) {
-            return new Promise((resolve, reject) => {
-                new AccountAPI(context.rootState.user_session.token)
-                    .getAccountsInfo()
-                    .then((result) => {
-                        if (result.data.success) {
-                            context.commit('SET_ACCOUNTS_INFO', result.data.model)
-                        }
-                        resolve(result.data)
-                    }).catch((err) => {
-                        console.log('#GET_ACCOUNTS_INFO err :', err);
-                        reject(err)
-                    });
-            })
-        }
+    GET_ACCOUNTS_INFO(context, id) {
+        return new AccountAPI(context.rootState.user_session.token)
+            .getAccountsInfo(id)
     }
 }
 

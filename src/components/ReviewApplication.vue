@@ -49,8 +49,7 @@
                                                         :key="`a${index}`">
                                                         <span class="subheading" ma-1>
                                                             <span class="font-weight-bold">{{
-                                                                getAdminUser(item.assigned_user).last_name ||
-                                                                (getClientUser(item.assigned_user).name.last ? 'Client' : "")
+                                                                getAdminUser(item.assigned_user).last_name || ""
                                                             }}/{{
                                                                 getTask(case_details.case_type, item.task_id).name
                                                             }} ({{
@@ -301,8 +300,8 @@
 <script>
 import EvaluationForm from "./EvaluationForm";
 import pdf from "vue-pdf";
-import ReviewLicenseApplication from "./ReviewLicenseApplication"
-import ReviewCertificateApplication from "./ReviewCertificateApplication"
+import ReviewLicenseApplication from "./ReviewLicenseApplication";
+import ReviewCertificateApplication from "./ReviewCertificateApplication";
 
 export default {
   components: {
@@ -321,7 +320,8 @@ export default {
       show_confirmation: false,
       load_uploaded: false,
       load_output: false,
-      show_tabs_ext: false
+      show_tabs_ext: false,
+      users: []
     };
   },
   computed: {
@@ -372,6 +372,13 @@ export default {
         this.case_details.current_task
       );
       return task.start_process && this.case_details.payment_status !== 2;
+    },
+    getAdminUser(user_id) {
+      var user =
+        user_id && this.users && this.users.length
+          ? this.users.find(x => x._id.toString() === user_id)
+          : null;
+      return user || {};
     }
   },
   created() {
@@ -383,7 +390,19 @@ export default {
         if (this.is_payment) this.show_tabs(false, "show_tab2");
         else this.show_tabs(false, "show_tab1");
       } else this.show_tabs(true);
-      this.$store.dispatch("CHECK_REVIEW_ACCESS");
+      this.$store
+        .dispatch("CHECK_REVIEW_ACCESS")
+        .then(result => {
+          var ids = [];
+          this.case_details.activities.forEach(activity => {
+            ids.push(activity.assigned_user);
+          });
+          return this.$store.dispatch("GET_ADMINS_INFO", ids);
+        })
+        .then(result => {
+          if (result.data.success) this.users = result.data.models;
+        })
+        .catch(err => {});
     },
     claim() {
       this.loading = true;

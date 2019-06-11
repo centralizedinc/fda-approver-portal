@@ -48,14 +48,14 @@ var actions = {
                             return context.dispatch('GET_PRIMARY', {}, {
                                 root: true
                             })
-                        }).then((result) => {
-                            return context.dispatch('GET_ACCOUNTS_INFO', {}, {
-                                root: true
-                            })
-                        }).then((result) => {
-                            return context.dispatch('GET_ADMINS_INFO', {}, {
-                                root: true
-                            })
+                            // }).then((result) => {
+                            //     return context.dispatch('GET_ACCOUNTS_INFO', {}, {
+                            //         root: true
+                            //     })
+                            // }).then((result) => {
+                            //     return context.dispatch('GET_ADMINS_INFO', {}, {
+                            //         root: true
+                            //     })
                         }).then((result) => {
                             return context.dispatch('GET_ID_TYPES', {}, {
                                 root: true

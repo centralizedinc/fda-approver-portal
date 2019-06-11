@@ -12,11 +12,11 @@ export default class AccountAPI {
         return axios.get('/secured/accounts/users/info')
     }
 
-    getAccountsInfo() {
-        return axios.get('/secured/accounts/users/info')
+    getAccountsInfo(id) {
+        return axios.post('/secured/accounts/users/info', id)
     }
 
-    getAdminsInfo() {
-        return axios.get('/secured/accounts/admin/users/info')
+    getAdminsInfo(id) {
+        return axios.post('/secured/accounts/admin/users/info', id)
     }
 }

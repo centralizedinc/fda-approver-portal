@@ -74,16 +74,16 @@ export default {
           })
           return product_line ? product_line : {}
         },
-        getAdminUser(user_id) {
-          var accounts = this.$store.state.accounts.admins_info;
-          var i = accounts ? accounts.findIndex(x => x._id.toString() === user_id) : -1;
-          return i >= 0 ? accounts[i] : {}
-        },
-        getClientUser(user_id) {
-          var accounts = this.$store.state.accounts.accounts_info;
-          var account = accounts ? accounts.find(x => x._id.toString() === user_id) : {};
-          return account ? account : {}
-        },
+        // getAdminUser(user_id) {
+        //   var accounts = this.$store.state.accounts.admins_info;
+        //   var i = accounts ? accounts.findIndex(x => x._id.toString() === user_id) : -1;
+        //   return i >= 0 ? accounts[i] : {}
+        // },
+        // getClientUser(user_id) {
+        //   var accounts = this.$store.state.accounts.accounts_info;
+        //   var account = accounts ? accounts.find(x => x._id.toString() === user_id) : {};
+        //   return account ? account : {}
+        // },
         numberWithCommas(x) {
           if (!x || isNaN(x)) return "0.00"
           return parseFloat(x).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');

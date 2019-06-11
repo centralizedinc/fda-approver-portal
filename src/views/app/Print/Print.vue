@@ -133,7 +133,8 @@ export default {
           value: "date_created"
         }
       ],
-      selected: []
+      selected: [],
+      users: []
     };
   },
   created() {
@@ -143,6 +144,13 @@ export default {
   computed: {
     models() {
       return this.$store.state.unassigned.unassigned;
+    },
+    getClientUser(user_id) {
+      var account =
+        this.users && this.users.length
+          ? this.users.find(x => x._id.toString() === user_id)
+          : {};
+      return account ? account : {};
     }
   },
   methods: {
@@ -164,8 +172,16 @@ export default {
       this.loading = true;
       var selected_licenses = [];
       var selected_certificates = [];
+      var clients = [];
+      this.selected.forEach(_case => {
+        clients.push(_case.client);
+      });
       this.$store
-        .dispatch("ADD_BATCH", this.selected)
+        .dispatch("GET_ACCOUNTS_INFO", clients)
+        .then(result => {
+          if (result.data.success) this.users = result.data.model;
+          return this.$store.dispatch("ADD_BATCH", this.selected);
+        })
         .then(result => {
           this.selected.forEach(element => {
             if (element.case_type === 0)
@@ -174,9 +190,15 @@ export default {
               selected_certificates.push(element.case_no);
           });
           if (selected_licenses.length)
-            return this.$store.dispatch("GET_MANY_LICENSE_BY_CASE", selected_licenses);
+            return this.$store.dispatch(
+              "GET_MANY_LICENSE_BY_CASE",
+              selected_licenses
+            );
           else if (selected_certificates.length)
-            return this.$store.dispatch("GET_MANY_CERTIFICATE_BY_CASE", selected_certificates);
+            return this.$store.dispatch(
+              "GET_MANY_CERTIFICATE_BY_CASE",
+              selected_certificates
+            );
           else {
             this.dialog = false;
             this.loading = false;
@@ -186,7 +208,10 @@ export default {
         .then(results => {
           if (selected_licenses.length) {
             this.processApplication(results, 0, 0);
-            return this.$store.dispatch("GET_MANY_CERTIFICATE_BY_CASE", selected_certificates);
+            return this.$store.dispatch(
+              "GET_MANY_CERTIFICATE_BY_CASE",
+              selected_certificates
+            );
           } else if (selected_certificates.length) {
             this.processApplication(results, 1, 0);
             this.dialog = false;
@@ -257,8 +282,8 @@ export default {
           reasons: data.reason
         });
       });
-      if (type === 0) return this.$print(applications, "DENIED_LIC");
-      else if (type === 1) return this.$download(applications, "DENIED_LIC");
+      if (type === 0) return this.$print(applications, "DENIED");
+      else if (type === 1) return this.$download(applications, "DENIED");
       else return null;
     },
     processApplication(applications, case_type, type) {
@@ -324,13 +349,22 @@ export default {
       var applications = [];
       results.forEach(data => {
         var app = data.certificate;
-        app.address_list = [];
-        app.general_info = {};
-        app.estab_details = {};
-        applications.push(app);
+        applications.push({
+          certificate_no: app.certificate_no,
+          product_name: app.food_product.product_name,
+          active_ingredients: "",
+          intended_use: "",
+          packaging: app.shelf.packaging_material,
+          manufacturer: app.establishment_info.manufacturer_name,
+          repacker_source: "",
+          client_name: "",
+          client_address: "",
+          validity: app.date_validity,
+          date_approved: app.date_approved
+        });
       });
-      if (type === 0) return this.$print(applications, "LIC");
-      else if (type === 1) return this.$download(applications, "LIC");
+      if (type === 0) return this.$print(applications, "CERT");
+      else if (type === 1) return this.$download(applications, "CERT");
       else return null;
     },
     processDeniedCertificate(results, type) {
@@ -355,8 +389,8 @@ export default {
         });
       });
       console.log("applications :", applications);
-      if (type === 0) return this.$print(applications, "DENIED_LIC");
-      else if (type === 1) return this.$download(applications, "DENIED_LIC");
+      if (type === 0) return this.$print(applications, "DENIED");
+      else if (type === 1) return this.$download(applications, "DENIED");
       else return null;
     },
     toggleAll() {

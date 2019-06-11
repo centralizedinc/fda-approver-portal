@@ -107,7 +107,8 @@ export default {
       ],
       selected: {},
       dialog: false,
-      print_type: ["Initial", "Reprint"]
+      print_type: ["Initial", "Reprint"],
+      users: []
     };
   },
   created() {
@@ -116,6 +117,13 @@ export default {
   computed: {
     models() {
       return this.$store.state.reference.prints;
+    },
+    getClientUser(user_id) {
+      var account =
+        this.users && this.users.length
+          ? this.users.find(x => x._id.toString() === user_id)
+          : {};
+      return account ? account : {};
     }
   },
   methods: {
@@ -143,7 +151,11 @@ export default {
     rePrint() {
       this.loading = true;
       this.$store
-        .dispatch("RE_PRINT", this.selected)
+        .dispatch("GET_ACCOUNTS_INFO", this.selected.client)
+        .then(result => {
+          if (result.data.success) this.users = result.data.model;
+          return this.$store.dispatch("RE_PRINT", this.selected);
+        })
         .then(result => {
           console.log("this.selected :", this.selected);
           console.log("result :", result);
@@ -174,7 +186,7 @@ export default {
         });
     },
     processApprovedLicense(data) {
-      var app = data.license
+      var app = data.license;
       app.general_info.primary_activity = this.getPrimaryActivity(
         app.general_info.primary_activity
       ).name;
@@ -185,7 +197,7 @@ export default {
     },
     processDeniedLicense(data) {
       var address = "";
-      var app = data.license
+      var app = data.license;
       if (app.address_list)
         app.address_list.forEach(elem => {
           if (elem.type === 0) {
@@ -206,18 +218,28 @@ export default {
         case_no: data.case_details.case_no,
         reasons: data.reason
       };
-      this.$print(details, "DENIED_LIC");
+      this.$print(details, "DENIED");
     },
     processApprovedCertificate(data) {
-      var app = data.certificate
-      app.address_list = [];
-      app.general_info = {};
-      app.estab_details = {};
+      var app = data.certificate;
 
-      this.$print(app, "LIC");
+      var certificate = {
+        certificate_no: app.certificate_no,
+        product_name: app.food_product.product_name,
+        active_ingredients: "",
+        intended_use: "",
+        packaging: app.shelf.packaging_material,
+        manufacturer: app.establishment_info.manufacturer_name,
+        repacker_source: "",
+        client_name: "",
+        client_address: "",
+        validity: app.date_validity,
+        date_approved: app.date_approved
+      };
+      this.$print(certificate, "CERT");
     },
     processDeniedCertificate(data) {
-      var app = data.certificate
+      var app = data.certificate;
       var details = {
         date_created: this.formatDate(data.date),
         name: `${this.getClientUser(data.case_details.client).name.first} ${
@@ -234,7 +256,7 @@ export default {
         reasons: data.reason
       };
 
-      this.$print(details, "DENIED_LIC");
+      this.$print(details, "DENIED");
     }
   }
 };

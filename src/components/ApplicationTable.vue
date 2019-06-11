@@ -22,7 +22,9 @@
           <td>{{ getCaseType(props.item.case_type) }}</td>
           <td>{{ getAppType(props.item.application_type, props.item.case_type) }}</td>
           <td>{{ getTask(props.item.case_type, props.item.current_task).name }}</td>
-          <td>{{ displayAssignedUser(props.item.current_assigned_user) }}</td>
+          <td v-if="props.item.show">{{ displayAssignedUser(props.item.current_assigned_user) }}</td>
+          <td v-else-if="props.item.current_assigned_user" @click="props.item.show=true">{{ props.item.current_assigned_user }}</td>
+          <td v-else>UNASSIGNED</td>
           <td :style="`color: ${getPaymentStatusColor(props.item.payment_status)}`">{{getPaymentStatus(props.item.payment_status)}}</td>
           <td>{{ props.item.remarks }}</td>
         </tr>
@@ -82,13 +84,30 @@ export default {
           text: "Remarks",
           value: "remarks"
         }
-      ]
+      ],
+      users: []
     };
+  },
+  created() {
+    if (this.models && this.models.length) {
+      var ids = [];
+      this.models.forEach(app => {
+        ids.push(app.client);
+      });
+      this.$store
+        .dispatch("GET_ADMINS_INFO", ids)
+        .then(result => {
+          if (result.data.success) this.users = result.data.models;
+        })
+        .catch(err => console.log("Error:", err));
+    }
   },
   methods: {
     displayAssignedUser(user_id) {
-      var user = this.getAdminUser(user_id);
-      return user.last_name ? user.last_name : "UNASSIGNED";
+      if (user_id) {
+        var user = this.users.find(x => x._id.toString() === user_id);
+        return user && user.last_name ? user.last_name : "";
+      } else return "UNASSIGNED";
     }
   }
 };

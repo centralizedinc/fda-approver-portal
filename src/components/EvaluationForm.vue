@@ -226,7 +226,8 @@ export default {
         }
       },
       payment_status: null,
-      final_decision: null
+      final_decision: null,
+      users: []
     };
   },
   created() {
@@ -240,14 +241,18 @@ export default {
       return this.$store.state.case.form_details;
     },
     checklist() {
-      if(this.case_details.case_type === 0) return this.$store.state.license.checklist
-      else if(this.case_details.case_type === 1) return this.$store.state.certificate.checklist
-      else return []
+      if (this.case_details.case_type === 0)
+        return this.$store.state.license.checklist;
+      else if (this.case_details.case_type === 1)
+        return this.$store.state.certificate.checklist;
+      else return [];
     },
     recommended_tasks() {
-      if(this.case_details.case_type === 0) return this.$store.state.license.recommended_tasks
-      else if(this.case_details.case_type === 1) return this.$store.state.certificate.recommended_tasks
-      else return []
+      if (this.case_details.case_type === 0)
+        return this.$store.state.license.recommended_tasks;
+      else if (this.case_details.case_type === 1)
+        return this.$store.state.certificate.recommended_tasks;
+      else return [];
     },
     is_payment() {
       var task = this.getTask(
@@ -286,6 +291,12 @@ export default {
         return 0;
       }
       return total;
+    },
+    getClientUser(user_id) {
+      var account = this.users && this.users.length
+        ? this.users.find(x => x._id.toString() === user_id)
+        : {};
+      return account ? account : {};
     }
   },
   methods: {
@@ -293,7 +304,11 @@ export default {
       this.payment_status = null;
       this.final_decision = null;
       this.$store
-        .dispatch("GET_CHECKLIST_BY_TASK")
+        .dispatch("GET_ACCOUNTS_INFO", this.case_details.client)
+        .then(result => {
+          if (result.data.success) this.users = result.data.model;
+          return this.$store.dispatch("GET_CHECKLIST_BY_TASK");
+        })
         .then(result => {
           return this.$store.dispatch("GET_RECOMMENDED_TASKS");
         })
@@ -406,6 +421,7 @@ export default {
       this.loading = true;
       this.evaluated_case.case_type = this.case_details.case_type;
       this.evaluated_case.case_id = this.case_details._id;
+      // Get User First
       this.$store
         .dispatch("EVALUATE", this.evaluated_case)
         .then(result => {
@@ -423,185 +439,100 @@ export default {
           this.loading = false;
           console.log("err decision: ", err);
         });
-      // .then(result => {
-      //   // Evaluate
-      //   console.log("evaluate :", result);
-      //   this.final_decision = result ? result.decision : null;
-      //   if (this.final_decision) {
-      //     if (this.final_decision === 1) {
-      //       // Approved
-      //       var app = this.deepCopy(this.form_details);
-      //       app.general_info.primary_activity = this.getPrimary(
-      //         app.general_info.primary_activity
-      //       );
-      //       app.application_type = this.getAppType(app.application_type, this.case_details.case_type);
-      //       app.license_expiry = this.formatDate(app.license_expiry);
-
-      //       app.officeAddress = app.address_list.find(x => {
-      //         return x.type === 0;
-      //       });
-      //       if (!app.officeAddress) {
-      //         app.officeAddress = {
-      //           address: ""
-      //         };
-      //       }
-      //       return this.$upload(app, "LIC");
-      //     } else if (this.final_decision === 3) {
-      //       // Disapproved
-      //       var address = "";
-
-      //       this.form_details.address_list.forEach(elem => {
-      //         if (elem.type === 0) {
-      //           address = elem.address;
-      //         }
-      //       });
-
-      //       var details = {
-      //         date_created: this.formatDate(new Date()),
-      //         name: `${
-      //           this.getClientUser(this.case_details.client).name.first
-      //         } ${this.getClientUser(this.case_details.client).name.last}`,
-      //         establishment_name: this.form_details.estab_details
-      //           .establishment_name,
-      //         establishment_address: address,
-      //         application_type:
-      //           this.getAppType(this.form_details.application_type, this.case_details.case_type) +
-      //           " Application",
-      //         case_no: this.case_details.case_no,
-      //         reasons: this.evaluated_case.remarks
-      //       };
-      //       return this.$upload(details, "DENIED_LIC");
-      //     }
-      //   }
-      // })
-      // .then(blob => {
-      //   // Upload app certificate or denied letter to AWS
-      //   if (this.final_decision) {
-      //     var file_name =
-      //       this.final_decision === 1
-      //         ? "Application Certificate.pdf"
-      //         : this.final_decision === 3 ? "Letter of Disapproval.pdf" : "";
-      //     var file = new File([blob], file_name, {
-      //       type: "application/pdf",
-      //       lastModified: Date.now()
-      //     });
-      //     var fd = new FormData();
-      //     fd.append("file", file);
-      //     console.log("this.form_details :", this.form_details);
-      //     return this.$store.dispatch("GENERATED_DOCUMENTS", {
-      //       case_type: this.case_details.case_type,
-      //       details: this.form_details,
-      //       formData: fd
-      //     });
-      //   }
-      // })
-      // .then(result => {
-      //   // Save app certificate or denied letter to Application
-      //   this.loading = false;
-      //   this.show_confirmation = false;
-      //   this.$notify({
-      //     message:
-      //       "Successfully evaluate an application with case no.: " +
-      //       this.case_details.case_no,
-      //     icon: "check_circle",
-      //     color: "success"
-      //   });
-      //   this.$store.dispatch("GET_UNASSIGNED", true);
-      //   this.$store.dispatch("GET_INBOX", true);
-      //   this.$store.dispatch("GET_PARTICIPATED", true);
-
-      //   this.$store.dispatch("CLOSE_REVIEW_DATA");
-      //   this.resetTransaction();
-      // })
     },
     processEvaluatedCase(result) {
       // Evaluate
       console.log("evaluate :", result);
       this.final_decision = result ? result.decision : null;
-        var app = this.deepCopy(this.form_details);
+      var app = this.deepCopy(this.form_details);
       if (this.final_decision && this.case_details.case_type === 0) {
         var processed_license = this.processLicense(app);
-        return processed_license ? processed_license : null
+        return processed_license ? processed_license : null;
       } else if (this.final_decision && this.case_details.case_type === 1) {
         var processed_certificate = this.processCertificate(app);
-        return processed_certificate ? processed_certificate : null
+        return processed_certificate ? processed_certificate : null;
       } else return null;
     },
-    processLicense(app){
-        if (this.final_decision === 1) {
-          // Approved
-          app.general_info.primary_activity = this.getPrimary(
-            app.general_info.primary_activity
-          );
-          app.application_type = this.getAppType(
-            app.application_type,
-            this.case_details.case_type
-          );
-          app.license_expiry = this.formatDate(app.license_expiry);
+    processLicense(app) {
+      if (this.final_decision === 1) {
+        // Approved
+        app.general_info.primary_activity = this.getPrimary(
+          app.general_info.primary_activity
+        );
+        app.application_type = this.getAppType(
+          app.application_type,
+          this.case_details.case_type
+        );
+        app.license_expiry = this.formatDate(app.license_expiry);
 
-          app.officeAddress = app.address_list.find(x => {
-            return x.type === 0;
-          });
-          if (!app.officeAddress) {
-            app.officeAddress = {
-              address: ""
-            };
+        app.officeAddress = app.address_list.find(x => {
+          return x.type === 0;
+        });
+        if (!app.officeAddress) {
+          app.officeAddress = {
+            address: ""
+          };
+        }
+        return this.$upload(app, "LIC");
+      } else if (this.final_decision === 3) {
+        // Disapproved
+        var address = "";
+        app.address_list.forEach(elem => {
+          if (elem.type === 0) {
+            address = elem.address;
           }
-          return this.$upload(app, "LIC");
-        } else if (this.final_decision === 3) {
-          // Disapproved
-          var address = "";
-          app.address_list.forEach(elem => {
-            if (elem.type === 0) {
-              address = elem.address;
-            }
-          });
+        });
 
-          var details = {
-            date_created: this.formatDate(new Date()),
-            name: `${this.getClientUser(this.case_details.client).name.first} ${
-              this.getClientUser(this.case_details.client).name.last
-            }`,
-            establishment_name: app.estab_details.establishment_name,
-            establishment_address: address,
-            application_type:
-              this.getAppType(
-                app.application_type,
-                this.case_details.case_type
-              ) + " Application",
-            case_no: this.case_details.case_no,
-            reasons: this.evaluated_case.remarks
-          };
-          return this.$upload(details, "DENIED_LIC");
-        } else return null;
+        var details = {
+          date_created: this.formatDate(new Date()),
+          name: `${this.getClientUser(this.case_details.client).name.first} ${
+            this.getClientUser(this.case_details.client).name.last
+          }`,
+          establishment_name: app.estab_details.establishment_name,
+          establishment_address: address,
+          application_type:
+            this.getAppType(app.application_type, this.case_details.case_type) +
+            " Application",
+          case_no: this.case_details.case_no,
+          reasons: this.evaluated_case.remarks
+        };
+        return this.$upload(details, "DENIED");
+      } else return null;
     },
-    // Temporary License template
-    processCertificate(app){
-        if (this.final_decision === 1) {
-          // Approved
-          app.address_list = []
-          app.general_info = {}
-          app.estab_details = {}
-          return this.$upload(app, "LIC");
-        } else if (this.final_decision === 3) {
-          // Disapproved
-          var details = {
-            date_created: this.formatDate(new Date()),
-            name: `${this.getClientUser(this.case_details.client).name.first} ${
-              this.getClientUser(this.case_details.client).name.last
-            }`,
-            establishment_name: "",
-            establishment_address: "",
-            application_type:
-              this.getAppType(
-                app.application_type,
-                this.case_details.case_type
-              ) + " Application",
-            case_no: this.case_details.case_no,
-            reasons: this.evaluated_case.remarks
-          };
-          return this.$upload(details, "DENIED_LIC");
-        } else return null;
+    processCertificate(app) {
+      if (this.final_decision === 1) {
+        // Approved
+        var certificate = {
+          certificate_no: app.certificate_no,
+          product_name: app.food_product.product_name,
+          active_ingredients: "", // confirmation suggested by kyango
+          intended_use: "", // confirmation suggested by kyango
+          packaging: app.shelf.packaging_material,
+          manufacturer: app.establishment_info.manufacturer_name,
+          repacker_source: "", // confirmation suggested by kyango
+          client_name: "",
+          client_address: "",
+          validity: app.date_validity,
+          date_approved: app.date_approved
+        };
+        return this.$upload(certificate, "CERT");
+      } else if (this.final_decision === 3) {
+        // Disapproved
+        var details = {
+          date_created: this.formatDate(new Date()),
+          name: `${this.getClientUser(this.case_details.client).name.first} ${
+            this.getClientUser(this.case_details.client).name.last
+          }`,
+          establishment_name: "",
+          establishment_address: "",
+          application_type:
+            this.getAppType(app.application_type, this.case_details.case_type) +
+            " Application",
+          case_no: this.case_details.case_no,
+          reasons: this.evaluated_case.remarks
+        };
+        return this.$upload(details, "DENIED");
+      } else return null;
     },
     processUploadedApp(blob) {
       // Upload app certificate or denied letter to AWS

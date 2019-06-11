@@ -144,13 +144,6 @@ export default {
   computed: {
     models() {
       return this.$store.state.unassigned.unassigned;
-    },
-    getClientUser(user_id) {
-      var account =
-        this.users && this.users.length
-          ? this.users.find(x => x._id.toString() === user_id)
-          : {};
-      return account ? account : {};
     }
   },
   methods: {
@@ -404,6 +397,13 @@ export default {
         this.pagination.sortBy = column;
         this.pagination.descending = false;
       }
+    },
+    getClientUser(user_id) {
+      var account =
+        this.users && this.users.length
+          ? this.users.find(x => x._id.toString() === user_id)
+          : null;
+      return account ? account : {};
     }
   }
 };

@@ -509,19 +509,20 @@ export default {
   },
   data() {
     return {
-        show_tab3: false,
-        show_tab4: false,
-        show_tab5: false,
-        show_tab6: false,
-        show_tab7: false,
-        show_tab8: false,
-        show_tab9: false,
-        show_tab10: false,
-        show_tab11: false,
-        show_tab12: false
+      show_tab3: false,
+      show_tab4: false,
+      show_tab5: false,
+      show_tab6: false,
+      show_tab7: false,
+      show_tab8: false,
+      show_tab9: false,
+      show_tab10: false,
+      show_tab11: false,
+      show_tab12: false
     };
   },
   created() {
+    console.log("form_details :", this.form_details);
     this.show_tab3 = this.show_tabs_ext;
     this.show_tab4 = this.show_tabs_ext;
     this.show_tab5 = this.show_tabs_ext;
@@ -532,7 +533,7 @@ export default {
     this.show_tab10 = this.show_tabs_ext;
     this.show_tab11 = this.show_tabs_ext;
     this.show_tab12 = this.show_tabs_ext;
-  },
+  }
 };
 </script>
 

@@ -33,7 +33,7 @@ const mutations = {
             form_details.auth_officer = {
                 mail_add: {}
             }
-        } else if(!form_details.auth_officer.mail_add) form_details.auth_officer.mail_add = {}
+        } else if (!form_details.auth_officer.mail_add) form_details.auth_officer.mail_add = {}
         if (!form_details.qualified) form_details.qualified = []
         if (!form_details.address_list) form_details.address_list = []
         if (!form_details.uploaded_files) form_details.uploaded_files = []
@@ -41,15 +41,44 @@ const mutations = {
         state.form_details = form_details
     },
     SET_FORM_CERTIFICATE(state, form_details) {
-        if (!form_details.general_info) form_details.general_info = {}
+        if (!form_details.general_info) {
+            form_details.general_info = {
+                for_ammendment_renewal: {},
+                for_reapplication: {}
+            }
+        } else if (!form_details.general_info.for_ammendment_renewal)
+            form_details.general_info.for_ammendment_renewal = {}
+        else if (!form_details.general_info.for_reapplication)
+            form_details.general_info.for_reapplication = {}
         if (!form_details.claims) form_details.claims = []
         if (!form_details.documentary) form_details.documentary = []
         if (!form_details.establisment_info) form_details.establisment_info = []
-        if (!form_details.food_product) form_details.food_product = []
+        if (!form_details.food_product) {
+            form_details.food_product = {
+                contacts: []
+            }
+        } else if (!form_details.food_product.contacts || !form_details.food_product.contacts.length)
+            form_details.food_product.contacts = []
         if (!form_details.for_ammendment) form_details.for_ammendment = []
         if (!form_details.ingredients) form_details.ingredients = []
-        if (!form_details.nutrition_info) form_details.nutrition_info = []
-        if (!form_details.product_specification) form_details.product_specification = []
+        if (!form_details.nutrition_info) {
+            form_details.nutrition_info = {
+                servings: []
+            }
+        } else if (form_details.nutrition_info.servings)
+            form_details.nutrition_info.servings = []
+        if (!form_details.product_specification) {
+            form_details.product_specification = {
+                physical: {},
+                chemical: [],
+                microbiological: []
+            }
+        } else if (!form_details.product_specification.physical)
+            form_details.product_specification.physical = {}
+        else if (!form_details.product_specification.chemical || !form_details.product_specification.chemical.length)
+            form_details.product_specification.chemical = []
+        else if (!form_details.product_specification.microbiological || !form_details.product_specification.microbiological.length)
+            form_details.product_specification.microbiological = []
         if (!form_details.shelf) form_details.shelf = []
         if (!form_details.uploaded_files) form_details.uploaded_files = []
         if (!form_details.output_files) form_details.output_files = []
@@ -178,16 +207,18 @@ var actions = {
                             root: true
                         })
                     .then(certificate => {
+                        console.log('certificate :', certificate);
                         context.commit('SET_FORM_CERTIFICATE', certificate);
-                        return context.dispatch("GET_COMPUTED_FEES", {
-                            details: {
-                                description: "Test Payment"
-                            },
+                        return context.dispatch("GET_CERTIFICATE_FEES", {
+                            product_type: certificate.food_product.type,
                             case_no: context.state.case_details.case_no
+                        }, {
+                            root: true
                         });
                     })
-                    .then(payments => {
-                        // form.payments = payments;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                    .then(result => {
+                        context.commit('FEES', result.data.model.fees)
+                        context.commit('SET_HISTORY_TRANSACTION', result.data.model.transactions)
                         context.commit('SHOW_REVIEW')
                         resolve();
                     })

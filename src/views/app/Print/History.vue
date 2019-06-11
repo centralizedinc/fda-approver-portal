@@ -117,13 +117,6 @@ export default {
   computed: {
     models() {
       return this.$store.state.reference.prints;
-    },
-    getClientUser(user_id) {
-      var account =
-        this.users && this.users.length
-          ? this.users.find(x => x._id.toString() === user_id)
-          : {};
-      return account ? account : {};
     }
   },
   methods: {
@@ -257,6 +250,13 @@ export default {
       };
 
       this.$print(details, "DENIED");
+    },
+    getClientUser(user_id) {
+      var account =
+        this.users && this.users.length
+          ? this.users.find(x => x._id.toString() === user_id)
+          : null;
+      return account ? account : {};
     }
   }
 };

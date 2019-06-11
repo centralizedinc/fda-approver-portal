@@ -291,12 +291,6 @@ export default {
         return 0;
       }
       return total;
-    },
-    getClientUser(user_id) {
-      var account = this.users && this.users.length
-        ? this.users.find(x => x._id.toString() === user_id)
-        : {};
-      return account ? account : {};
     }
   },
   methods: {
@@ -619,6 +613,13 @@ export default {
           }
         }
       };
+    },
+    getClientUser(user_id) {
+      var account =
+        this.users && this.users.length
+          ? this.users.find(x => x._id.toString() === user_id)
+          : null;
+      return account ? account : {};
     }
   },
   watch: {

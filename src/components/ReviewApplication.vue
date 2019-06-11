@@ -372,13 +372,6 @@ export default {
         this.case_details.current_task
       );
       return task.start_process && this.case_details.payment_status !== 2;
-    },
-    getAdminUser(user_id) {
-      var user =
-        user_id && this.users && this.users.length
-          ? this.users.find(x => x._id.toString() === user_id)
-          : null;
-      return user || {};
     }
   },
   created() {
@@ -440,6 +433,13 @@ export default {
     },
     viewFile(url) {
       window.open(url, "_blank");
+    },
+    getAdminUser(user_id) {
+      var user =
+        user_id && this.users && this.users.length
+          ? this.users.find(x => x._id.toString() === user_id)
+          : null;
+      return user || {};
     }
   }
 };

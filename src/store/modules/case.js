@@ -27,6 +27,7 @@ const mutations = {
         state.case_details = case_details
     },
     SET_FORM_LICENSE(state, form_details) {
+        console.log('form_details :', form_details);
         if (!form_details.general_info) form_details.general_info = {}
         if (!form_details.estab_details) form_details.estab_details = {}
         if (!form_details.auth_officer) {
@@ -41,6 +42,7 @@ const mutations = {
         state.form_details = form_details
     },
     SET_FORM_CERTIFICATE(state, form_details) {
+        console.log('form_details :', form_details);
         if (!form_details.general_info) {
             form_details.general_info = {
                 for_ammendment_renewal: {},
@@ -183,6 +185,7 @@ var actions = {
                             root: true
                         })
                     .then(license => {
+                        console.log('license :', license);
                         context.commit('SET_FORM_LICENSE', license);
                         return context.dispatch("GET_COMPUTED_FEES", {
                             details: {
@@ -217,8 +220,6 @@ var actions = {
                         });
                     })
                     .then(result => {
-                        context.commit('FEES', result.data.model.fees)
-                        context.commit('SET_HISTORY_TRANSACTION', result.data.model.transactions)
                         context.commit('SHOW_REVIEW')
                         resolve();
                     })

@@ -84,29 +84,17 @@ var actions = {
             })
         })
     },
-    GET_FEES(context, fees) {
-        return new Promise((resolve, reject) => {
-            new PaymentAPI(context.rootState.user_session.token).getCertificateFees(fees, (fee, err) => {
-                if (!err) {
-                    context.commit('FEES', fee)
-                    resolve(fee)
-                } else {
-                    console.log(JSON.stringify(err))
-                    reject(err)
-                }
-            })
-        })
-    },
     GET_CERTIFICATE_FEES(context, details) {
         return new Promise((resolve, reject) => {
             new PaymentAPI(context.rootState.user_session.token)
                 .getCertificateFees(details)
                 .then((result) => {
+                    console.log('result.data :', result.data);
                     if (result.data.success) {
-                        context.commit('FEES', result.data.model)
-                        resolve(fee)
+                        context.commit('FEES', result.data.model.fees)
+                        context.commit('SET_HISTORY_TRANSACTION', result.data.model.transactions)
+                        resolve(result.data.model)
                     } else {
-                        console.log(JSON.stringify(result.data.errors))
                         reject(result.data.errors)
                     }
                 }).catch((err) => {

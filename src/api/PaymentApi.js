@@ -58,7 +58,7 @@ export default class PaymentAPI {
     }
 
     getCertificateFees(details) {
-        return axios.post(`payments/fees/certificate/${details.case_no}/${details.product_type}`)
+        return axios.get(`payments/fees/certificate/${details.case_no}/${details.product_type}`)
     }
 
     savePayment(fullDetails, cb) {

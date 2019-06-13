@@ -94,11 +94,25 @@ var actions = {
         if (context.rootState.user_session.token) {
             return new Promise((resolve, reject) => {
                 var token = context.rootState.user_session.token;
-                var APIClass = app.case_type === 0 ?
-                    new LicenseAPI(token) : app.case_type === 1 ?
-                    new CertificateAPI(token) : null
-                if (APIClass) {
-                    APIClass.unclaim(app.case_no)
+                if (app.case_type === 0) {
+                    new LicenseAPI(token).unclaim(app.case_no)
+                        .then((result) => {
+                            if (result.data.success) {
+                                context.dispatch("GET_UNASSIGNED", true)
+                                context.dispatch("GET_INBOX", true, {
+                                    root: true
+                                })
+                                context.commit('SET_CASE', result.data.model)
+                                context.commit('SET_REVIEW_ACCESS', 0)
+                                resolve(result.data.model)
+                            } else {
+                                reject(result.data.errors)
+                            }
+                        }).catch((err) => {
+                            reject(err)
+                        });
+                } else if (app.case_type === 1) {
+                    new CertificateAPI(token).unclaim(app.case_no)
                         .then((result) => {
                             if (result.data.success) {
                                 context.dispatch("GET_UNASSIGNED", true)

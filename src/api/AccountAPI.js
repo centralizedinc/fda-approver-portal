@@ -7,16 +7,20 @@ export default class AccountAPI {
         axios.defaults.headers.common['Content-Type'] = 'application/json'
         axios.defaults.headers.common['access_token'] = token;
     }
-    
-    getUsers(){
+
+    getUsers() {
         return axios.get('/secured/accounts/users/info')
     }
 
     getAccountsInfo(id) {
-        return axios.post('/secured/accounts/users/info', id)
+        return axios.post('/secured/accounts/users/info', {
+            ids: id
+        })
     }
 
     getAdminsInfo(id) {
-        return axios.post('/secured/accounts/admin/users/info', id)
+        return axios.post('/secured/accounts/admin/users/info', {
+            ids: id
+        })
     }
 }

@@ -393,7 +393,8 @@ export default {
           return this.$store.dispatch("GET_ADMINS_INFO", ids);
         })
         .then(result => {
-          if (result.data.success) this.users = result.data.models;
+          console.log("result.data :", result.data);
+          if (result.data.success) this.users = result.data.model;
         })
         .catch(err => {});
     },

@@ -297,9 +297,11 @@ export default {
     init() {
       this.payment_status = null;
       this.final_decision = null;
+      console.log('this.case_details.client :', this.case_details.client);
       this.$store
         .dispatch("GET_ACCOUNTS_INFO", this.case_details.client)
         .then(result => {
+          console.log('GET_ACCOUNTS_INFO :', result.data);
           if (result.data.success) this.users = result.data.model;
           return this.$store.dispatch("GET_CHECKLIST_BY_TASK");
         })

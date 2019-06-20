@@ -213,6 +213,7 @@ var actions = {
                         console.log('certificate :', certificate);
                         context.commit('SET_FORM_CERTIFICATE', certificate);
                         return context.dispatch("GET_CERTIFICATE_FEES", {
+                            application_type: certificate.application_type,
                             product_type: certificate.food_product.type,
                             case_no: context.state.case_details.case_no
                         }, {

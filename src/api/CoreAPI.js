@@ -84,7 +84,7 @@ export default class CoreAPI {
         return axios.get('core/company/activity')
     }
     getSourceType(){
-        console.log("GETTING Country origin datas ....");
+        console.log("GETTING Source datas ....");
         return axios.get('/core/source')
     }
 }

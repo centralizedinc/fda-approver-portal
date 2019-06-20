@@ -58,6 +58,7 @@ export default class PaymentAPI {
     }
 
     getCertificateFees(details) {
+    console.log('details :', details);
         return axios.post("payments/fees/certificate", details)
     }
 

@@ -1,5 +1,6 @@
 import LicenseAPI from '@/api/LicenseAPI';
 import CoreAPI from '../../api/CoreAPI';
+import { resolve } from 'q';
 
 function initialState() {
     return {
@@ -7,7 +8,10 @@ function initialState() {
         batch: null,
         prints: [],
         id_types: null,
-        designations: null
+        designations: null,
+        company_activity: null,
+        type: null,
+        country_origin: null
     }
 }
 
@@ -28,6 +32,15 @@ const mutations = {
     },
     SET_DESIGNATION(state, designations) {
         state.designations = designations;
+    },
+    SET_COUNTRY_ORIGIN(state, details){
+        state.country_origin = details
+    },
+    SET_COMPANY_ACTIVITY(state, activity){
+        state.company_activity = activity
+    },
+    SET_SOURCE_TYPE(state, type){
+        state.type = type
     },
 
     RESET(state) {
@@ -160,6 +173,60 @@ var actions = {
                 }
             })
         }
+    },
+    GET_COUNTRY_ORIGIN(context){
+        return new Promise((resolve, reject) => {
+            new CoreAPI(context.rootState.user_session.token).getCountryOrigin()
+            .then((result) => {
+                console.log('Retrieve data from country origin :', result.data);
+                if(result.data.success){
+                    context.commit('SET_COUNTRY_ORIGIN', result.data.model)
+                    resolve(result.data.model)
+                } else {
+                    console.log('Country Origin Error :', result.data.errors);
+                    reject(result.data.errors)
+                }
+            }).catch((err) => {
+                console.log('Error in Retrieving data from country origin :', err);
+                reject(err)
+            });
+        })
+    },
+    GET_COMPANY_ACTIVITY(context){
+        return new Promise((resolve, reject) => {
+            new CoreAPI(context.rootState.user_session.token).getCompanyActivity()
+            .then((result) => {
+                console.log('Retrieve data from activity :', result.data);
+                if(result.data.success){
+                    context.commit('SET_COMPANY_ACTIVITY', result.data.model)
+                    resolve(result.data.model)
+                } else {
+                    console.log('Country Activity Error :', result.data.errors);
+                    reject(result.data.errors)
+                }
+            }).catch((err) => {
+                console.log('Error in Retrieving data from activity :', err);
+                reject(err)
+            });
+        })
+    },
+    GET_SOURCE_TYPE(context){
+        return new Promise((resolve, reject) => {
+            new CoreAPI(context.rootState.user_session.token).getSourceType()
+            .then((result) => {
+                console.log('Retrieve data from source :', result.data);
+                if(result.data.success){
+                    context.commit('SET_SOURCE_TYPE', result.data.model)
+                    resolve(result.data.model)
+                } else {
+                    console.log('Country Source Error :', result.data.errors);
+                    reject(result.data.errors)
+                }
+            }).catch((err) => {
+                console.log('Error in Retrieving data from source :', err);
+                reject(err)
+            });
+        })
     }
 }
 

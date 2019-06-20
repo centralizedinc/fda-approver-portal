@@ -182,6 +182,30 @@ export default {
           var designation = designations.find(x => x._id.toString() === id)
           return designation ? designation : {}
         },
+        getOrigin(id) {
+          var origin = this.$store.state.reference.country_origin;
+          console.log('Origin id :', id);
+          console.log('origin in mixins :', origin);
+          if (!id || !origin) return {}
+          var origin = origin.find(x => x._id.toString() === id)
+          return origin ? origin : {}
+        },
+        getActivity(id){
+          var activity = this.$store.state.reference.company_activity;
+          console.log('Activity id :', id);
+          console.log('activity in mixins :', activity);
+          if (!id || !activity) return {}
+          var activity = activity.find(x => x._id.toString() === id)
+          return activity ? activity : {}
+        },
+        getSource(id){
+          var type = this.$store.state.reference.type;
+          console.log('Source id :', id);
+          console.log('Source in mixins :', type);
+          if (!id || !type) return {}
+          var type = type.find(x => x._id.toString() === id)
+          return type ? type : {}
+        },
         getPaymentStatus(status) {
           var paymentStatus = ["UNPAID", "PARTIAL", "PAID"];
           return paymentStatus[status];

@@ -74,4 +74,17 @@ export default class CoreAPI {
     getDesignation() {
         return axios.get('/core/designation');
     }
+
+    getCountryOrigin(){
+        console.log("GETTING Country origin datas ....");
+        return axios.get('/core/origin')
+    }
+    getCompanyActivity(){
+        console.log('GETTING COMPANY ACTIVITY data ....')
+        return axios.get('core/company/activity')
+    }
+    getSourceType(){
+        console.log("GETTING Country origin datas ....");
+        return axios.get('/core/source')
+    }
 }

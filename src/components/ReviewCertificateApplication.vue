@@ -150,49 +150,49 @@
                 <v-card-text v-show="show_tab5">
                     <v-layout row wrap>
                         <v-flex xs12>
-                            <b>Activity:</b> {{form_details.establisment_info.activity}}
+                            <b>Activity:</b> {{getActivity(form_details.establishment_info.activity).name}}
                         </v-flex>
                         <v-flex xs12>
                             <v-divider></v-divider>
                         </v-flex>
                         <v-flex xs12>
-                            <b>Type:</b> {{form_details.establisment_info.type}}
+                            <b>Type:</b> {{getSource(form_details.establishment_info.type).name}}
                         </v-flex>
                         <v-flex xs12>
                             <v-divider></v-divider>
                         </v-flex>
                         <v-flex xs12>
-                            <b>Origin Country:</b> {{form_details.establisment_info.origin_country}}
+                            <b>Origin Country:</b> {{getOrigin(form_details.establishment_info.origin_country).name}}
                         </v-flex>
                         <v-flex xs12>
                             <v-divider></v-divider>
                         </v-flex>
                         <v-flex xs12>
-                            <b>Directly Source:</b> {{form_details.establisment_info.directly_source}}
+                            <b>Directly Source:</b> {{form_details.establishment_info.directly_source}}
                         </v-flex>
                         <v-flex xs12>
                             <v-divider></v-divider>
                         </v-flex>
                         <v-flex xs12>
-                            <b>Manufacturer Name:</b> {{form_details.establisment_info.manufacturer_name}}
+                            <b>Manufacturer Name:</b> {{form_details.establishment_info.manufacturer_name}}
                         </v-flex>
                         <v-flex xs12>
                             <v-divider></v-divider>
                         </v-flex>
                         <v-flex xs12>
-                            <b>Manufacturer Address:</b> {{form_details.establisment_info.manufacturer_address}}
+                            <b>Manufacturer Address:</b> {{form_details.establishment_info.manufacturer_address}}
                         </v-flex>
                         <v-flex xs12>
                             <v-divider></v-divider>
                         </v-flex>
                         <v-flex xs12>
-                            <b>Supplier Name:</b> {{form_details.establisment_info.supplier_name}}
+                            <b>Supplier Name:</b> {{form_details.establishment_info.supplier_name}}
                         </v-flex>
                         <v-flex xs12>
                             <v-divider></v-divider>
                         </v-flex>
                         <v-flex xs12>
-                            <b>Supplier Address:</b> {{form_details.establisment_info.supplier_address}}
+                            <b>Supplier Address:</b> {{getRegionName(form_details.establishment_info.supplier_address)}}
                         </v-flex>
                     </v-layout>
                 </v-card-text>
@@ -214,7 +214,7 @@
                 <v-card-text v-show="show_tab6">
                     <v-layout row wrap>
                         <v-flex xs12>
-                            {{form_details.ingredients}}
+                            <b>Ingredients:</b> {{form_details.ingredients}}
                         </v-flex>
                     </v-layout>
                 </v-card-text>
@@ -235,8 +235,35 @@
                 <v-divider v-show="show_tab7"></v-divider>
                 <v-card-text v-show="show_tab7">
                     <v-layout row wrap>
-                        <v-flex xs12>
+                        <!-- <v-flex xs12>
                             {{form_details.product_specification}}
+                        </v-flex> -->
+                        <v-flex xs12>
+                            <b>Physical Color:</b> {{form_details.product_specification.physical.color}}
+                        </v-flex>
+                        <v-flex xs12>
+                            <v-divider></v-divider>
+                        </v-flex>
+                        <v-flex xs12>
+                            <b>Physical Odor:</b> {{form_details.product_specification.physical.odor}}
+                        </v-flex>
+                        <v-flex xs12>
+                            <v-divider></v-divider>
+                        </v-flex>
+                        <v-flex xs12>
+                            <b>Physical Taste:</b> {{form_details.product_specification.physical.taste}}
+                        </v-flex>
+                        <v-flex xs12>
+                            <v-divider></v-divider>
+                        </v-flex>
+                        <v-flex xs12>
+                            <b>Physical Texture:</b> {{form_details.product_specification.physical.texture}}
+                        </v-flex>
+                        <v-flex xs12>
+                            <v-divider></v-divider>
+                        </v-flex>
+                        <v-flex xs12>
+                            <b>Physical Form:</b> {{form_details.product_specification.physical.form}}
                         </v-flex>
                     </v-layout>
                 </v-card-text>
@@ -293,7 +320,7 @@
                             <v-divider></v-divider>
                         </v-flex>
                         <v-flex xs12>
-                            <b>Date:</b> {{form_details.shelf.date}}
+                            <b>Date:</b> {{formatDate(form_details.shelf.date)}}
                         </v-flex>
                         <v-flex xs12>
                             <v-divider></v-divider>

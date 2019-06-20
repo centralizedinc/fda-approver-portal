@@ -64,7 +64,23 @@ var actions = {
                         return context.dispatch('GET_DESIGNATIONS', {}, {
                             root: true
                         })
-                    }).then((result) => {
+                    })
+                    .then((result) => {
+                        return context.dispatch('GET_COUNTRY_ORIGIN', {}, {
+                            root: true
+                        })
+                    })
+                    .then((result)=>{
+                        return context.dispatch('GET_COMPANY_ACTIVITY', {}, {
+                            root: true
+                        })
+                    })
+                    .then((result)=>{
+                        return context.dispatch('GET_SOURCE_TYPE', {}, {
+                            root: true
+                        })
+                    })
+                    .then((result) => {
                         console.log("Done loading references...");
                     }).catch((err) => {
                         console.log('Loading references err :', err);

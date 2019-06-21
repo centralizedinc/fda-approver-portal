@@ -41,61 +41,34 @@ var actions = {
                 console.log('login :', account ? account.isMatch : false)
                 if (!err && account && account.isMatch) {
                     context.commit('LOGIN', account)
-                    resolve(true);
                     context.dispatch('GET_TASKS', {}, {
                         root: true
-                    }).then((result) => {
-                        return context.dispatch('GET_PRIMARY', {}, {
-                            root: true
-                        })
-                        // }).then((result) => {
-                        //     return context.dispatch('GET_ACCOUNTS_INFO', {}, {
-                        //         root: true
-                        //     })
-                        // }).then((result) => {
-                        //     return context.dispatch('GET_ADMINS_INFO', {}, {
-                        //         root: true
-                        //     })
-                    }).then((result) => {
-                        return context.dispatch('GET_ID_TYPES', {}, {
-                            root: true
-                        })
-                    }).then((result) => {
-                        return context.dispatch('GET_DESIGNATIONS', {}, {
-                            root: true
-                        })
                     })
-                    .then((result) => {
-                        return context.dispatch('GET_COUNTRY_ORIGIN', {}, {
-                            root: true
-                        })
+                    context.dispatch('GET_PRIMARY', {}, {
+                        root: true
                     })
-                    .then((result)=>{
-                        return context.dispatch('GET_COMPANY_ACTIVITY', {}, {
-                            root: true
-                        })
+                    context.dispatch('GET_ID_TYPES', {}, {
+                        root: true
                     })
-                    .then((result)=>{
-                        return context.dispatch('GET_SOURCE_TYPE', {}, {
-                            root: true
-                        })
+                    context.dispatch('GET_DESIGNATIONS', {}, {
+                        root: true
                     })
-                    .then((result)=>{
-                        return context.dispatch('GET_FOOD_PRODUCT', {}, {
-                            root: true
-                        })
+                    context.dispatch('GET_COUNTRY_ORIGIN', {}, {
+                        root: true
                     })
-                    .then((result)=>{
-                        return context.dispatch('GET_FOOD_CATEGORY', {}, {
-                            root: true
-                        })
+                    context.dispatch('GET_COMPANY_ACTIVITY', {}, {
+                        root: true
                     })
-                    .then((result) => {
-                        console.log("Done loading references...");
-                    }).catch((err) => {
-                        console.log('Loading references err :', err);
-                        reject(err)
-                    });
+                    context.dispatch('GET_SOURCE_TYPE', {}, {
+                        root: true
+                    })
+                    context.dispatch('GET_FOOD_PRODUCT', {}, {
+                        root: true
+                    })
+                    context.dispatch('GET_FOOD_CATEGORY', {}, {
+                        root: true
+                    })
+                    resolve(true)
                 } else {
                     console.log('LOGIN err :', err);
                     reject(err)

@@ -74,4 +74,25 @@ export default class CoreAPI {
     getDesignation() {
         return axios.get('/core/designation');
     }
+
+    getCountryOrigin(){
+        console.log("GETTING Country origin datas ....");
+        return axios.get('/core/origin')
+    }
+    getCompanyActivity(){
+        console.log('GETTING COMPANY ACTIVITY data ....')
+        return axios.get('core/company/activity')
+    }
+    getSourceType(){
+        console.log("GETTING Source datas ....");
+        return axios.get('/core/source')
+    }
+    getFoodProduct(){
+        console.log("GETTING Food Product datas ....");
+        return axios.get('/core/food/product')
+    }
+    getFoodCategory(){
+        console.log("GETTING Food Category datas ....");
+        return axios.get('/core/food/category')
+    }
 }

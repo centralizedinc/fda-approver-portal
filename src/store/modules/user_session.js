@@ -53,7 +53,22 @@ var actions = {
                     context.dispatch('GET_DESIGNATIONS', {}, {
                         root: true
                     })
-                    resolve(true);
+                    context.dispatch('GET_COUNTRY_ORIGIN', {}, {
+                        root: true
+                    })
+                    context.dispatch('GET_COMPANY_ACTIVITY', {}, {
+                        root: true
+                    })
+                    context.dispatch('GET_SOURCE_TYPE', {}, {
+                        root: true
+                    })
+                    context.dispatch('GET_FOOD_PRODUCT', {}, {
+                        root: true
+                    })
+                    context.dispatch('GET_FOOD_CATEGORY', {}, {
+                        root: true
+                    })
+                    resolve(true)
                 } else {
                     console.log('LOGIN err :', err);
                     reject(err)

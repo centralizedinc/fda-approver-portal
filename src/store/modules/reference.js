@@ -12,7 +12,8 @@ function initialState() {
         company_activity: null,
         source_type: null,
         country_origin: null,
-        food_type: null
+        food_type: null,
+        food_category: null
     }
 }
 
@@ -185,16 +186,13 @@ var actions = {
         return new Promise((resolve, reject) => {
             new CoreAPI(context.rootState.user_session.token).getCountryOrigin()
             .then((result) => {
-                console.log('Retrieve data from country origin :', result.data);
                 if(result.data.success){
                     context.commit('SET_COUNTRY_ORIGIN', result.data.model)
                     resolve(result.data.model)
                 } else {
-                    console.log('Country Origin Error :', result.data.errors);
                     reject(result.data.errors)
                 }
             }).catch((err) => {
-                console.log('Error in Retrieving data from country origin :', err);
                 reject(err)
             });
         })
@@ -203,34 +201,28 @@ var actions = {
         return new Promise((resolve, reject) => {
             new CoreAPI(context.rootState.user_session.token).getCompanyActivity()
             .then((result) => {
-                console.log('Retrieve data from activity :', result.data);
                 if(result.data.success){
                     context.commit('SET_COMPANY_ACTIVITY', result.data.model)
                     resolve(result.data.model)
                 } else {
-                    console.log('Country Activity Error :', result.data.errors);
                     reject(result.data.errors)
                 }
             }).catch((err) => {
-                console.log('Error in Retrieving data from activity :', err);
                 reject(err)
             });
         })
     },
     GET_SOURCE_TYPE(context){
         return new Promise((resolve, reject) => {
-            new CoreAPI(context.rootState.user_session.token).getSourceType()
+            new CoreAPI(context.rootState.user_session.token).getEstablishSourceType()
             .then((result) => {
-                console.log('Retrieve data from source :', result.data);
                 if(result.data.success){
                     context.commit('SET_SOURCE_TYPE', result.data.model)
                     resolve(result.data.model)
                 } else {
-                    console.log('Country Source Error :', result.data.errors);
                     reject(result.data.errors)
                 }
             }).catch((err) => {
-                console.log('Error in Retrieving data from source :', err);
                 reject(err)
             });
         })
@@ -239,16 +231,13 @@ var actions = {
         return new Promise((resolve, reject) => {
             new CoreAPI(context.rootState.user_session.token).getFoodProduct()
             .then((result) => {
-                console.log('Retrieve data from food product :', result.data);
                 if(result.data.success){
                     context.commit('SET_FOOD_PRODUCT', result.data.model)
                     resolve(result.data.model)
                 } else {
-                    console.log('Country Food Product Error :', result.data.errors);
                     reject(result.data.errors)
                 }
             }).catch((err) => {
-                console.log('Error in Retrieving data from food product :', err);
                 reject(err)
             });
         })
@@ -257,16 +246,13 @@ var actions = {
         return new Promise((resolve, reject) => {
             new CoreAPI(context.rootState.user_session.token).getFoodCategory()
             .then((result) => {
-                console.log('Retrieve data from category :', result.data);
                 if(result.data.success){
                     context.commit('SET_FOOD_CATEGORY', result.data.model)
                     resolve(result.data.model)
                 } else {
-                    console.log('Country Food Category Error :', result.data.errors);
                     reject(result.data.errors)
                 }
             }).catch((err) => {
-                console.log('Error in Retrieving data from food Category :', err);
                 reject(err)
             });
         })

@@ -156,7 +156,7 @@
                             <v-divider></v-divider>
                         </v-flex>
                         <v-flex xs12>
-                            <b>Type:</b> {{getSource(form_details.establishment_info.type).name}}
+                            <b>Type:</b> {{ getEstablishSource(form_details.establishment_info.type).name}}
                         </v-flex>
                         <v-flex xs12>
                             <v-divider></v-divider>
@@ -192,7 +192,7 @@
                             <v-divider></v-divider>
                         </v-flex>
                         <v-flex xs12>
-                            <b>Supplier Address:</b> {{getRegionName(form_details.establishment_info.supplier_address)}}
+                            <b>Supplier Address:</b> {{form_details.establishment_info.supplier_address}}
                         </v-flex>
                     </v-layout>
                 </v-card-text>
@@ -283,6 +283,12 @@
                 <v-divider v-show="show_tab8"></v-divider>
                 <v-card-text v-show="show_tab8">
                     <v-layout row wrap>
+                        <v-flex xs12>
+                            <b>Shelf Type:</b> {{form_details.shelf.shelf_type}}
+                        </v-flex>
+                        <v-flex xs12>
+                            <v-divider></v-divider>
+                        </v-flex>
                         <v-flex xs12>
                             <b>Packaging Material:</b> {{form_details.shelf.packaging_material}}
                         </v-flex>

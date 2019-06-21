@@ -199,12 +199,28 @@ export default {
           return activity ? activity : {}
         },
         getSource(id){
-          var type = this.$store.state.reference.type;
+          var source_type = this.$store.state.reference.source_type;
           console.log('Source id :', id);
-          console.log('Source in mixins :', type);
-          if (!id || !type) return {}
-          var type = type.find(x => x._id.toString() === id)
-          return type ? type : {}
+          console.log('Source in mixins :', source_type);
+          if (!id || !source_type) return {}
+          var source_type = source_type.find(x => x._id.toString() === id)
+          return source_type ? source_type : {}
+        },
+        getFoodType(id){
+          var food_type = this.$store.state.reference.food_type;
+          console.log('Food Product id :', id);
+          console.log('Food Product in mixins :', food_type);
+          if (!id || !food_type) return {}
+          var food_type = food_type.find(x => x._id.toString() === id)
+          return food_type ? food_type : {}
+        },
+        getFoodCategorization(id){
+          var food_category = this.$store.state.reference.food_category;
+          console.log('Food Category id :', id);
+          console.log('Food Category in mixins :', food_category);
+          if (!id || !food_category) return {}
+          var food_category = food_category.find(x => x._id.toString() === id)
+          return food_category ? food_category : {}
         },
         getPaymentStatus(status) {
           var paymentStatus = ["UNPAID", "PARTIAL", "PAID"];

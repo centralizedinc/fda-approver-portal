@@ -80,6 +80,16 @@ var actions = {
                             root: true
                         })
                     })
+                    .then((result)=>{
+                        return context.dispatch('GET_FOOD_PRODUCT', {}, {
+                            root: true
+                        })
+                    })
+                    .then((result)=>{
+                        return context.dispatch('GET_FOOD_CATEGORY', {}, {
+                            root: true
+                        })
+                    })
                     .then((result) => {
                         console.log("Done loading references...");
                     }).catch((err) => {

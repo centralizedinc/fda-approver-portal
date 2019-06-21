@@ -87,4 +87,12 @@ export default class CoreAPI {
         console.log("GETTING Source datas ....");
         return axios.get('/core/source')
     }
+    getFoodProduct(){
+        console.log("GETTING Food Product datas ....");
+        return axios.get('/core/food/product')
+    }
+    getFoodCategory(){
+        console.log("GETTING Food Category datas ....");
+        return axios.get('/core/food/category')
+    }
 }

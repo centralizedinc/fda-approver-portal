@@ -75,13 +75,13 @@
                 <v-card-text v-show="show_tab4">
                     <v-layout row wrap>
                         <v-flex xs12>
-                            <b>Type:</b> {{form_details.food_product.type}}
+                            <b>Type:</b> {{getFoodType(form_details.food_product.type).name}}
                         </v-flex>
                         <v-flex xs12>
                             <v-divider></v-divider>
                         </v-flex>
                         <v-flex xs12>
-                            <b>Categorization:</b> {{form_details.food_product.categorization}}
+                            <b>Categorization:</b> {{getFoodCategorization(form_details.food_product.categorization).name}}
                         </v-flex>
                         <v-flex xs12>
                             <v-divider></v-divider>
@@ -105,7 +105,7 @@
                             <v-divider></v-divider>
                         </v-flex>
                         <v-flex xs12>
-                            <b>Address:</b> {{form_details.food_product.address}}
+                            <b>Address:</b> {{getRegionName(form_details.food_product.address)}}
                         </v-flex>
                         <v-flex xs12>
                             <v-divider></v-divider>

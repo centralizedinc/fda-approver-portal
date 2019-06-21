@@ -10,8 +10,9 @@ function initialState() {
         id_types: null,
         designations: null,
         company_activity: null,
-        type: null,
-        country_origin: null
+        source_type: null,
+        country_origin: null,
+        food_type: null
     }
 }
 
@@ -39,8 +40,14 @@ const mutations = {
     SET_COMPANY_ACTIVITY(state, activity){
         state.company_activity = activity
     },
-    SET_SOURCE_TYPE(state, type){
-        state.type = type
+    SET_SOURCE_TYPE(state, source_type){
+        state.source_type = source_type
+    },
+    SET_FOOD_PRODUCT(state, food_type){
+        state.food_type = food_type
+    },
+    SET_FOOD_CATEGORY(state, food_category){
+        state.food_category = food_category
     },
 
     RESET(state) {
@@ -224,6 +231,42 @@ var actions = {
                 }
             }).catch((err) => {
                 console.log('Error in Retrieving data from source :', err);
+                reject(err)
+            });
+        })
+    },
+    GET_FOOD_PRODUCT(context){
+        return new Promise((resolve, reject) => {
+            new CoreAPI(context.rootState.user_session.token).getFoodProduct()
+            .then((result) => {
+                console.log('Retrieve data from food product :', result.data);
+                if(result.data.success){
+                    context.commit('SET_FOOD_PRODUCT', result.data.model)
+                    resolve(result.data.model)
+                } else {
+                    console.log('Country Food Product Error :', result.data.errors);
+                    reject(result.data.errors)
+                }
+            }).catch((err) => {
+                console.log('Error in Retrieving data from food product :', err);
+                reject(err)
+            });
+        })
+    },
+    GET_FOOD_CATEGORY(context){
+        return new Promise((resolve, reject) => {
+            new CoreAPI(context.rootState.user_session.token).getFoodCategory()
+            .then((result) => {
+                console.log('Retrieve data from category :', result.data);
+                if(result.data.success){
+                    context.commit('SET_FOOD_CATEGORY', result.data.model)
+                    resolve(result.data.model)
+                } else {
+                    console.log('Country Food Category Error :', result.data.errors);
+                    reject(result.data.errors)
+                }
+            }).catch((err) => {
+                console.log('Error in Retrieving data from food Category :', err);
                 reject(err)
             });
         })

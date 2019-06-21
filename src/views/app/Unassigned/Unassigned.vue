@@ -28,9 +28,6 @@ export default {
     this.init();
   },
   computed: {
-    case_details() {
-      return this.$store.state.case.case_details;
-    },
     unassigned() {
       return this.$store.state.unassigned.unassigned;
     }

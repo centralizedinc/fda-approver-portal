@@ -463,15 +463,15 @@ export default {
         if (this.is_payment) this.show_tabs(false, "show_tab2");
         else this.show_tabs(false, "show_tab1");
       } else this.show_tabs(true);
+      this.$store.dispatch("CHECK_REVIEW_ACCESS");
+
+      var ids = [];
+      this.case_details.activities.forEach(activity => {
+        ids.push(activity.assigned_user);
+      });
+      console.log("ids :", ids);
       this.$store
-        .dispatch("CHECK_REVIEW_ACCESS")
-        .then(result => {
-          var ids = [];
-          this.case_details.activities.forEach(activity => {
-            ids.push(activity.assigned_user);
-          });
-          return this.$store.dispatch("GET_ADMINS_INFO", ids);
-        })
+        .dispatch("GET_ADMINS_INFO", ids)
         .then(result => {
           console.log("result.data :", result.data);
           if (result.data.success) this.users = result.data.model;

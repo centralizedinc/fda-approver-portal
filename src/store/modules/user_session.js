@@ -68,6 +68,9 @@ var actions = {
                     context.dispatch('GET_FOOD_CATEGORY', {}, {
                         root: true
                     })
+                    context.dispatch('GET_HEALTH_CLAIMS', {}, {
+                        root: true
+                    })
                     resolve(true)
                 } else {
                     console.log('LOGIN err :', err);

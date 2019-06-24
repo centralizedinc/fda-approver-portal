@@ -212,6 +212,12 @@ export default {
           var food_category = food_category.find(x => x._id.toString() === id)
           return food_category ? food_category : {}
         },
+        getHealthClaims(id){
+          var health_claims = this.$store.state.reference.health_claims;
+          if (!id || !health_claims) return {}
+          var health_claims = health_claims.find(x => x._id.toString() === id)
+          return health_claims ? health_claims : {}
+        },
         getPaymentStatus(status) {
           var paymentStatus = ["UNPAID", "PARTIAL", "PAID"];
           return paymentStatus[status];

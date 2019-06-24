@@ -382,7 +382,7 @@
                 </v-card-title>
                 <v-divider v-show="show_tab10"></v-divider>
                 <v-card-text v-show="show_tab10">
-                    <v-layout row wrap>
+                    <!-- <v-layout row wrap>
                         <template v-for="(item, index) in form_details.claims">
                             <v-flex xs12 :key="`a${index}`">
                                 <b>Type:</b> {{item.type}}
@@ -391,6 +391,17 @@
                                 <v-divider></v-divider>
                             </v-flex>
                         </template>
+                    </v-layout> -->
+                     <v-layout row wrap>
+                        <v-flex xs12>
+                            <b>Claims Type:</b> {{getHealthClaims(form_details.claims.claims).name}}
+                        </v-flex>
+                        <v-flex xs12>
+                            <v-divider></v-divider>
+                        </v-flex>
+                        <v-flex xs12>
+                            <b>Claims Description:</b> {{form_details.claims.desc}}
+                        </v-flex>
                     </v-layout>
                 </v-card-text>
             </v-card>

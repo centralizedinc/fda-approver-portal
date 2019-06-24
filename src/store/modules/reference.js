@@ -50,6 +50,9 @@ const mutations = {
     SET_FOOD_CATEGORY(state, food_category){
         state.food_category = food_category
     },
+    SET_HEALTH_CLAIMS(state, health_claims){
+        state.health_claims = health_claims
+    },
 
     RESET(state) {
         const s = initialState()
@@ -248,6 +251,21 @@ var actions = {
             .then((result) => {
                 if(result.data.success){
                     context.commit('SET_FOOD_CATEGORY', result.data.model)
+                    resolve(result.data.model)
+                } else {
+                    reject(result.data.errors)
+                }
+            }).catch((err) => {
+                reject(err)
+            });
+        })
+    },
+    GET_HEALTH_CLAIMS(context){
+        return new Promise((resolve, reject) => {
+            new CoreAPI(context.rootState.user_session.token).getHealthClaims()
+            .then((result) => {
+                if(result.data.success){
+                    context.commit('SET_HEALTH_CLAIMS', result.data.model)
                     resolve(result.data.model)
                 } else {
                     reject(result.data.errors)

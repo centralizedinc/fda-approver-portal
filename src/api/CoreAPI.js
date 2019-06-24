@@ -90,4 +90,7 @@ export default class CoreAPI {
     getFoodCategory(){
         return axios.get('/core/food/category')
     }
+    getHealthClaims(){
+        return axios.get('/core/health')
+    }
 }

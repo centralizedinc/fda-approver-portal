@@ -133,33 +133,45 @@
                             </v-flex>
                             <v-flex xs12 v-if="case_details.payment_status">
                               Date of Last Payment:
-                              <span style="float: right">{{formatDate(case_details.payment_date)}}</span>
+                              <span
+                                style="float: right"
+                              >{{formatDate(case_details.payment_date)}}</span>
                             </v-flex>
                             <v-flex xs12>
                               <v-divider></v-divider>
                             </v-flex>
                             <v-flex xs12>
                               Application Fee:
-                              <span style="float: right">₱ {{numberWithCommas(charges.fee)}}</span>
+                              <span
+                                style="float: right"
+                              >₱ {{numberWithCommas(charges.fee)}}</span>
                             </v-flex>
                             <v-flex xs12>
                               No. of year(s) applied:
-                              <span style="float: right">{{charges.yearsApplied}} years</span>
+                              <span
+                                style="float: right"
+                              >{{charges.yearsApplied}} years</span>
                             </v-flex>
                             <v-flex xs12>
                               Surcharge:
-                              <span style="float: right">₱ {{numberWithCommas(charges.surcharge)}}</span>
+                              <span
+                                style="float: right"
+                              >₱ {{numberWithCommas(charges.surcharge)}}</span>
                             </v-flex>
                             <v-flex xs12>
                               Legal Research Fund(LRF):
-                              <span style="float: right">₱ {{numberWithCommas(charges.lrf)}}</span>
+                              <span
+                                style="float: right"
+                              >₱ {{numberWithCommas(charges.lrf)}}</span>
                             </v-flex>
                             <v-flex xs12>
                               <v-divider></v-divider>
                             </v-flex>
                             <v-flex xs12 class="body-2 font-weight-bold">
                               Total Payment:
-                              <span style="float: right">₱ {{numberWithCommas(charges.total)}}</span>
+                              <span
+                                style="float: right"
+                              >₱ {{numberWithCommas(charges.total)}}</span>
                             </v-flex>
                             <template
                               v-if="history_transactions && history_transactions.length > 0"
@@ -192,7 +204,9 @@
                               </v-flex>
                               <v-flex xs12 class="body-2 font-weight-bold">
                                 Total Amount Paid:
-                                <span style="float: right">₱ {{numberWithCommas(total_amount_paid)}}</span>
+                                <span
+                                  style="float: right"
+                                >₱ {{numberWithCommas(total_amount_paid)}}</span>
                               </v-flex>
                               <v-flex xs12>
                                 <v-divider></v-divider>
@@ -210,18 +224,34 @@
                     </v-flex>
 
                     <review-license-application
-                      v-if="case_details.case_type === 0"
+                      v-if="case_details.certificate_type === 0"
                       :claimed="claimed"
                       :show_tabs_ext="show_tabs_ext"
                       :form_details="form_details"
                     ></review-license-application>
 
-                    <review-certificate-application
-                      v-if="case_details.case_type === 1"
-                      :claimed="claimed"
-                      :show_tabs_ext="show_tabs_ext"
-                      :form_details="form_details"
-                    ></review-certificate-application>
+                    <template v-else-if="case_details.case_type === 1">
+                      <review-certificate-application
+                        v-if="case_details.case_type === 0"
+                        :claimed="claimed"
+                        :show_tabs_ext="show_tabs_ext"
+                        :form_details="form_details"
+                      ></review-certificate-application>
+
+                      <review-toys-certificate-application
+                        v-if="case_details.case_type === 1"
+                        :claimed="claimed"
+                        :show_tabs_ext="show_tabs_ext"
+                        :form_details="form_details"
+                      ></review-toys-certificate-application>
+
+                      <review-cosmetics-certificate-application
+                        v-if="case_details.case_type === 2"
+                        :claimed="claimed"
+                        :show_tabs_ext="show_tabs_ext"
+                        :form_details="form_details"
+                      ></review-cosmetics-certificate-application>
+                    </template>
 
                     <!-- Documents -->
                     <v-flex xs12>
@@ -381,6 +411,8 @@ import EvaluationForm from "./EvaluationForm";
 import pdf from "vue-pdf";
 import ReviewLicenseApplication from "./ReviewLicenseApplication";
 import ReviewCertificateApplication from "./ReviewCertificateApplication";
+import ReviewToysCertificateApplication from "./ReviewToysCertificateApplication";
+import ReviewCosmeticsCertificateApplication from "./ReviewCosmeticsCertificateApplication";
 
 export default {
   components: {

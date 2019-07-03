@@ -117,6 +117,9 @@
               <v-divider></v-divider>
             </v-flex>
             <v-list dense>
+              <v-subheader>
+                <b>Contacts</b>
+              </v-subheader>
               <v-list-tile
                 v-for="(item, index) in form_details.toy_certificate.establishment_info.contact_info"
                 :key="index"
@@ -201,6 +204,9 @@
               <v-divider></v-divider>
             </v-flex>
             <v-list dense>
+              <v-subheader>
+                <b>Contacts</b>
+              </v-subheader>
               <v-list-tile
                 v-for="(item, index) in form_details.toy_certificate.company_representative.contact_info"
                 :key="index"

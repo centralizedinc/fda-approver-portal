@@ -20,7 +20,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.2.0",
     "axios": "^0.19.0",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "fda-pdf-printer-plugin": "^1.0.25",
     "jspdf": "^1.5.3",
     "jspdf-autotable": "^3.0.10",
